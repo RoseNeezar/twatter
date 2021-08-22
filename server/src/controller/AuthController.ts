@@ -52,7 +52,7 @@ export const signUp = async (
     }
 
     const user = User.build({ email, password, firstName, lastName, username });
-    console.log("Here--", req.body, user);
+
     await user.save();
 
     const userJwt = jwt.sign(
