@@ -1,0 +1,13 @@
+{
+  "name": "twitter-clone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/RoseNeezar/twatter.git",
+  "author": "Neezar <rforlyffe@gmaicl.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "docker-compose -f docker-compose.dev.yml up -d",
+    "build": "docker-compose -f docker-compose.dev.yml  build ",
+    "stop": "docker-compose -f docker-compose.dev.yml down && docker-compose -f docker-compose.dev.yml rm -f"
+  }
+}
