@@ -1,11 +1,26 @@
-import Head from "next/head";
-import Image from "next/image";
+import React from "react";
+import { FC } from "react";
+import { Router } from "react-router-dom";
 
-export default function Home() {
+import Navigate from "../app/utils/Navigate";
+import App from "../app/PageComponent/App";
+
+const SafeHydrate: FC = ({ children }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen  bg-gray-600">
-      WHAT
-      <div className="w-40 h-40 bg-red-300"></div>
+    <div suppressHydrationWarning>
+      {typeof document === "undefined" ? null : children}
     </div>
   );
-}
+};
+
+const Index: FC = () => {
+  return (
+    <SafeHydrate>
+      <Router history={Navigate!}>
+        <App />
+      </Router>
+    </SafeHydrate>
+  );
+};
+
+export default Index;
