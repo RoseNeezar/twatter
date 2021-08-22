@@ -2,8 +2,8 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
-import AuthRoute from "./routes/AuthRoute";
-import { errorHandler } from "./middlewares/error-handler";
+import AuthRoute from "./routes/auth.routes";
+import { errorHandler } from "./middlewares/error-handler.middleware";
 import { NotFoundError } from "./errors/not-found-error";
 
 const app = express();
@@ -12,7 +12,8 @@ app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    secure: true,
+    secure: false,
+    expires: new Date(Date.now() + Number(process.env.JWT_EXPIRATION_TIME)),
   })
 );
 
