@@ -11,9 +11,12 @@ app.set("trust proxy", true);
 app.use(json());
 app.use(
   cookieSession({
+    httpOnly: true,
+    sameSite: "strict",
     signed: false,
-    secure: false,
-    expires: new Date(Date.now() + Number(process.env.JWT_EXPIRATION_TIME)),
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: Number(process.env.JWT_EXPIRATION_TIME),
   })
 );
 
