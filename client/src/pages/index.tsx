@@ -4,6 +4,8 @@ import { Router } from "react-router-dom";
 
 import Navigate from "../app/utils/Navigate";
 import App from "../app/PageComponent/App";
+import { Provider } from "react-redux";
+import { store } from "../app/store/store";
 
 const SafeHydrate: FC = ({ children }) => {
   return (
@@ -16,9 +18,11 @@ const SafeHydrate: FC = ({ children }) => {
 const Index: FC = () => {
   return (
     <SafeHydrate>
-      <Router history={Navigate!}>
-        <App />
-      </Router>
+      <Provider store={store}>
+        <Router history={Navigate!}>
+          <App />
+        </Router>
+      </Provider>
     </SafeHydrate>
   );
 };

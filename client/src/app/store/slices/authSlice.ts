@@ -1,27 +1,54 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Navigate from "../../utils/Navigate";
+import { RootState } from "../store";
+import { ILogin, IRegister, IUser } from "../types/auth.model";
 
 export interface authState {
-  user: any;
+  user: IUser | null;
   isLoggedIn: boolean;
+  appLoaded: boolean;
 }
 
 const initialState: authState = {
   user: null,
   isLoggedIn: false,
+  appLoaded: false,
 };
 
 export const authSlice = createSlice({
-  name: "nav",
+  name: "auth",
   initialState,
   reducers: {
-    login: (
-      state,
-      action: PayloadAction<{ email: string; password: string }>
-    ) => state,
-    register: (state, action: PayloadAction<any>) => state,
+    login: (state, action: PayloadAction<ILogin>) => state,
+    register: (state, action: PayloadAction<IRegister>) => state,
+    setUser: (state, action: PayloadAction<IUser>) => {
+      state.user = action.payload;
+    },
+    getUser: (state) => state,
+    errorCatcher: (state, action: PayloadAction<any>) => {
+      console.log(action.payload.response.data);
+    },
+    setAppLoaded: (state) => {
+      state.appLoaded = true;
+    },
+    logout: () => {},
+    resetUser: (state) => {
+      state.user = null;
+    },
   },
 });
 
-export const { login, register } = authSlice.actions;
+export const {
+  logout,
+  resetUser,
+  login,
+  setUser,
+  register,
+  errorCatcher,
+  setAppLoaded,
+  getUser,
+} = authSlice.actions;
 
 export default authSlice.reducer;
+
+export const selectCurrentUser = (state: RootState) => state.auth.user;

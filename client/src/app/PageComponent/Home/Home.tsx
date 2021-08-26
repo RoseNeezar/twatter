@@ -1,10 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
+import Head from "next/head";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import TweetPage from "../Tweet/TweetPage";
+import NotFound from "../NotFound/NotFound";
+import TweetAction from "../Tweet/components/TweetAction";
+import RedirectHome from "./RedirectHome";
 
 const Home = () => {
+  let { path, url } = useRouteMatch();
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setScrollPosition(position);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
-    <div className="h-screen bg-dark-main">
-      <div className="h-52 w-96 bg-dark-third"></div>
-    </div>
+    <>
+      <Head>
+        <title>Twatter App</title>
+      </Head>
+
+      <div className="flex justify-center h-screen ">
+        <div className="flex-col justify-end flex-1 hidden h-full md:flex">
+          <Sidebar url={url} />
+        </div>
+        <div className="relative px-2 border-l-2 border-r-2 w-tweet border-dark-third">
+          <Switch>
+            <Route exact path={`${path}home`} component={TweetPage} />
+            <Route exact path={`${path}`} component={RedirectHome} />
+            <Route path="*" component={NotFound} />
+          </Switch>
+          {scrollPosition > 200 && (
+            <div
+              className="fixed p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              Back to top
+            </div>
+          )}
+        </div>
+        <div className="flex-col justify-start flex-1 hidden h-full md:flex">
+          <Switch>
+            <Route exact path={`${path}home`} component={TweetAction} />
+            <Route path="*">
+              <span></span>
+            </Route>
+          </Switch>
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -14,6 +14,9 @@ module.exports = {
         big: "90%",
         full: "100%",
       },
+      width: {
+        tweet: "600px",
+      },
       colors: {
         "dark-main": "#18191A",
         "dark-second": "#242526",
