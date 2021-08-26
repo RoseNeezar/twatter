@@ -24,7 +24,7 @@ export const store = configureStore({
     }).concat(epicMiddleware),
 });
 
-const epics = combineEpics(authEpic);
+const epics = combineEpics(...authEpic);
 
 epicMiddleware.run(epics);
 
