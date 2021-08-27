@@ -2,6 +2,7 @@ import React from "react";
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch } from "../../store/hooks/hooks";
+import { logout } from "../../store/slices/authSlice";
 
 interface ISidebar {
   url: string;
@@ -12,7 +13,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
   const notificationRoute = "/notification";
   const { pathname } = useLocation();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   return (
     <div className="flex justify-end pr-4 ">
@@ -48,7 +49,10 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
           <li className="mt-6 border-b border-gray-200 "></li>
         </ul>
       </div>
-      <div className="w-5/6 p-4 mx-auto mb-10 font-bold text-center cursor-pointer hover:bg-dark-third text-dark-txt rounded-3xl" >
+      <div
+        className="w-5/6 p-4 mx-auto mb-10 font-bold text-center cursor-pointer hover:bg-dark-third text-dark-txt rounded-3xl"
+        onClick={() => dispatch(logout())}
+      >
         Logout
       </div>
     </div>
