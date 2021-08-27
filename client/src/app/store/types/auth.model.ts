@@ -18,3 +18,9 @@ export interface IUser {
   username: string;
   id: string;
 }
+
+export interface IError {
+  errors: {
+    message: string;
+  }[];
+}

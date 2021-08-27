@@ -2,6 +2,8 @@ import Head from "next/head";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import InputGroup from "../../components/Input/InputGroup";
+import { useAppDispatch } from "../../store/hooks/hooks";
+import { register } from "../../store/slices/authSlice";
 
 const RegisterPage = () => {
   const [formState, setFormState] = useState({
@@ -12,8 +14,7 @@ const RegisterPage = () => {
     password: "",
   });
   const { email, firstName, lastName, username, password } = formState;
-  const [sentEmail, setSentEmail] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const onChangeText =
     (name: string) =>
@@ -23,8 +24,10 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (email) {
+    console.log("res", { ...formState });
+    if (email && firstName && lastName && username && password) {
       try {
+        dispatch(register({ ...formState }));
       } catch (error) {}
     } else {
     }
@@ -48,14 +51,21 @@ const RegisterPage = () => {
             />
             <InputGroup
               className="mb-4"
-              type="text"
+              type="username"
+              value={username}
+              setValue={onChangeText}
+              placeholder="Username"
+            />
+            <InputGroup
+              className="mb-4"
+              type="firstName"
               value={firstName}
               setValue={onChangeText}
               placeholder="First Name"
             />
             <InputGroup
               className="mb-4"
-              type="text"
+              type="lastName"
               value={lastName}
               setValue={onChangeText}
               placeholder="Last Name"
