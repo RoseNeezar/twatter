@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { useAppDispatch } from "../store/hooks/hooks";
 import { getUser } from "../store/slices/authSlice";
 import { PrivateRoute } from "../utils/PrivateRoute";
@@ -16,6 +17,7 @@ const App = () => {
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={4000} />
       <Route
         render={() => (
           <>
