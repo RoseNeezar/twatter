@@ -20,9 +20,7 @@ const LoginPage = () => {
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setFormState({ ...formState, [name]: e.target.value });
     };
-  const handleGoogleLogin = async () => {
-    console.log(selector);
-  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (email && password) {
@@ -47,7 +45,7 @@ const LoginPage = () => {
           className="mb-10 text-6xl text-white"
           onClick={() => Navigate?.push("/")}
         >
-          {JSON.stringify(selector)}
+          Login
         </h1>
         <div className="flex flex-col items-center justify-center h-auto p-10 shadow-lg w-96 mb-44 bg-dark-second rounded-2xl">
           <form onSubmit={handleSubmit} className="flex flex-col w-full ">
@@ -70,13 +68,6 @@ const LoginPage = () => {
               Login
             </button>
           </form>
-          <button
-            onClick={() => handleGoogleLogin()}
-            className="flex items-center justify-between h-12 px-4 mb-10 text-white bg-blue-600 rounded-md hover:bg-blue-500 w-52"
-          >
-            <i className="text-2xl bx bxl-google"></i>
-            <p>Sign in with google</p>
-          </button>
           <small className="flex flex-row">
             <p className="text-gray-400"> Dont have an account?</p>
             <NavLink to="/register">
