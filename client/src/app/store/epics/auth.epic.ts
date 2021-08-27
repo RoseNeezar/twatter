@@ -1,5 +1,5 @@
 import { AnyAction } from "@reduxjs/toolkit";
-import { Epic } from "redux-observable";
+import { combineEpics, Epic } from "redux-observable";
 import {
   catchError,
   concatMap,
@@ -38,23 +38,9 @@ const loginEpic: MyEpic = (action$, state$) =>
         })
       ).pipe(
         map(setUser),
-        catchError((err) => of(errorCatcher(err)))
+        catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
-  );
-
-const loginRedirectEpic: MyEpic = (action$, state$) =>
-  action$.pipe(
-    filter(setUser.match),
-    tap(() => Navigate?.push("/home")),
-    ignoreElements()
-  );
-
-const logoutRedirectEpic: MyEpic = (action$, state$) =>
-  action$.pipe(
-    filter(resetUser.match),
-    tap(() => Navigate?.push("/login")),
-    ignoreElements()
   );
 
 const registerEpic: MyEpic = (action$, state$) =>
@@ -77,17 +63,6 @@ const registerEpic: MyEpic = (action$, state$) =>
     )
   );
 
-const getUserEpic: MyEpic = (action$, state$) =>
-  action$.pipe(
-    filter(getUser.match),
-    switchMap((action) =>
-      from(agent.AuthService.currentUser()).pipe(
-        map(setUser),
-        catchError((err) => of(errorCatcher(err)))
-      )
-    )
-  );
-
 const logoutEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(logout.match),
@@ -99,11 +74,36 @@ const logoutEpic: MyEpic = (action$, state$) =>
     )
   );
 
-export default [
+const getUserEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(getUser.match),
+    switchMap((action) =>
+      from(agent.AuthService.currentUser()).pipe(
+        map(setUser),
+        catchError((err) => of(errorCatcher(err)))
+      )
+    )
+  );
+
+const loginRedirectEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(setUser.match),
+    tap(() => Navigate?.push("/home")),
+    ignoreElements()
+  );
+
+const logoutRedirectEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(resetUser.match),
+    tap(() => Navigate?.push("/login")),
+    ignoreElements()
+  );
+
+export default combineEpics(
   loginEpic,
   registerEpic,
   loginRedirectEpic,
   getUserEpic,
   logoutRedirectEpic,
-  logoutEpic,
-];
+  logoutEpic
+);

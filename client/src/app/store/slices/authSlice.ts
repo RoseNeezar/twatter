@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import Navigate from "../../utils/Navigate";
 import { RootState } from "../store";
-import { ILogin, IRegister, IUser } from "../types/auth.model";
+import { IError, ILogin, IRegister, IUser } from "../types/auth.model";
 
 export interface authState {
   user: IUser | null;
@@ -25,8 +26,13 @@ export const authSlice = createSlice({
       state.user = action.payload;
     },
     getUser: (state) => state,
-    errorCatcher: (state, action: PayloadAction<any>) => {
-      console.log(action.payload.response.data);
+    errorCatcher: (state, action: PayloadAction<IError>) => {
+      console.log(action.payload);
+      if (!!action.payload.errors && action.payload.errors.length > 0) {
+        action.payload.errors.map((err) => {
+          toast.error(err.message);
+        });
+      }
     },
     setAppLoaded: (state) => {
       state.appLoaded = true;
