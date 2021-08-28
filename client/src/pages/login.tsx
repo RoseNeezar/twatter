@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import InputGroup from "../app/components/Input/InputGroup";
 import { useAppDispatch, useAppSelector } from "../app/store/hooks/hooks";
-import { isLoggedIn, login } from "../app/store/slices/authSlice";
+import { isLoggedIn, login } from "../app/store/module/auth/auth.slice";
 
 const LoginPage = () => {
   const router = useRouter();

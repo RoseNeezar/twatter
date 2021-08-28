@@ -1,8 +1,8 @@
 import { AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { combineEpics, createEpicMiddleware } from "redux-observable";
 import { catchError } from "rxjs/operators";
-import authEpic, { MyEpic } from "./epics/auth.epic";
-import authSlice from "./slices/authSlice";
+import authEpic, { MyEpic } from "./module/auth/auth.epic";
+import authSlice from "./module/auth/auth.slice";
 
 const reducer = combineReducers({
   auth: authSlice,
@@ -18,10 +18,10 @@ const epicMiddleware = createEpicMiddleware<
 
 export const store = configureStore({
   reducer,
-
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: false,
+      serializableCheck: false,
     }).concat(epicMiddleware),
 });
 
@@ -30,7 +30,6 @@ const epics = combineEpics(authEpic);
 const rootEpic: MyEpic = (action$, store$, dependencies) =>
   combineEpics(epics)(action$, store$, dependencies).pipe(
     catchError((error, source) => {
-      console.error("rootEpic-", error);
       return source;
     })
   );

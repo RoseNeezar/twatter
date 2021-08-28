@@ -3,7 +3,7 @@ import React from "react";
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { logout } from "../../store/slices/authSlice";
+import { logout } from "../../store/module/auth/auth.slice";
 import { RootState } from "../../store/store";
 
 interface ISidebar {

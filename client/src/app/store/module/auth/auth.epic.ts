@@ -12,8 +12,8 @@ import {
   switchMap,
   tap,
 } from "rxjs";
-import agent from "../../api/agent";
-import Navigate from "../../utils/Navigate";
+import agent from "../../../api/agent";
+import Navigate from "../../../utils/Navigate";
 import {
   errorCatcher,
   getUser,
@@ -22,8 +22,9 @@ import {
   register,
   resetUser,
   setUser,
-} from "../slices/authSlice";
-import { RootState } from "../store";
+} from "./auth.slice";
+import { RootState } from "../../store";
+import { IError } from "./types/auth.model";
 
 export type MyEpic = Epic<AnyAction, AnyAction, RootState>;
 
@@ -80,7 +81,13 @@ const getUserEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       from(agent.AuthService.currentUser()).pipe(
         map(setUser),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => {
+          const errObj: IError = {
+            ...err.response.data,
+            router: action.payload,
+          };
+          return of(errorCatcher(errObj));
+        })
       )
     )
   );

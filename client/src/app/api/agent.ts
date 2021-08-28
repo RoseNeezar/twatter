@@ -1,5 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import { ILogin, IRegister, IUser } from "../store/types/auth.model";
+import {
+  ILogin,
+  IRegister,
+  IUser,
+} from "../store/module/auth/types/auth.model";
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
