@@ -5,7 +5,7 @@ import {
   login,
   logout,
   signUp,
-} from "../controller/AuthController";
+} from "../controller/auth.controller";
 import { currentUser } from "../middlewares/currrent-user.middleware";
 import { requireAuth } from "../middlewares/require-auth.middleware";
 import { validateRequest } from "../middlewares/validator-request.middleware";

@@ -10,6 +10,7 @@ import AuthRoute from "./routes/auth.routes";
 import { errorHandler } from "./middlewares/error-handler.middleware";
 import cors from "cors";
 import { NotFoundError } from "./errors/not-found-error";
+import PostRoute from "./routes/post.routes";
 
 const app = express();
 app.set("trust proxy", true);
@@ -35,6 +36,7 @@ app.use(
 app.use(express.static("public"));
 
 app.use("/api/auth", AuthRoute);
+app.use("/api/post", PostRoute);
 
 app.all("*", async () => {
   throw new NotFoundError();
