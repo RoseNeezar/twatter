@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { NextRouter } from "next/dist/client/router";
 import { toast } from "react-toastify";
-import Navigate from "../../utils/Navigate";
 import { RootState } from "../store";
 import { IError, ILogin, IRegister, IUser } from "../types/auth.model";
 
@@ -27,7 +27,6 @@ export const authSlice = createSlice({
     },
     getUser: (state) => state,
     errorCatcher: (state, action: PayloadAction<IError>) => {
-      console.log(action.payload);
       if (!!action.payload.errors && action.payload.errors.length > 0) {
         action.payload.errors.map((err) => {
           toast.error(err.message);
@@ -58,3 +57,4 @@ export const {
 export default authSlice.reducer;
 
 export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const isLoggedIn = (state: RootState) => !!state.auth.user;

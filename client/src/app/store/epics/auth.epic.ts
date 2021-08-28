@@ -58,7 +58,7 @@ const registerEpic: MyEpic = (action$, state$) =>
         })
       ).pipe(
         map(setUser),
-        catchError((err) => of(errorCatcher(err)))
+        catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
   );
@@ -69,7 +69,7 @@ const logoutEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       from(agent.AuthService.logout()).pipe(
         map(resetUser),
-        catchError((err) => of(errorCatcher(err)))
+        catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
   );
@@ -80,30 +80,9 @@ const getUserEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       from(agent.AuthService.currentUser()).pipe(
         map(setUser),
-        catchError((err) => of(errorCatcher(err)))
+        catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
   );
 
-const loginRedirectEpic: MyEpic = (action$, state$) =>
-  action$.pipe(
-    filter(setUser.match),
-    tap(() => Navigate?.push("/home")),
-    ignoreElements()
-  );
-
-const logoutRedirectEpic: MyEpic = (action$, state$) =>
-  action$.pipe(
-    filter(resetUser.match),
-    tap(() => Navigate?.push("/login")),
-    ignoreElements()
-  );
-
-export default combineEpics(
-  loginEpic,
-  registerEpic,
-  loginRedirectEpic,
-  getUserEpic,
-  logoutRedirectEpic,
-  logoutEpic
-);
+export default combineEpics(loginEpic, registerEpic, getUserEpic, logoutEpic);
