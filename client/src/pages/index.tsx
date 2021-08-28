@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/dist/client/router";
 import { useAppDispatch, useAppSelector } from "../app/store/hooks/hooks";
-import { getUser, isLoggedIn } from "../app/store/slices/authSlice";
+import { getUser, isLoggedIn } from "../app/store/module/auth/auth.slice";
 
 const Index = () => {
   const router = useRouter();

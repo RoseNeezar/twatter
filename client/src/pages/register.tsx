@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import InputGroup from "../app/components/Input/InputGroup";
 import { useAppDispatch, useAppSelector } from "../app/store/hooks/hooks";
-import { isLoggedIn, register } from "../app/store/slices/authSlice";
+import { isLoggedIn, register } from "../app/store/module/auth/auth.slice";
 
 const RegisterPage = () => {
   const router = useRouter();

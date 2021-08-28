@@ -1,3 +1,5 @@
+import { NextRouter } from "next/dist/client/router";
+
 export interface ILogin {
   email: string;
   password: string;
@@ -23,4 +25,5 @@ export interface IError {
   errors: {
     message: string;
   }[];
+  router?: NextRouter;
 }

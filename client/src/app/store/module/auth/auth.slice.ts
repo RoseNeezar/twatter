@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { NextRouter } from "next/dist/client/router";
 import { toast } from "react-toastify";
-import { RootState } from "../store";
-import { IError, ILogin, IRegister, IUser } from "../types/auth.model";
+import { RootState } from "../../store";
+import { IError, ILogin, IRegister, IUser } from "./types/auth.model";
 
 export interface authState {
   user: IUser | null;
@@ -25,8 +25,12 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
     },
-    getUser: (state) => state,
+    getUser: (state, action: PayloadAction<NextRouter>) => state,
     errorCatcher: (state, action: PayloadAction<IError>) => {
+      if (!!action.payload.router) {
+        console.log("router-");
+        action.payload.router.push("/");
+      }
       if (!!action.payload.errors && action.payload.errors.length > 0) {
         action.payload.errors.map((err) => {
           toast.error(err.message);
