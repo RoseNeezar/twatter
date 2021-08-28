@@ -6,6 +6,8 @@ import TweetPage from "../Tweet/TweetPage";
 import NotFound from "../NotFound/NotFound";
 import TweetAction from "../Tweet/components/TweetAction";
 import RedirectHome from "./RedirectHome";
+import NotificationPage from "../Notification/NotificationPage";
+import NotificationAction from "../Notification/components/NotificationAction";
 
 const Home = () => {
   let { path, url } = useRouteMatch();
@@ -25,17 +27,22 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>Twatter App</title>
+        <title>Twatter</title>
       </Head>
 
       <div className="flex justify-center h-screen ">
         <div className="flex-col justify-end flex-1 hidden h-full md:flex">
           <Sidebar url={url} />
         </div>
-        <div className="relative px-2 border-l-2 border-r-2 w-tweet border-dark-third">
+        <div className="relative border-l border-r w-tweet border-dark-third">
           <Switch>
             <Route exact path={`${path}home`} component={TweetPage} />
-            <Route exact path={`${path}`} component={RedirectHome} />
+            <Route
+              exact
+              path={`${path}notification`}
+              component={NotificationPage}
+            />
+            <Route path={`${path}`} component={RedirectHome} />
             <Route path="*" component={NotFound} />
           </Switch>
           {scrollPosition > 200 && (
@@ -50,6 +57,11 @@ const Home = () => {
         <div className="flex-col justify-start flex-1 hidden h-full md:flex">
           <Switch>
             <Route exact path={`${path}home`} component={TweetAction} />
+            <Route
+              exact
+              path={`${path}notification`}
+              component={NotificationAction}
+            />
             <Route path="*">
               <span></span>
             </Route>

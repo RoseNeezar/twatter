@@ -1,20 +1,30 @@
+import { useRouter } from "next/dist/client/router";
 import React from "react";
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAppDispatch } from "../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { logout } from "../../store/slices/authSlice";
+import { RootState } from "../../store/store";
 
 interface ISidebar {
   url: string;
 }
 
 const Sidebar: FC<ISidebar> = ({ url }) => {
+  const router = useRouter();
   const homeRoute = "/home";
   const notificationRoute = "/notification";
   const { pathname } = useLocation();
-
+  const getUser = useAppSelector(
+    (state: RootState) => state.auth.user?.firstName
+  );
   const dispatch = useAppDispatch();
-
+  const handleLogout = () => {
+    try {
+      dispatch(logout());
+      router.push("/");
+    } catch (error) {}
+  };
   return (
     <div className="flex justify-end pr-4 ">
       <div className="fixed top-0 h-3/4">
@@ -25,7 +35,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             }`}
           >
             <Link
-              to={`${url}kanban`}
+              to={`${url}home`}
               className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
               <i className="pr-5 bx bx-notepad"></i>
@@ -39,7 +49,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             }`}
           >
             <Link
-              to={`${url}calendar`}
+              to={`${url}notification`}
               className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
               <i className="pr-5 bx bx-calendar"></i>
@@ -50,10 +60,11 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
         </ul>
       </div>
       <div
-        className="w-5/6 p-4 mx-auto mb-10 font-bold text-center cursor-pointer hover:bg-dark-third text-dark-txt rounded-3xl"
-        onClick={() => dispatch(logout())}
+        className="flex flex-row justify-between w-56 p-4 mx-auto mb-10 font-bold text-center cursor-pointer hover:bg-dark-third text-dark-txt rounded-3xl"
+        onClick={() => handleLogout()}
       >
-        Logout
+        <div className="">{getUser}</div>
+        <div className="">Logout</div>
       </div>
     </div>
   );

@@ -1,11 +1,13 @@
+import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import InputGroup from "../../components/Input/InputGroup";
-import { useAppDispatch } from "../../store/hooks/hooks";
-import { register } from "../../store/slices/authSlice";
+import Link from "next/link";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import InputGroup from "../app/components/Input/InputGroup";
+import { useAppDispatch, useAppSelector } from "../app/store/hooks/hooks";
+import { isLoggedIn, register } from "../app/store/slices/authSlice";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [formState, setFormState] = useState({
     email: "",
     firstName: "",
@@ -14,6 +16,8 @@ const RegisterPage = () => {
     password: "",
   });
   const { email, firstName, lastName, username, password } = formState;
+  const checkLogin = useAppSelector(isLoggedIn);
+
   const dispatch = useAppDispatch();
 
   const onChangeText =
@@ -24,7 +28,6 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("res", { ...formState });
     if (email && firstName && lastName && username && password) {
       try {
         dispatch(register({ ...formState }));
@@ -32,6 +35,12 @@ const RegisterPage = () => {
     } else {
     }
   };
+
+  useEffect(() => {
+    if (!!checkLogin) {
+      router.push("/app");
+    }
+  }, [checkLogin]);
 
   return (
     <>
@@ -85,11 +94,13 @@ const RegisterPage = () => {
 
           <small className="flex flex-row">
             <p className="text-gray-400"> Have an account?</p>
-            <NavLink to="/login">
-              <p className="ml-1 text-white uppercase hover:text-gray-400">
-                Login
-              </p>
-            </NavLink>
+            <Link href="/login">
+              <a>
+                <p className="ml-1 text-white uppercase hover:text-gray-400">
+                  Login
+                </p>
+              </a>
+            </Link>
           </small>
         </div>
       </div>

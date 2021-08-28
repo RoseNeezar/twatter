@@ -4,7 +4,7 @@ let Navigate: History | undefined;
 
 if (typeof document !== "undefined") {
   Navigate = createBrowserHistory({
-    basename: "/",
+    basename: "/app",
   });
 }
 

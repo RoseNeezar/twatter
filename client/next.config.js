@@ -15,8 +15,8 @@ module.exports = {
       },
       // Rewrite everything else to use `pages/app`
       {
-        source: "/:path*",
-        destination: "/",
+        source: "/app/:path*",
+        destination: "/app",
       },
     ];
   },
