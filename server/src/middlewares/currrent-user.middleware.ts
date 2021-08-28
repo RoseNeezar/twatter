@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { UserPayload } from "../dto/auth.dto";
+import { User, UserAttrs } from "../models/user.models";
 
 declare global {
   namespace Express {
@@ -10,7 +11,7 @@ declare global {
   }
 }
 
-export const currentUser = (
+export const currentUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -24,7 +25,9 @@ export const currentUser = (
       process.env.JWT_SECRET!
     ) as UserPayload;
 
-    req.currentUser = payload;
+    const userObj = await User.findById(payload.id);
+
+    req.currentUser = userObj as UserPayload;
   } catch (err) {}
   next();
 };

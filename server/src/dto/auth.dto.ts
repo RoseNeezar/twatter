@@ -6,4 +6,8 @@ export interface UserPayload {
   username: string;
   profilePic: string;
   coverPhoto: string;
+  likes?: string[];
+  retweets?: string[];
+  following?: string[];
+  followers?: string[];
 }

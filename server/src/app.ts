@@ -36,7 +36,7 @@ app.use(
 app.use(express.static("public"));
 
 app.use("/api/auth", AuthRoute);
-app.use("/api/post", PostRoute);
+app.use("/api/posts", PostRoute);
 
 app.all("*", async () => {
   throw new NotFoundError();
