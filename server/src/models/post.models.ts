@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
-interface PostAttrs {
+export interface PostAttrs {
   content?: string;
   postedBy?: string;
-  pinned?: string;
-  likes?: string;
-  retweetUsers?: string;
+  pinned?: boolean;
+  likes?: string[];
+  retweetUsers?: string[];
   retweetData?: string;
   replyTo?: string;
 }
@@ -13,9 +13,9 @@ interface PostAttrs {
 interface PostDoc extends mongoose.Document {
   content?: string;
   postedBy?: string;
-  pinned?: string;
-  likes?: string;
-  retweetUsers?: string;
+  pinned?: boolean;
+  likes?: string[];
+  retweetUsers?: string[];
   retweetData?: string;
   replyTo?: string;
 }

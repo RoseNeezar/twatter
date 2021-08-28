@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { Password } from "../services/password";
 
 // to create a user
-interface UserAttrs {
+export interface UserAttrs {
   email: string;
   password: string;
   firstName: string;
@@ -10,6 +10,10 @@ interface UserAttrs {
   username: string;
   profilePic?: string;
   coverPhoto?: string;
+  likes?: string[];
+  retweets?: string[];
+  following?: string[];
+  followers?: string[];
 }
 
 // properties a single user has
@@ -21,10 +25,14 @@ interface UserDoc extends mongoose.Document {
   username: string;
   profilePic?: string;
   coverPhoto?: string;
+  likes?: string[];
+  retweets?: string[];
+  following?: string[];
+  followers?: string[];
 }
 
 // entire collection looks like
-interface UserModel extends mongoose.Model<UserDoc> {
+export interface UserModel extends mongoose.Model<UserDoc> {
   build(attr: UserAttrs): UserDoc;
 }
 
@@ -56,7 +64,7 @@ const userSchema = new mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: "/images/img.jpeg",
+      default: `${process.env.APP_URL}/images/img.jpeg`,
     },
     coverPhoto: {
       type: String,
