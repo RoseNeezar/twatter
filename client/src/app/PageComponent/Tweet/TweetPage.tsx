@@ -21,7 +21,7 @@ const TweetPage = () => {
       </div>
       <CreatePost />
       {Posts?.map((res) => {
-        return <PostContent post={res} />;
+        return <PostContent key={res.id} post={res} />;
       })}
     </div>
   );

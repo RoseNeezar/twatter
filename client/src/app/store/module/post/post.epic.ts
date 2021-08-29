@@ -1,19 +1,17 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
-import {
-  catchError,
-  concatMap,
-  delay,
-  filter,
-  from,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import { catchError, filter, from, map, of, switchMap } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
-import { errorCatcher } from "../auth/auth.slice";
-import { createPost, fetchPost, setFetchPost, setPost } from "./post.slice";
+import { errorCatcher, setUser } from "../auth/auth.slice";
+import {
+  createPost,
+  fetchPost,
+  likePost,
+  likePostFulfilled,
+  setFetchPost,
+  setPost,
+} from "./post.slice";
 
 export type MyEpic = Epic<AnyAction, AnyAction, RootState>;
 
@@ -43,4 +41,31 @@ const fetchPostEpic: MyEpic = (action$, state$) =>
     )
   );
 
-export default combineEpics(createPostEpic, fetchPostEpic);
+const likePostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(likePost.match),
+    switchMap((action) =>
+      from(agent.PostService.likePost(action.payload)).pipe(
+        map(likePostFulfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+const getLikedUserEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(likePostFulfilled.match),
+    switchMap((action) =>
+      from(agent.AuthService.currentUser()).pipe(
+        map(setUser),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+export default combineEpics(
+  createPostEpic,
+  fetchPostEpic,
+  likePostEpic,
+  getLikedUserEpic
+);
