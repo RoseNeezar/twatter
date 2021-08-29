@@ -12,7 +12,7 @@ export const createPost = async (
 ) => {
   if (!req.body.content) {
     console.log("Content param not sent with request");
-    return res.sendStatus(400);
+    throw new BadRequestError("Error creating post");
   }
 
   let postData: Partial<PostAttrs> = {
@@ -134,4 +134,39 @@ export const pinnedPost = async (
       console.log(error);
       throw new BadRequestError("no post with id");
     });
+};
+
+export const likePost = async (
+  req: RequestTyped<IPinnedPost, {}, { id: string }>,
+  res: Response
+) => {
+  const postId = req.params.id;
+  const userId = req.currentUser?.id;
+
+  const isLiked =
+    req.currentUser?.likes && req.currentUser?.likes.includes(postId);
+
+  const option = isLiked ? "$pull" : "$addToSet";
+
+  // Insert user like
+  req.currentUser = await User.findByIdAndUpdate(
+    userId,
+    { [option]: { likes: postId } },
+    { new: true }
+  ).catch((error) => {
+    console.log(error);
+    throw new BadRequestError("no post with id");
+  });
+
+  // Insert post like
+  const post = await Post.findByIdAndUpdate(
+    postId,
+    { [option]: { likes: userId } },
+    { new: true }
+  ).catch((error) => {
+    console.log(error);
+    throw new BadRequestError("no post with id");
+  });
+
+  res.status(200).send(post);
 };
