@@ -30,11 +30,11 @@ const Home = () => {
         <title>Twatter</title>
       </Head>
 
-      <div className="flex justify-center h-screen ">
-        <div className="flex-col justify-end flex-1 hidden h-full md:flex">
+      <div className="flex justify-start overflow-auto lg:justify-center">
+        <div className="flex-col justify-end h-full sm:w-1/6 lg:flex-1 md:flex">
           <Sidebar url={url} />
         </div>
-        <div className="relative border-l border-r w-tweet border-dark-third">
+        <div className="relative w-tweet ">
           <Switch>
             <Route exact path={`${path}home`} component={TweetPage} />
             <Route
@@ -54,7 +54,7 @@ const Home = () => {
             </div>
           )}
         </div>
-        <div className="flex-col justify-start flex-1 hidden h-full md:flex">
+        <div className="flex-col justify-start flex-1 hidden h-full lg:flex">
           <Switch>
             <Route exact path={`${path}home`} component={TweetAction} />
             <Route

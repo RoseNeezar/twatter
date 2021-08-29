@@ -2,13 +2,13 @@ import React from "react";
 
 const TweetAction = () => {
   return (
-    <>
-      <div className="flex items-center justify-between px-4 pt-4">
-        <span className="text-lg font-semibold text-gray-500 dark:text-dark-txt">
+    <div className="flex justify-start ">
+      <div className="fixed top-0 h-full w-60">
+        <div className="flex flex-col items-start h-full pt-10 pl-10 text-dark-txt">
           TBD
-        </span>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
