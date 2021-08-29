@@ -4,14 +4,20 @@ import {
   IRegister,
   IUser,
 } from "../store/module/auth/types/auth.model";
+import {
+  ICreatePost,
+  IFetchPost,
+  IPost,
+} from "../store/module/post/types/post.types";
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const requests = {
-  get: <T>(url: string) =>
+  get: <T>(url: string, data?: any) =>
     axios
       .get<T>(url, {
         withCredentials: true,
+        params: data,
       })
       .then(responseBody),
   post: <T>(url: string, body?: {}) =>
@@ -27,8 +33,14 @@ const AuthService = {
   currentUser: () => requests.get<IUser>("auth/current-user"),
 };
 
+const PostService = {
+  createPost: (data: ICreatePost) => requests.post<IPost>("posts", data),
+  fetchPost: (data?: IFetchPost) => requests.get<IPost[]>("posts", data),
+};
+
 const agent = {
   AuthService,
+  PostService,
 };
 
 export default agent;

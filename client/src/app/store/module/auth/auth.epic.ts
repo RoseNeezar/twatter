@@ -6,14 +6,12 @@ import {
   delay,
   filter,
   from,
-  ignoreElements,
   map,
   of,
   switchMap,
-  tap,
 } from "rxjs";
 import agent from "../../../api/agent";
-import Navigate from "../../../utils/Navigate";
+import { RootState } from "../../store";
 import {
   errorCatcher,
   getUser,
@@ -23,7 +21,6 @@ import {
   resetUser,
   setUser,
 } from "./auth.slice";
-import { RootState } from "../../store";
 import { IError } from "./types/auth.model";
 
 export type MyEpic = Epic<AnyAction, AnyAction, RootState>;
