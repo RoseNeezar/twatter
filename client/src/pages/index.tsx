@@ -10,7 +10,7 @@ const Index = () => {
   const checkLogin = useAppSelector(isLoggedIn);
 
   useEffect(() => {
-    dispatch(getUser());
+    dispatch(getUser(router));
   }, [dispatch]);
 
   return (
@@ -56,7 +56,7 @@ const Index = () => {
         <div className="container flex flex-col flex-wrap items-center pt-24 mx-auto md:pt-36 md:flex-row">
           <div className="flex flex-col justify-center w-full overflow-y-hidden xl:w-2/5 lg:items-start">
             <h1 className="my-4 text-3xl font-bold leading-tight text-center text-white opacity-75 md:text-5xl md:text-left">
-              Just another Task management app
+              Just Twatter app
             </h1>
             <p className="mb-8 text-base leading-normal text-center md:text-2xl md:text-left text-dark-txt">
               It aims to help you visualize your work, maximize efficiency, and

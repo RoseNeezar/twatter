@@ -28,7 +28,6 @@ export const authSlice = createSlice({
     getUser: (state, action: PayloadAction<NextRouter>) => state,
     errorCatcher: (state, action: PayloadAction<IError>) => {
       if (!!action.payload.router) {
-        console.log("router-");
         action.payload.router.push("/");
       }
       if (!!action.payload.errors && action.payload.errors.length > 0) {
