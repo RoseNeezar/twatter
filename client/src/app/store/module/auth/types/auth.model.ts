@@ -19,6 +19,12 @@ export interface IUser {
   lastName: string;
   username: string;
   id: string;
+  profilePic: string;
+  coverPhoto: string;
+  likes?: string[];
+  retweets?: string[];
+  following?: string[];
+  followers?: string[];
 }
 
 export interface IError {

@@ -79,8 +79,5 @@ export const logout = (req: Request, res: Response) => {
 };
 
 export const getCurrentUser = (req: Request, res: Response) => {
-  res.send({
-    currentUser:
-      { email: req.currentUser?.email, id: req.currentUser?.id } || null,
-  });
+  res.send(req.currentUser || null);
 };
