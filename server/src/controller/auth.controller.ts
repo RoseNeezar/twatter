@@ -1,9 +1,10 @@
+import { compare, hash } from "bcryptjs";
 import { Request, Response } from "express";
+import { UserPayload } from "../dto/auth.dto";
 import { BadRequestError } from "../errors/bad-request-error";
 import { User } from "../models/user.models";
-import jwt from "jsonwebtoken";
-import { UserPayload } from "../dto/auth.dto";
-import { Password } from "../services/password";
+import { createTokens } from "../utils/createTokens";
+import { sendCookieToken } from "../utils/sendCookieToken";
 
 export const login = async (
   req: Request<
@@ -21,21 +22,12 @@ export const login = async (
   if (!existingUser) {
     throw new BadRequestError("Invalid credentials");
   }
-  const passwordMatch = await Password.compare(existingUser.password, password);
+  const passwordMatch = await compare(existingUser.password, password);
   if (!passwordMatch) {
     throw new BadRequestError("Invalid credentials");
   }
-  const userJwt = jwt.sign(
-    {
-      id: existingUser.id,
-      email: existingUser.email,
-    },
-    process.env.JWT_SECRET!
-  );
 
-  req.session = {
-    jwt: userJwt,
-  };
+  sendCookieToken(res, createTokens(existingUser));
 
   res.status(201).send(existingUser);
 };
@@ -50,22 +42,19 @@ export const signUp = async (
     if (existingUser) {
       throw new BadRequestError("Email in use");
     }
+    const hashedPassword = await hash(password, 12);
 
-    const user = User.build({ email, password, firstName, lastName, username });
+    const user = User.build({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      username,
+    });
 
     await user.save();
 
-    const userJwt = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-      },
-      process.env.JWT_SECRET!
-    );
-
-    req.session = {
-      jwt: userJwt,
-    };
+    sendCookieToken(res, createTokens(user));
 
     res.status(201).send(user);
   } catch (error) {
@@ -74,10 +63,18 @@ export const signUp = async (
 };
 
 export const logout = (req: Request, res: Response) => {
-  req.session = null;
+  sendCookieToken(res, { accessToken: "", refreshToken: "" });
   res.send({});
 };
 
 export const getCurrentUser = (req: Request, res: Response) => {
   res.send(req.currentUser || null);
+};
+
+export const revokeRefreshTokensForUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  await User.updateOne({ id: req.currentUser?.id }, { tokenVersion: 1 });
+  return res.status(201).send(true);
 };

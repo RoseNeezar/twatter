@@ -10,4 +10,5 @@ export interface UserPayload {
   retweets?: string[];
   following?: string[];
   followers?: string[];
+  tokenVersion?: number;
 }
