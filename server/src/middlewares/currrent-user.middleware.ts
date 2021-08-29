@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
+import { BadRequestError } from "../errors/bad-request-error";
 import { User, UserDoc } from "../models/user.models";
 import { createTokens } from "../utils/createTokens";
 import { sendCookieToken } from "../utils/sendCookieToken";
@@ -23,7 +24,7 @@ export const currentUser = async (
 ) => {
   const accessToken = req.cookies.accessToken;
   if (typeof accessToken !== "string") {
-    return res.status(401).json({ error: "not authenticated" });
+    throw new BadRequestError("not authenticated");
   }
 
   try {
@@ -32,7 +33,7 @@ export const currentUser = async (
     );
 
     const user = await User.findById(data.userId);
-
+    console.log(user);
     if (!!user) {
       req.currentUser = user;
       return next();
@@ -41,7 +42,7 @@ export const currentUser = async (
 
   const refreshToken = req.cookies.refreshToken;
   if (typeof refreshToken !== "string") {
-    return res.status(401).json({ error: "not authenticated" });
+    throw new BadRequestError("not authenticated");
   }
 
   let data;
@@ -50,13 +51,13 @@ export const currentUser = async (
       verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string)
     );
   } catch {
-    return res.status(401).json({ error: "not authenticated" });
+    throw new BadRequestError("not authenticated");
   }
 
   const user = await User.findById(data.userId);
   // token has been invalidated or user deleted
   if (!user || user.tokenVersion !== 0) {
-    return res.status(401).json({ error: "not authenticated" });
+    throw new BadRequestError("not authenticated");
   }
 
   sendCookieToken(res, createTokens(user));

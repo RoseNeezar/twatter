@@ -22,7 +22,12 @@ const requests = {
       .then(responseBody),
   post: <T>(url: string, body?: {}) =>
     axios.post<T>(url, body).then(responseBody),
-  put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
+  put: <T>(url: string, body?: {}, params?: any) =>
+    axios
+      .put<T>(url, body, {
+        params,
+      })
+      .then(responseBody),
   del: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 };
 
@@ -36,6 +41,7 @@ const AuthService = {
 const PostService = {
   createPost: (data: ICreatePost) => requests.post<IPost>("posts", data),
   fetchPost: (data?: IFetchPost) => requests.get<IPost[]>("posts", data),
+  likePost: (id: string) => requests.put<IPost>(`posts/${id}/like`),
 };
 
 const agent = {

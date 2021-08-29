@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { UserPayload } from "../dto/auth.dto";
 import { BadRequestError } from "../errors/bad-request-error";
 import { User } from "../models/user.models";
+import { Password } from "../services/password";
 import { createTokens } from "../utils/createTokens";
 import { sendCookieToken } from "../utils/sendCookieToken";
 
@@ -22,7 +23,9 @@ export const login = async (
   if (!existingUser) {
     throw new BadRequestError("Invalid credentials");
   }
-  const passwordMatch = await compare(existingUser.password, password);
+
+  const passwordMatch = await Password.compare(existingUser.password, password);
+
   if (!passwordMatch) {
     throw new BadRequestError("Invalid credentials");
   }
@@ -42,11 +45,10 @@ export const signUp = async (
     if (existingUser) {
       throw new BadRequestError("Email in use");
     }
-    const hashedPassword = await hash(password, 12);
 
     const user = User.build({
       email,
-      password: hashedPassword,
+      password,
       firstName,
       lastName,
       username,

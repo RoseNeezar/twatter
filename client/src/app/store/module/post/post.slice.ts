@@ -22,11 +22,26 @@ export const postSlice = createSlice({
     setFetchPost: (state, action: PayloadAction<IPost[]>) => {
       state.post = action.payload;
     },
+    likePost: (state, action: PayloadAction<string>) => state,
+    likePostFulfilled: (state, action: PayloadAction<IPost>) => {
+      state.post?.map((post) => {
+        if (post.id === action.payload.id) {
+          post.likes = action.payload.likes;
+        }
+        return post;
+      });
+    },
   },
 });
 
-export const { createPost, setPost, fetchPost, setFetchPost } =
-  postSlice.actions;
+export const {
+  createPost,
+  setPost,
+  fetchPost,
+  setFetchPost,
+  likePost,
+  likePostFulfilled,
+} = postSlice.actions;
 
 export default postSlice.reducer;
 

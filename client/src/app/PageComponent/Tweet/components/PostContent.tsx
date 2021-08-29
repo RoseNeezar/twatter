@@ -1,13 +1,27 @@
 import React, { FC } from "react";
 import { IPost } from "../../../store/module/post/types/post.types";
 import dayjs from "dayjs";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
+import { likePost } from "../../../store/module/post/post.slice";
+import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 interface IPostContent {
   post: IPost;
 }
 
 const PostContent: FC<IPostContent> = ({
-  post: { content, createdAt, postedBy, likes, retweetUsers },
+  post: { content, createdAt, postedBy, likes, retweetUsers, id },
 }) => {
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectCurrentUser);
+  const handleLikedPost = () => {
+    dispatch(likePost(id));
+  };
+
+  const checkLikedPost = () => {
+    const likedIndex = currentUser?.likes?.findIndex((re) => re === id);
+    return likedIndex !== -1 ? true : false;
+  };
+
   return (
     <div className="flex flex-row border-b border-dark-third">
       <div className="flex justify-center w-20 pt-2 ">
@@ -41,11 +55,18 @@ const PostContent: FC<IPostContent> = ({
           </div>
 
           <div className="flex-1 ">
-            <div className="w-12 cursor-pointer hover:text-red-600 ">
+            <div
+              className={`flex flex-row items-center w-12 cursor-pointer hover:text-red-600 ${
+                checkLikedPost() ? "text-red-600" : ""
+              }`}
+              onClick={() => handleLikedPost()}
+            >
               <div className="p-3 rounded-full ">
                 <i className="bx bx-heart"></i>
               </div>
-              {likes.length > 0 && <p>{likes.length}</p>}
+              <div className="text-sm mb-0.5">
+                {likes.length > 0 && <p>{likes.length}</p>}
+              </div>
             </div>
           </div>
         </div>
