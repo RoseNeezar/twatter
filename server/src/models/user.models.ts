@@ -14,10 +14,11 @@ export interface UserAttrs {
   retweets?: string[];
   following?: string[];
   followers?: string[];
+  tokenVersion?: number;
 }
 
 // properties a single user has
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
   firstName: string;
@@ -29,6 +30,7 @@ interface UserDoc extends mongoose.Document {
   retweets?: string[];
   following?: string[];
   followers?: string[];
+  tokenVersion?: number;
 }
 
 // entire collection looks like
@@ -93,6 +95,10 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
