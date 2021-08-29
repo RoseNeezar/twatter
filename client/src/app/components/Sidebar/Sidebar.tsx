@@ -26,45 +26,45 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
     } catch (error) {}
   };
   return (
-    <div className="flex justify-end pr-4 ">
-      <div className="fixed top-0 h-3/4">
-        <ul className="flex flex-col items-center mr-3 justify-evenly h-1/2">
+    <div className="flex justify-end ">
+      <div className="fixed top-0 h-full ">
+        <ul className="flex flex-col items-end h-full pt-10 pl-10">
           <li
-            className={`mr-auto ml-5  w-3/4  rounded-3xl py-2 pl-3 hover:bg-dark-third ${
+            className={`mb-10 lg:mr-auto rounded-full p-4 mr-3  lg:rounded-3xl lg:py-2 lg:pr-5 lg:pl-2 hover:bg-dark-third ${
               pathname === homeRoute && "bg-dark-third "
             }`}
           >
             <Link
               to={`${url}home`}
-              className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
+              className={` text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
-              <i className="pr-5 bx bx-notepad"></i>
+              <i className=" lg:pr-5 bx bx-notepad"></i>
               <span className="hidden lg:inline-block"> Home</span>
             </Link>
           </li>
 
           <li
-            className={`mr-auto ml-5  w-full  rounded-3xl py-2 pl-3 hover:bg-dark-third ${
+            className={`mb-10 lg:mr-auto rounded-full p-4 mr-3  lg:rounded-3xl lg:py-2 lg:pr-5 lg:pl-2 hover:bg-dark-third ${
               pathname === notificationRoute && "bg-dark-third "
             }`}
           >
             <Link
               to={`${url}notification`}
-              className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
+              className={`text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
-              <i className="pr-5 bx bx-calendar"></i>
+              <i className="lg:pr-5 bx bx-calendar"></i>
               <span className="hidden lg:inline-block"> Notification</span>
             </Link>
           </li>
           <li className="mt-6 border-b border-gray-200 "></li>
+          <li
+            className="flex flex-row justify-between p-4 mx-auto mt-auto mb-10 mr-4 font-bold text-center cursor-pointer lg:w-52 lg:-ml-10 hover:bg-dark-third text-dark-txt rounded-3xl"
+            onClick={() => handleLogout()}
+          >
+            <div className="hidden lg:inline-block">{getUser}</div>
+            <div className="">Logout</div>
+          </li>
         </ul>
-      </div>
-      <div
-        className="flex flex-row justify-between w-56 p-4 mx-auto mb-10 font-bold text-center cursor-pointer hover:bg-dark-third text-dark-txt rounded-3xl"
-        onClick={() => handleLogout()}
-      >
-        <div className="">{getUser}</div>
-        <div className="">Logout</div>
       </div>
     </div>
   );
