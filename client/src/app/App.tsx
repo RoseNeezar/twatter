@@ -5,6 +5,7 @@ import { getUser, isLoggedIn } from "./store/module/auth/auth.slice";
 import { PrivateRoute } from "./utils/PrivateRoute";
 import Home from "./PageComponent/Home/Home";
 import { useRouter } from "next/dist/client/router";
+import ScrollToTop from "./utils/ScrollToTop";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -22,13 +23,12 @@ const App = () => {
   }, [checkLogin]);
   return (
     <>
+      <ScrollToTop />
       <Route
         render={() => (
           <>
             <Switch>
-              <Route path="/">
-                <Home />
-              </Route>
+              <Route path="/" component={Home} />
             </Switch>
           </>
         )}
