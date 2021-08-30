@@ -146,6 +146,8 @@ export const likePost = async (
   const isLiked =
     req.currentUser?.likes && req.currentUser?.likes.includes(postId);
 
+  //add or remove from array
+
   const option = isLiked ? "$pull" : "$addToSet";
 
   // Insert user like
@@ -162,6 +164,58 @@ export const likePost = async (
   const post = await Post.findByIdAndUpdate(
     postId,
     { [option]: { likes: userId } },
+    { new: true }
+  ).catch((error) => {
+    console.log(error);
+    throw new BadRequestError("no post with id");
+  });
+
+  res.status(200).send(post);
+};
+
+export const retweetPost = async (
+  req: RequestTyped<{}, {}, { id: string }>,
+  res: Response
+) => {
+  const postId = req.params.id;
+  const userId = req.currentUser?.id;
+
+  // Try and delete retweet
+  const deletedPost = await Post.findOneAndDelete({
+    postedBy: userId,
+    retweetData: postId,
+  }).catch((error) => {
+    console.log(error);
+    throw new BadRequestError("no post with id");
+  });
+  //add remove retweet
+  const option = deletedPost != null ? "$pull" : "$addToSet";
+
+  let repost = deletedPost;
+
+  if (repost === null) {
+    repost = await Post.create({ postedBy: userId, retweetData: postId }).catch(
+      (error) => {
+        console.log(error);
+        throw new BadRequestError("no post with id");
+      }
+    );
+  }
+
+  // Insert user like
+  req.currentUser = await User.findByIdAndUpdate(
+    userId,
+    { [option]: { retweets: repost?.id } },
+    { new: true }
+  ).catch((error) => {
+    console.log(error);
+    throw new BadRequestError("no post with id");
+  });
+
+  // Insert post like
+  const post = await Post.findByIdAndUpdate(
+    postId,
+    { [option]: { retweetUsers: userId } },
     { new: true }
   ).catch((error) => {
     console.log(error);
