@@ -16,6 +16,7 @@ export interface PostedBy {
 
 export interface ICreatePost {
   content: string;
+  replyTo?: string;
 }
 
 export interface IFetchPost {
@@ -36,6 +37,7 @@ export interface RetweetData {
   updatedAt: Date;
   id: string;
   retweetData: string;
+  replyTo: IPost;
 }
 
 export interface IPost {
@@ -47,4 +49,10 @@ export interface IPost {
   updatedAt: Date;
   id: string;
   content: string;
+  replyTo: IPost;
+}
+
+export interface IGetReplyPost {
+  postData: IPost;
+  replies: any[];
 }

@@ -7,6 +7,7 @@ import {
 import {
   ICreatePost,
   IFetchPost,
+  IGetReplyPost,
   IPost,
 } from "../store/module/post/types/post.types";
 
@@ -43,6 +44,7 @@ const PostService = {
   fetchPost: (data?: IFetchPost) => requests.get<IPost[]>("posts", data),
   likePost: (id: string) => requests.put<IPost>(`posts/${id}/like`),
   retweetPost: (id: string) => requests.post<IPost>(`posts/${id}/retweet`),
+  getPostById: (id: string) => requests.get<IGetReplyPost>(`posts/${id}`),
 };
 
 const agent = {

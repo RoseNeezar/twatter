@@ -7,8 +7,12 @@ import { errorCatcher, setUser } from "../auth/auth.slice";
 import {
   createPost,
   fetchPost,
+  getReplyPost,
+  getReplyPostFulfilled,
   likePost,
   likePostFulfilled,
+  replyToPost,
+  replyToPostFullfilled,
   retweetPost,
   retweetPostFulfilled,
   setFetchPost,
@@ -98,6 +102,44 @@ const getRetweetedUserEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const GetReplyPostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(getReplyPost.match),
+    switchMap((action) =>
+      from(agent.PostService.getPostById(action.payload)).pipe(
+        map(getReplyPostFulfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+const replyToPostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(replyToPost.match),
+    switchMap((action) =>
+      from(
+        agent.PostService.createPost({
+          content: action.payload.content,
+          replyTo: action.payload.replyTo,
+        })
+      ).pipe(
+        map(replyToPostFullfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+const replyToPostFullfilledEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(replyToPostFullfilled.match),
+    switchMap((action) =>
+      from(agent.PostService.fetchPost()).pipe(
+        map(setFetchPost),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
 export default combineEpics(
   createPostEpic,
   fetchPostEpic,
@@ -105,5 +147,8 @@ export default combineEpics(
   getLikedUserEpic,
   retweetPostEpic,
   getRetweetedUserEpic,
-  getRetweetedPostEpic
+  getRetweetedPostEpic,
+  GetReplyPostEpic,
+  replyToPostEpic,
+  replyToPostFullfilledEpic
 );
