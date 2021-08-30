@@ -33,7 +33,7 @@ export const currentUser = async (
     );
 
     const user = await User.findById(data.userId);
-    console.log(user);
+
     if (!!user) {
       req.currentUser = user;
       return next();

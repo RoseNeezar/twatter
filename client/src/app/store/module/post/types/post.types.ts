@@ -1,21 +1,14 @@
 export interface PostedBy {
   profilePic: string;
-  likes: any[];
-  retweets: any[];
+  likes: string[];
+  retweets: string[];
   following: any[];
   followers: any[];
+  tokenVersion: number;
   email: string;
   firstName: string;
   lastName: string;
   username: string;
-  id: string;
-}
-
-export interface IPost {
-  likes: any[];
-  retweetUsers: any[];
-  content: string;
-  postedBy: PostedBy;
   createdAt: Date;
   updatedAt: Date;
   id: string;
@@ -32,4 +25,26 @@ export interface IFetchPost {
   content: any;
   followingOnly: boolean;
   postedBy: any;
+}
+
+export interface RetweetData {
+  likes: string[];
+  retweetUsers: string[];
+  content: string;
+  postedBy: PostedBy;
+  createdAt: Date;
+  updatedAt: Date;
+  id: string;
+  retweetData: string;
+}
+
+export interface IPost {
+  likes: string[];
+  retweetUsers: string[];
+  postedBy: PostedBy;
+  retweetData: RetweetData;
+  createdAt: Date;
+  updatedAt: Date;
+  id: string;
+  content: string;
 }

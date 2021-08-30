@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { fetchPost, getPosts } from "../../store/module/post/post.slice";
 import CreatePost from "./components/CreatePost";
-import PostContent from "./components/PostContent";
+import PostContent from "./components/PostContentContainer";
 
 const TweetPage = () => {
   const dispatch = useAppDispatch();
