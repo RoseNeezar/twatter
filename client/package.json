@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^1.4.0",
     "@reduxjs/toolkit": "^1.6.1",
     "axios": "^0.21.1",
     "dayjs": "^1.10.6",

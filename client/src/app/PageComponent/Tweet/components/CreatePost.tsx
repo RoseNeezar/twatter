@@ -27,7 +27,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="flex flex-row pt-3 mt-12 border-b border-l border-r border-dark-third bg-dark-main">
+    <div className="flex flex-row pt-3 mt-12 border-b border-dark-third bg-dark-main">
       <div className="flex justify-center w-20 pt-2 ">
         <img className="w-10 h-10 rounded-full" src={getUser?.profilePic} />
       </div>

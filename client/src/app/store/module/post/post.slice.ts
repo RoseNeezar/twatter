@@ -1,13 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { ICreatePost, IFetchPost, IPost } from "./types/post.types";
+import {
+  ICreatePost,
+  IFetchPost,
+  IGetReplyPost,
+  IPost,
+} from "./types/post.types";
 
 export interface postState {
   post: IPost[] | null;
+  replyPost: IGetReplyPost | null;
 }
 
 const initialState: postState = {
   post: null,
+  replyPost: null,
 };
 
 export const postSlice = createSlice({
@@ -33,6 +40,12 @@ export const postSlice = createSlice({
     },
     retweetPost: (state, action: PayloadAction<string>) => state,
     retweetPostFulfilled: (state, action: PayloadAction<IPost>) => state,
+    getReplyPost: (state, action: PayloadAction<string>) => state,
+    getReplyPostFulfilled: (state, action: PayloadAction<IGetReplyPost>) => {
+      state.replyPost = action.payload;
+    },
+    replyToPost: (state, action: PayloadAction<ICreatePost>) => state,
+    replyToPostFullfilled: (state, action: PayloadAction<IPost>) => state,
   },
 });
 
@@ -45,6 +58,10 @@ export const {
   likePostFulfilled,
   retweetPost,
   retweetPostFulfilled,
+  getReplyPost,
+  getReplyPostFulfilled,
+  replyToPost,
+  replyToPostFullfilled,
 } = postSlice.actions;
 
 export default postSlice.reducer;
