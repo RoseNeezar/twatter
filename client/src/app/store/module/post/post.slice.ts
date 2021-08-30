@@ -31,6 +31,8 @@ export const postSlice = createSlice({
         return post;
       });
     },
+    retweetPost: (state, action: PayloadAction<string>) => state,
+    retweetPostFulfilled: (state, action: PayloadAction<IPost>) => state,
   },
 });
 
@@ -41,6 +43,8 @@ export const {
   setFetchPost,
   likePost,
   likePostFulfilled,
+  retweetPost,
+  retweetPostFulfilled,
 } = postSlice.actions;
 
 export default postSlice.reducer;

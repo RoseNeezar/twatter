@@ -9,6 +9,8 @@ import {
   fetchPost,
   likePost,
   likePostFulfilled,
+  retweetPost,
+  retweetPostFulfilled,
   setFetchPost,
   setPost,
 } from "./post.slice";
@@ -63,9 +65,45 @@ const getLikedUserEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const retweetPostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(retweetPost.match),
+    switchMap((action) =>
+      from(agent.PostService.retweetPost(action.payload)).pipe(
+        map(retweetPostFulfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+const getRetweetedPostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(retweetPostFulfilled.match),
+    switchMap((action) =>
+      from(agent.PostService.fetchPost()).pipe(
+        map(setFetchPost),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+const getRetweetedUserEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(retweetPostFulfilled.match),
+    switchMap((action) =>
+      from(agent.AuthService.currentUser()).pipe(
+        map(setUser),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
 export default combineEpics(
   createPostEpic,
   fetchPostEpic,
   likePostEpic,
-  getLikedUserEpic
+  getLikedUserEpic,
+  retweetPostEpic,
+  getRetweetedUserEpic,
+  getRetweetedPostEpic
 );
