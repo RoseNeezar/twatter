@@ -6,6 +6,7 @@ import {
   getPosts,
   likePost,
   pinnedPost,
+  retweetPost,
 } from "../controller/post.controller";
 import { currentUser } from "../middlewares/currrent-user.middleware";
 import { requireAuth } from "../middlewares/require-auth.middleware";
@@ -20,6 +21,6 @@ PostRoute.route("/:id")
   .delete(currentUser, requireAuth, deletePost)
   .put(currentUser, requireAuth, pinnedPost);
 PostRoute.route("/:id/like").put(currentUser, requireAuth, likePost);
-PostRoute.route("/:id/retweet").post();
+PostRoute.route("/:id/retweet").post(currentUser, requireAuth, retweetPost);
 
 export default PostRoute;

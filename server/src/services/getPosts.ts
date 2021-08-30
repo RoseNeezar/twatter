@@ -1,3 +1,4 @@
+import { BadRequestError } from "../errors/bad-request-error";
 import { Post } from "../models/post.models";
 import { User } from "../models/user.models";
 
@@ -8,7 +9,9 @@ export class GetPosts {
       .populate("retweetData")
       .populate("replyTo")
       .sort({ createdAt: -1 })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        throw new BadRequestError("no post found");
+      });
 
     results = await User.populate(results, { path: "replyTo.postedBy" });
     return await User.populate(results, { path: "retweetData.postedBy" });
