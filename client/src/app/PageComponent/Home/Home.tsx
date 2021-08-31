@@ -5,6 +5,8 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import NotFound from "../NotFound/NotFound";
 import NotificationAction from "../Notification/components/NotificationAction";
 import NotificationPage from "../Notification/NotificationPage";
+import ProfilePageActions from "../Profile/components/ProfilePageActions";
+import ProfilePage from "../Profile/ProfilePage";
 import TweetAction from "../Tweet/components/TweetAction";
 import SingleTweetPage from "../Tweet/SingleTweetPage";
 import TweetPage from "../Tweet/TweetPage";
@@ -44,6 +46,7 @@ const Home = () => {
               path={`${path}:username/status/:tweetId`}
               component={SingleTweetPage}
             />
+            <Route path={`${path}profile`} component={ProfilePage} />
             <Route
               exact
               path={`${path}notification`}
@@ -69,6 +72,7 @@ const Home = () => {
               path={`${path}:username/status/:tweetId`}
               component={TweetAction}
             />
+            <Route path={`${path}profile`} component={ProfilePageActions} />
             <Route
               exact
               path={`${path}notification`}

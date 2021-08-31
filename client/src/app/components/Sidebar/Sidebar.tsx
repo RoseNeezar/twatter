@@ -14,6 +14,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
   const router = useRouter();
   const homeRoute = "/home";
   const notificationRoute = "/notification";
+  const profileRoute = "/profile";
   const { pathname } = useLocation();
   const getUser = useAppSelector(
     (state: RootState) => state.auth.user?.firstName
@@ -54,6 +55,19 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             >
               <i className="lg:pr-5 bx bx-calendar"></i>
               <span className="hidden lg:inline-block"> Notification</span>
+            </Link>
+          </li>
+          <li
+            className={`mb-10 lg:mr-auto rounded-full p-4 mr-3  lg:rounded-3xl lg:py-2 lg:pr-5 lg:pl-2 hover:bg-dark-third ${
+              pathname === profileRoute && "bg-dark-third "
+            }`}
+          >
+            <Link
+              to={`${url}profile`}
+              className={`text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
+            >
+              <i className="lg:pr-5 bx bx-user"></i>
+              <span className="hidden lg:inline-block"> Profile</span>
             </Link>
           </li>
           <li className="mt-6 border-b border-gray-200 "></li>
