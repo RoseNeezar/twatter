@@ -211,6 +211,7 @@ const PostContentContainer: FC<IPostContentContainer> = ({
           handleLikedPost={handleRetweetLikedPost}
           handleRetweetedPost={handleRetweetRetweetedPost}
           isRetweet={true}
+          backUrl={backUrl}
         />
       ) : !retweetData && !content ? (
         <PostContent
@@ -222,6 +223,7 @@ const PostContentContainer: FC<IPostContentContainer> = ({
           handleLikedPost={handleLikedPost}
           handleRetweetedPost={handleRetweetedPost}
           isRetweet={false}
+          backUrl={backUrl}
         />
       ) : (
         <PostContent
@@ -232,6 +234,7 @@ const PostContentContainer: FC<IPostContentContainer> = ({
           handleLikedPost={handleLikedPost}
           handleRetweetedPost={handleRetweetedPost}
           isRetweet={false}
+          backUrl={backUrl}
         />
       )}
     </div>

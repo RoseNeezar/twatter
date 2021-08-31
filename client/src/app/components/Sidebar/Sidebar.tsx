@@ -3,7 +3,7 @@ import React from "react";
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { logout } from "../../store/module/auth/auth.slice";
+import { logout, selectCurrentUser } from "../../store/module/auth/auth.slice";
 import { RootState } from "../../store/store";
 
 interface ISidebar {
@@ -12,10 +12,12 @@ interface ISidebar {
 
 const Sidebar: FC<ISidebar> = ({ url }) => {
   const router = useRouter();
+  const currentUser = useAppSelector(selectCurrentUser);
   const homeRoute = "/home";
   const notificationRoute = "/notification";
-  const profileRoute = "/profile";
+  const profileRoute = `/${currentUser?.username}`;
   const { pathname } = useLocation();
+
   const getUser = useAppSelector(
     (state: RootState) => state.auth.user?.firstName
   );
@@ -64,7 +66,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             }`}
           >
             <Link
-              to={`${url}profile`}
+              to={`${url}${currentUser?.username}`}
               className={`text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
               <i className="lg:pr-5 bx bx-user"></i>

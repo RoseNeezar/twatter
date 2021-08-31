@@ -46,7 +46,7 @@ const Home = () => {
               path={`${path}:username/status/:tweetId`}
               component={SingleTweetPage}
             />
-            <Route path={`${path}profile`} component={ProfilePage} />
+            <Route path={`${path}:profileUsername`} component={ProfilePage} />
             <Route
               exact
               path={`${path}notification`}
