@@ -1,9 +1,16 @@
-import { Transition, Dialog } from "@headlessui/react";
-import React, { Fragment, MouseEvent, useEffect } from "react";
+import { Transition, Dialog, Popover } from "@headlessui/react";
+import React, {
+  Fragment,
+  MouseEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Route, useParams, useRouteMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { selectCurrentUser } from "../../store/module/auth/auth.slice";
 import {
+  deletePost,
   getReplyPost,
   likePost,
   retweetPost,
@@ -20,6 +27,9 @@ const SingleTweetPage = () => {
   const getPost = useAppSelector((state: RootState) => state.posts.replyPost);
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectCurrentUser);
+
+  const [openPopover, setOpenPopover] = useState(false);
+  const popoverButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleLikedPost = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -79,9 +89,38 @@ const SingleTweetPage = () => {
     event.stopPropagation();
     Navigate?.push(`${url}/tweet/${tweetId}`);
   };
+
+  const HandleOpenPopover = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    setOpenPopover(!openPopover);
+  };
+
+  const HandleDeletePost = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    dispatch(deletePost({ id: getPost!.postData.id }));
+    Navigate?.push("/home");
+  };
+
+  const handleClickOutside = (event: Event) => {
+    if (
+      popoverButtonRef.current &&
+      !popoverButtonRef.current.contains(event.target as Node)
+    ) {
+      event.stopPropagation();
+      setOpenPopover(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  });
+
   useEffect(() => {
     dispatch(getReplyPost(tweetId));
-  }, [tweetId]);
+  }, [dispatch, tweetId, getReplyPost]);
   return (
     <>
       <div className="flex flex-col w-full min-h-screen border-l border-r border-dark-third">
@@ -104,14 +143,62 @@ const SingleTweetPage = () => {
         <div className="mt-14 "></div>
         {getPost?.postData && (
           <div className="flex flex-col border-b border-dark-third ">
-            {getPost?.postData.retweetData && (
-              <div className="flex flex-row items-center text-sm text-gray-500">
-                <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full ">
-                  <i className="bx bx-rotate-right"></i>
+            <>
+              {getPost?.postData.retweetData && (
+                <div className="flex flex-row items-center text-sm text-gray-500">
+                  <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full ">
+                    <i className="bx bx-rotate-right"></i>
+                  </div>
+                  Retweeted by {getPost?.postData.postedBy.username}
                 </div>
-                Retweeted by {getPost?.postData.postedBy.username}
-              </div>
-            )}
+              )}
+              {!getPost?.postData.retweetData &&
+                getPost.postData.postedBy.id === currentUser?.id && (
+                  <div className="mt-1 ml-auto mr-3">
+                    <Popover className="relative h-5">
+                      <>
+                        <Popover.Button
+                          ref={popoverButtonRef}
+                          className="text-xl text-dark-txt"
+                        >
+                          <div
+                            className=""
+                            onClick={(event) => HandleOpenPopover(event)}
+                          >
+                            <i className="bx bx-dots-horizontal-rounded"></i>
+                          </div>
+                        </Popover.Button>
+                        <Transition
+                          show={openPopover}
+                          enter="transition ease-out duration-200"
+                          enterFrom="opacity-0 translate-y-1"
+                          enterTo="opacity-100 translate-y-0"
+                          leave="transition ease-in duration-150"
+                          leaveFrom="opacity-100 translate-y-0"
+                          leaveTo="opacity-0 translate-y-1"
+                        >
+                          {openPopover && (
+                            <Popover.Panel
+                              static={openPopover}
+                              className="absolute z-10 w-40 max-w-sm px-4 transform -translate-x-1/2 cursor-pointer left-1/2 sm:px-0 lg:max-w-3xl"
+                            >
+                              <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                                <div
+                                  className="relative grid gap-1 p-3 text-center bg-dark-third text-dark-txt"
+                                  onClick={(event) => HandleDeletePost(event)}
+                                >
+                                  Delete
+                                </div>
+                              </div>
+                            </Popover.Panel>
+                          )}
+                        </Transition>
+                      </>
+                    </Popover>
+                  </div>
+                )}
+            </>
+
             {getPost?.postData.retweetData ? (
               <PostContent
                 post={getPost?.postData.retweetData}
