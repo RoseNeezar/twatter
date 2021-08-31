@@ -92,6 +92,10 @@ export const postSlice = createSlice({
     replyToSinglePost: (state, action: PayloadAction<ICreatePost>) => state,
     replyToSinglePostFullfilled: (state, action: PayloadAction<IPost>) => state,
     updateSinglePost: (state, action: PayloadAction<string>) => state,
+    deletePost: (
+      state,
+      action: PayloadAction<{ id: string; replyTo?: string }>
+    ) => state,
   },
 });
 
@@ -111,6 +115,7 @@ export const {
   replyToSinglePost,
   replyToSinglePostFullfilled,
   updateSinglePost,
+  deletePost,
 } = postSlice.actions;
 
 export default postSlice.reducer;
