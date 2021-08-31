@@ -25,6 +25,7 @@ export interface IUser {
   retweets?: string[];
   following?: string[];
   followers?: string[];
+  createdAt: Date;
 }
 
 export interface IError {
