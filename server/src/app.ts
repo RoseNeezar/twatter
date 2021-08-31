@@ -12,6 +12,7 @@ import cors from "cors";
 import { NotFoundError } from "./errors/not-found-error";
 import PostRoute from "./routes/post.routes";
 import cookieParser from "cookie-parser";
+import UserRoute from "./routes/user.routes";
 
 const app = express();
 app.set("trust proxy", true);
@@ -29,6 +30,7 @@ app.use(
 app.use(express.static("public"));
 
 app.use("/api/auth", AuthRoute);
+app.use("/api/users", UserRoute);
 app.use("/api/posts", PostRoute);
 
 app.all("*", async () => {

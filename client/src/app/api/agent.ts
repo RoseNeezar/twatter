@@ -48,9 +48,14 @@ const PostService = {
   deletePostById: (id: string) => requests.del<IGetReplyPost>(`posts/${id}`),
 };
 
+const UserService = {
+  getUserByUsername: (data: string) => requests.get<IUser>(`users/${data}`),
+};
+
 const agent = {
   AuthService,
   PostService,
+  UserService,
 };
 
 export default agent;
