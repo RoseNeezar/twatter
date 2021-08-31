@@ -4,6 +4,7 @@ import {
   IPost,
   RetweetData,
 } from "../../../store/module/post/types/post.types";
+import Navigate from "../../../utils/Navigate";
 
 interface IPostContent {
   post: IPost | RetweetData;
@@ -14,6 +15,7 @@ interface IPostContent {
   handleLikedPost: (event: MouseEvent<HTMLDivElement>) => void;
   isRetweet?: boolean;
   deletedPost?: boolean;
+  backUrl: string;
 }
 
 const PostContent: FC<IPostContent> = ({
@@ -25,11 +27,20 @@ const PostContent: FC<IPostContent> = ({
   handleRetweetedPost,
   isRetweet,
   deletedPost,
+  backUrl,
 }) => {
+  const HandleToProfile = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    Navigate?.push(`/${postedBy.username}`);
+  };
   return (
     <div className="relative flex flex-row">
       <div className="flex justify-center w-20 pt-2 ">
-        <img className="w-10 h-10 rounded-full" src={postedBy?.profilePic} />
+        <img
+          className="w-10 h-10 rounded-full cursor-pointer"
+          src={postedBy?.profilePic}
+          onClick={(event) => HandleToProfile(event)}
+        />
       </div>
       <div className="flex flex-col flex-1 text-dark-txt ">
         <div className="flex flex-row mt-2">

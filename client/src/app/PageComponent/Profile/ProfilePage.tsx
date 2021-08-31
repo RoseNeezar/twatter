@@ -1,9 +1,11 @@
 import { Transition, Dialog } from "@headlessui/react";
 import dayjs from "dayjs";
 import React, { Fragment, useEffect, useState } from "react";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { useAppSelector } from "../../store/hooks/hooks";
+import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { selectCurrentUser } from "../../store/module/auth/auth.slice";
+import { getUserProfile } from "../../store/module/user/user.slice";
+import { RootState } from "../../store/store";
 import Navigate from "../../utils/Navigate";
 import NotFound from "../NotFound/NotFound";
 import ReplyPostModal from "../Tweet/components/ReplyPostModal";
@@ -15,8 +17,11 @@ import ProfileTweetReplies from "./components/ProfileTweetReplies";
 
 const ProfilePage = () => {
   let { path, url } = useRouteMatch();
-
-  const currentUser = useAppSelector(selectCurrentUser);
+  const { profileUsername } = useParams<{ profileUsername: string }>();
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(
+    (state: RootState) => state.user.userProfile
+  );
 
   const HandleGoHome = () => {
     Navigate?.push("/home");
@@ -37,6 +42,10 @@ const ProfilePage = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
+  }, []);
+
+  useEffect(() => {
+    dispatch(getUserProfile(profileUsername));
   }, []);
 
   return (

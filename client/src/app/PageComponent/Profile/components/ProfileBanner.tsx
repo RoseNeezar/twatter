@@ -2,16 +2,18 @@ import dayjs from "dayjs";
 import React, { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../store/hooks/hooks";
-import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
+import { RootState } from "../../../store/store";
 interface IProfileBanner {
   url: string;
 }
 const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
-  const currentUser = useAppSelector(selectCurrentUser);
-  const homeRoute = "/profile";
-  const likesRoute = "/profile/likes";
-  const mediaRoute = "/profile/media";
-  const repliesRoute = "/profile/with_replies";
+  const currentUser = useAppSelector(
+    (state: RootState) => state.user.userProfile
+  );
+  const homeRoute = `/${currentUser?.username}`;
+  const likesRoute = `/${currentUser?.username}/likes`;
+  const mediaRoute = `/${currentUser?.username}/media`;
+  const repliesRoute = `/${currentUser?.username}/with_replies`;
   const { pathname } = useLocation();
 
   return (
