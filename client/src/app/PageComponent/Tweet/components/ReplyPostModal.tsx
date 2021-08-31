@@ -1,19 +1,24 @@
 import { Dialog } from "@headlessui/react";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TextareaAutosize from "react-textarea-autosize";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import {
   getReplyPost,
   replyToPost,
+  replyToSinglePost,
 } from "../../../store/module/post/post.slice";
 import { RootState } from "../../../store/store";
 import Navigate from "../../../utils/Navigate";
 
 const maxPostCharacter = 255;
 
-const ReplyPostModal = () => {
+interface IReplyPostModal {
+  isSinglePost?: boolean;
+}
+
+const ReplyPostModal: FC<IReplyPostModal> = ({ isSinglePost }) => {
   const { tweetId } = useParams<{ tweetId: string }>();
 
   const getUser = useAppSelector((state: RootState) => state.auth.user);
@@ -27,19 +32,26 @@ const ReplyPostModal = () => {
   };
 
   const handleClose = () => {
-    Navigate?.push("/home");
+    Navigate?.goBack();
   };
 
   const submitReply = () => {
     if (reply.length > 0 && reply.length < maxPostCharacter) {
-      dispatch(
-        replyToPost({
-          content: reply,
-          replyTo: getPost?.postData.id,
-        })
-      );
+      isSinglePost
+        ? dispatch(
+            replyToSinglePost({
+              content: reply,
+              replyTo: getPost?.postData.id,
+            })
+          )
+        : dispatch(
+            replyToPost({
+              content: reply,
+              replyTo: getPost?.postData.id,
+            })
+          );
       setReply("");
-      Navigate?.push("/home");
+      Navigate?.goBack();
     }
   };
 

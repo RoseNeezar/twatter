@@ -41,7 +41,7 @@ const PostContent: FC<IPostContent> = ({
           <div className="flex flex-row items-center mt-2 text-sm text-gray-500 ">
             Replying to
             <div className="pl-1 text-blue-400 cursor-pointer">
-              @{replyTo.postedBy.username}
+              @{replyTo?.postedBy?.username}
             </div>
           </div>
         )}
@@ -77,7 +77,7 @@ const PostContent: FC<IPostContent> = ({
           <div className="flex-1 mt-auto mb-2">
             <div
               className={`flex flex-row items-center w-12 cursor-pointer  ${
-                checkLikedPost() ? "text-red-600" : ""
+                likes.length > 0 && checkLikedPost() ? "text-red-600" : ""
               }`}
               onClick={(event) => handleLikedPost(event)}
             >
