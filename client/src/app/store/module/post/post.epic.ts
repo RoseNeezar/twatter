@@ -1,11 +1,12 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
-import { catchError, filter, from, map, of, switchMap } from "rxjs";
+import { catchError, filter, from, map, of, switchMap, tap } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import { errorCatcher, setUser } from "../auth/auth.slice";
 import {
   createPost,
+  deletePost,
   fetchPost,
   getReplyPost,
   getReplyPostFulfilled,
@@ -169,6 +170,30 @@ const replyToSinglePostFullfilledEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const deletePostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(deletePost.match),
+    switchMap((action) => {
+      if (!!action.payload.replyTo) {
+        return (
+          from(agent.PostService.deletePostById(action.payload.id)).pipe(
+            map(fetchPost),
+            catchError((err) => of(errorCatcher(err.response.data)))
+          ),
+          from(agent.PostService.getPostById(action.payload.replyTo)).pipe(
+            map(getReplyPostFulfilled),
+            catchError((err) => of(errorCatcher(err.response.data)))
+          )
+        );
+      } else {
+        return from(agent.PostService.deletePostById(action.payload.id)).pipe(
+          map(fetchPost),
+          catchError((err) => of(errorCatcher(err.response.data)))
+        );
+      }
+    })
+  );
+
 export default combineEpics(
   createPostEpic,
   fetchPostEpic,
@@ -181,5 +206,6 @@ export default combineEpics(
   replyToPostEpic,
   replyToPostFullfilledEpic,
   replyToSinglePostEpic,
-  replyToSinglePostFullfilledEpic
+  replyToSinglePostFullfilledEpic,
+  deletePostEpic
 );

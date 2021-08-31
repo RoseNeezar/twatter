@@ -45,6 +45,7 @@ const PostService = {
   likePost: (id: string) => requests.put<IPost>(`posts/${id}/like`),
   retweetPost: (id: string) => requests.post<IPost>(`posts/${id}/retweet`),
   getPostById: (id: string) => requests.get<IGetReplyPost>(`posts/${id}`),
+  deletePostById: (id: string) => requests.del<IGetReplyPost>(`posts/${id}`),
 };
 
 const agent = {
