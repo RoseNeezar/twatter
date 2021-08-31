@@ -26,6 +26,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
       router.push("/");
     } catch (error) {}
   };
+
   return (
     <div className="flex justify-end ">
       <div className="fixed top-0 h-full ">
@@ -59,7 +60,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
           </li>
           <li
             className={`mb-10 lg:mr-auto rounded-full p-4 mr-3  lg:rounded-3xl lg:py-2 lg:pr-5 lg:pl-2 hover:bg-dark-third ${
-              pathname === profileRoute && "bg-dark-third "
+              pathname.includes(profileRoute) && "bg-dark-third "
             }`}
           >
             <Link

@@ -1,14 +1,20 @@
 import { Transition, Dialog } from "@headlessui/react";
 import dayjs from "dayjs";
-import React, { Fragment } from "react";
-import { Route, useRouteMatch } from "react-router-dom";
+import React, { Fragment, useEffect, useState } from "react";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppSelector } from "../../store/hooks/hooks";
 import { selectCurrentUser } from "../../store/module/auth/auth.slice";
 import Navigate from "../../utils/Navigate";
+import NotFound from "../NotFound/NotFound";
 import ReplyPostModal from "../Tweet/components/ReplyPostModal";
+import ProfileBanner from "./components/ProfileBanner";
+import ProfileLikes from "./components/ProfileLikes";
+import ProfileMedia from "./components/ProfileMedia";
+import ProfileTweet from "./components/ProfileTweet";
+import ProfileTweetReplies from "./components/ProfileTweetReplies";
 
 const ProfilePage = () => {
-  let { url } = useRouteMatch();
+  let { path, url } = useRouteMatch();
 
   const currentUser = useAppSelector(selectCurrentUser);
 
@@ -19,6 +25,19 @@ const ProfilePage = () => {
   const HandleClosingModal = () => {
     Navigate?.push(`/profile`);
   };
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const handleScroll = () => {
+    const position = window.pageYOffset;
+    setScrollPosition(position);
+  };
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <>
@@ -36,63 +55,32 @@ const ProfilePage = () => {
 
           <div className="text-xl ">{currentUser?.username}</div>
         </div>
-        <div className="mt-14">
-          <div className="relative">
-            <img
-              className="w-tweet"
-              style={{ height: 200 }}
-              src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-              alt=""
-            />
-          </div>
-          <div className="absolute left-10 top-44">
-            <img
-              className="object-cover w-32 h-32 border-2 rounded-full border-dark-main"
-              src={currentUser?.profilePic}
-              alt=""
-            />
-          </div>
-          <div className="relative pl-4 mt-14 text-dark-txt">
-            <div className="text-xl font-bold">
-              {currentUser?.firstName} {currentUser?.lastName}
+        <ProfileBanner url={url} />
+        <div className="relative w-tweet">
+          <Switch>
+            <Route path={`${path}/likes`}>
+              <ProfileLikes backUrl={url} />
+            </Route>
+            <Route path={`${path}/media`}>
+              <ProfileMedia backUrl={url} />
+            </Route>
+            <Route path={`${path}/with_replies`}>
+              <ProfileTweetReplies backUrl={url} />
+            </Route>
+            <Route path={`${path}`}>
+              <ProfileTweet backUrl={url} />
+            </Route>
+            <Route path="*" component={NotFound} />
+          </Switch>
+          {scrollPosition > 200 && (
+            <div
+              className="fixed z-50 p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              Back to top
             </div>
-            <div className="-mt-2 text-gray-500">@{currentUser?.username}</div>
-            <div className="mt-3 text-gray-500 ">
-              <i className="bx bx-building"></i> Joined{" "}
-              {dayjs(currentUser?.createdAt).format("MMMM YYYY	")}
-            </div>
-            <button className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt">
-              Edit Profile
-            </button>
-            <div className="flex flex-row mt-3 text-dark-txt">
-              <div className="mr-5 font-bold">
-                0 <span className="text-gray-500">Following</span>
-              </div>
-              <div className="font-bold">
-                12 <span className="text-gray-500">Followers</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row mt-3 font-bold justify-evenly text-dark-txt">
-            <div className="px-10 py-5 text-center border-b-4 border-transparent cursor-pointer hover:bg-dark-txt hover:bg-opacity-10 hover:border-blue-500">
-              Twaats
-            </div>
-            <div className="flex-1 p-5 my-auto text-center border-b-4 border-transparent cursor-pointer hover:bg-dark-txt hover:bg-opacity-10 hover:border-blue-500">
-              Twaats && replies
-            </div>
-            <div className="px-10 py-5 text-center border-b-4 border-transparent cursor-pointer hover:bg-dark-txt hover:bg-opacity-10 hover:border-blue-500">
-              Media
-            </div>
-            <div className="px-10 py-5 text-center border-b-4 border-transparent cursor-pointer hover:bg-dark-txt hover:bg-opacity-10 hover:border-blue-500">
-              Likes
-            </div>
-          </div>
+          )}
         </div>
-        {/* {Posts?.map((res) => {
-      return (
-        <PostContentContainer key={res.id} post={res} backUrl={backUrl} />
-      );
-    })} */}
       </div>
       <Route
         path={`${url}/tweet/:tweetId`}
