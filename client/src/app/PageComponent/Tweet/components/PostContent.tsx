@@ -13,6 +13,7 @@ interface IPostContent {
   checkLikedPost: () => boolean;
   handleLikedPost: (event: MouseEvent<HTMLDivElement>) => void;
   isRetweet?: boolean;
+  deletedPost?: boolean;
 }
 
 const PostContent: FC<IPostContent> = ({
@@ -23,6 +24,7 @@ const PostContent: FC<IPostContent> = ({
   handleLikedPost,
   handleRetweetedPost,
   isRetweet,
+  deletedPost,
 }) => {
   return (
     <div className="relative flex flex-row">
@@ -45,51 +47,59 @@ const PostContent: FC<IPostContent> = ({
             </div>
           </div>
         )}
-        <div className="relative py-2 mr-3 break-all">{content}</div>
-        <div className="flex flex-row mt-3 text-xl justify-evenly">
-          <div className="flex-1 mt-auto mb-2 -ml-3">
-            <div
-              className="w-12 cursor-pointer hover:text-blue-500"
-              onClick={(event) => HandleReplyPost(event)}
-            >
-              <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full hover:bg-opacity-20 hover:bg-blue-300 hover:text-blue-600">
-                <i className="bx bx-message-rounded"></i>
+        {!deletedPost ? (
+          <div className="relative py-2 mr-3 break-all">{content}</div>
+        ) : (
+          <div className="relative p-3 m-3 text-center bg-dark-third rounded-xl">
+            Deleted Tweet
+          </div>
+        )}
+        {!deletedPost && (
+          <div className="flex flex-row mt-3 text-xl justify-evenly">
+            <div className="flex-1 mt-auto mb-2 -ml-3">
+              <div
+                className="w-12 cursor-pointer hover:text-blue-500"
+                onClick={(event) => HandleReplyPost(event)}
+              >
+                <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full hover:bg-opacity-20 hover:bg-blue-300 hover:text-blue-600">
+                  <i className="bx bx-message-rounded"></i>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex-1 mt-auto mb-2">
-            <div
-              className={`flex flex-row items-center w-12 cursor-pointer  ${
-                checkRetweetedPost() ? "text-green-600" : ""
-              }`}
-              onClick={(event) => handleRetweetedPost(event)}
-            >
-              <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full hover:bg-opacity-20 hover:bg-green-300 hover:text-green-600">
-                <i className="bx bx-rotate-right"></i>
-              </div>
-              <div className="text-sm">
-                {retweetUsers.length > 0 && <p>{retweetUsers.length}</p>}
+            <div className="flex-1 mt-auto mb-2">
+              <div
+                className={`flex flex-row items-center w-12 cursor-pointer  ${
+                  checkRetweetedPost() ? "text-green-600" : ""
+                }`}
+                onClick={(event) => handleRetweetedPost(event)}
+              >
+                <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full hover:bg-opacity-20 hover:bg-green-300 hover:text-green-600">
+                  <i className="bx bx-rotate-right"></i>
+                </div>
+                <div className="text-sm">
+                  {retweetUsers.length > 0 && <p>{retweetUsers.length}</p>}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex-1 mt-auto mb-2">
-            <div
-              className={`flex flex-row items-center w-12 cursor-pointer  ${
-                likes.length > 0 && checkLikedPost() ? "text-red-600" : ""
-              }`}
-              onClick={(event) => handleLikedPost(event)}
-            >
-              <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full hover:bg-opacity-20 hover:bg-red-300 hover:text-red-600">
-                <i className="bx bx-heart"></i>
-              </div>
-              <div className="text-sm ">
-                {likes.length > 0 && <p>{likes.length}</p>}
+            <div className="flex-1 mt-auto mb-2">
+              <div
+                className={`flex flex-row items-center w-12 cursor-pointer  ${
+                  likes.length > 0 && checkLikedPost() ? "text-red-600" : ""
+                }`}
+                onClick={(event) => handleLikedPost(event)}
+              >
+                <div className="flex items-center justify-center w-8 h-8 mr-1 rounded-full hover:bg-opacity-20 hover:bg-red-300 hover:text-red-600">
+                  <i className="bx bx-heart"></i>
+                </div>
+                <div className="text-sm ">
+                  {likes.length > 0 && <p>{likes.length}</p>}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

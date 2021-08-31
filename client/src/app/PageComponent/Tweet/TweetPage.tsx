@@ -31,7 +31,7 @@ const TweetPage: FC<ITweetPage> = ({ backUrl }) => {
       <div className="flex flex-col w-full min-h-screen border-l border-r border-dark-third">
         <div
           style={{ width: 598 }}
-          className="fixed top-0 p-3 font-bold border-b bg-dark-main text-dark-txt border-dark-third"
+          className="fixed top-0 z-50 p-3 font-bold border-b bg-dark-main text-dark-txt border-dark-third"
         >
           <div className="text-xl ">Home</div>
         </div>
