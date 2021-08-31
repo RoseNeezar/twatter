@@ -54,5 +54,6 @@ export interface IPost {
 
 export interface IGetReplyPost {
   postData: IPost;
-  replies: any[];
+  replies: IPost[];
+  replyTo: IPost;
 }

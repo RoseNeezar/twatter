@@ -13,6 +13,8 @@ import {
   likePostFulfilled,
   replyToPost,
   replyToPostFullfilled,
+  replyToSinglePost,
+  replyToSinglePostFullfilled,
   retweetPost,
   retweetPostFulfilled,
   setFetchPost,
@@ -140,6 +142,33 @@ const replyToPostFullfilledEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const replyToSinglePostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(replyToSinglePost.match),
+    switchMap((action) =>
+      from(
+        agent.PostService.createPost({
+          content: action.payload.content,
+          replyTo: action.payload.replyTo,
+        })
+      ).pipe(
+        map(replyToSinglePostFullfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+const replyToSinglePostFullfilledEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(replyToSinglePostFullfilled.match),
+    switchMap((action) =>
+      from(agent.PostService.getPostById(action.payload.replyTo.id)).pipe(
+        map(getReplyPostFulfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
 export default combineEpics(
   createPostEpic,
   fetchPostEpic,
@@ -150,5 +179,7 @@ export default combineEpics(
   getRetweetedPostEpic,
   GetReplyPostEpic,
   replyToPostEpic,
-  replyToPostFullfilledEpic
+  replyToPostFullfilledEpic,
+  replyToSinglePostEpic,
+  replyToSinglePostFullfilledEpic
 );
