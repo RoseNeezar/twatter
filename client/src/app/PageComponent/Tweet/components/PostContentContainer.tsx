@@ -1,18 +1,15 @@
 import React, { FC, MouseEvent } from "react";
-import {
-  IPost,
-  RetweetData,
-} from "../../../store/module/post/types/post.types";
-import dayjs from "dayjs";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
-import { likePost, retweetPost } from "../../../store/module/post/post.slice";
-import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
-import Navigate from "../../../utils/Navigate";
 import { useRouteMatch } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
+import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
+import { likePost, retweetPost } from "../../../store/module/post/post.slice";
+import { IPost } from "../../../store/module/post/types/post.types";
+import Navigate from "../../../utils/Navigate";
 import PostContent from "./PostContent";
 interface IPostContentContainer {
   post: IPost;
   backUrl: string;
+  isSinglePost?: boolean;
 }
 
 const PostContentContainer: FC<IPostContentContainer> = ({
@@ -28,6 +25,7 @@ const PostContentContainer: FC<IPostContentContainer> = ({
     replyTo,
   },
   backUrl,
+  isSinglePost,
 }) => {
   const { url } = useRouteMatch();
 
@@ -84,9 +82,9 @@ const PostContentContainer: FC<IPostContentContainer> = ({
   };
 
   const HandleToTweet = (event: MouseEvent<HTMLDivElement>) => {
-    console.log("to ?-");
-
-    Navigate?.push(`${backUrl}${postedBy.username}/status/${id}`);
+    if (!isSinglePost) {
+      Navigate?.push(`${backUrl}${postedBy.username}/status/${id}`);
+    }
   };
 
   return (

@@ -1,22 +1,23 @@
+import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import Head from "next/head";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import TweetPage from "../Tweet/TweetPage";
 import NotFound from "../NotFound/NotFound";
-import TweetAction from "../Tweet/components/TweetAction";
-import RedirectHome from "./RedirectHome";
-import NotificationPage from "../Notification/NotificationPage";
 import NotificationAction from "../Notification/components/NotificationAction";
+import NotificationPage from "../Notification/NotificationPage";
+import TweetAction from "../Tweet/components/TweetAction";
+import SingleTweetPage from "../Tweet/SingleTweetPage";
+import TweetPage from "../Tweet/TweetPage";
+import RedirectHome from "./RedirectHome";
 
 const Home = () => {
   let { path, url } = useRouteMatch();
+
   const [scrollPosition, setScrollPosition] = useState(0);
   const handleScroll = () => {
     const position = window.pageYOffset;
     setScrollPosition(position);
   };
-
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -36,7 +37,13 @@ const Home = () => {
         </div>
         <div className="relative w-tweet ">
           <Switch>
-            <Route exact path={`${path}home`} component={TweetPage} />
+            <Route path={`${path}home`}>
+              <TweetPage backUrl={url} />
+            </Route>
+            <Route
+              path={`${path}:username/status/:tweetId`}
+              component={SingleTweetPage}
+            />
             <Route
               exact
               path={`${path}notification`}
@@ -47,7 +54,7 @@ const Home = () => {
           </Switch>
           {scrollPosition > 200 && (
             <div
-              className="fixed p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
+              className="fixed z-50 p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
               onClick={() => window.scrollTo(0, 0)}
             >
               Back to top
@@ -57,6 +64,11 @@ const Home = () => {
         <div className="flex-col justify-start flex-1 hidden h-full lg:flex">
           <Switch>
             <Route exact path={`${path}home`} component={TweetAction} />
+            <Route
+              exact
+              path={`${path}:username/status/:tweetId`}
+              component={TweetAction}
+            />
             <Route
               exact
               path={`${path}notification`}
