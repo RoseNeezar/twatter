@@ -10,10 +10,10 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
   const currentUser = useAppSelector(
     (state: RootState) => state.user.userProfile
   );
-  const homeRoute = `/${currentUser?.username}`;
-  const likesRoute = `/${currentUser?.username}/likes`;
-  const mediaRoute = `/${currentUser?.username}/media`;
-  const repliesRoute = `/${currentUser?.username}/with_replies`;
+  const homeRoute = `/profile/${currentUser?.username}`;
+  const likesRoute = `/profile/${currentUser?.username}/likes`;
+  const mediaRoute = `/profile/${currentUser?.username}/media`;
+  const repliesRoute = `/profile/${currentUser?.username}/with_replies`;
   const { pathname } = useLocation();
 
   return (

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "./store/hooks/hooks";
 import { getUser, isLoggedIn } from "./store/module/auth/auth.slice";
-import { PrivateRoute } from "./utils/PrivateRoute";
+import { ReRoute } from "./utils/ReRoute";
 import Home from "./PageComponent/Home/Home";
 import { useRouter } from "next/dist/client/router";
 import ScrollToTop from "./utils/ScrollToTop";
@@ -13,7 +13,7 @@ const App = () => {
   const router = useRouter();
 
   useEffect(() => {
-    dispatch(getUser(router));
+    dispatch(getUser());
   }, [dispatch]);
 
   useEffect(() => {
@@ -28,7 +28,9 @@ const App = () => {
         render={() => (
           <>
             <Switch>
-              <Route path="/" component={Home} />
+              <ReRoute path="/">
+                <Home />
+              </ReRoute>
             </Switch>
           </>
         )}

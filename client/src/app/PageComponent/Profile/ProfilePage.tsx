@@ -67,16 +67,16 @@ const ProfilePage = () => {
         <ProfileBanner url={url} />
         <div className="relative w-tweet">
           <Switch>
-            <Route path={`${path}/likes`}>
+            <Route path={`${path}profile/likes`}>
               <ProfileLikes backUrl={url} />
             </Route>
-            <Route path={`${path}/media`}>
+            <Route path={`${path}profile/media`}>
               <ProfileMedia backUrl={url} />
             </Route>
-            <Route path={`${path}/with_replies`}>
+            <Route path={`${path}profile/with_replies`}>
               <ProfileTweetReplies backUrl={url} />
             </Route>
-            <Route path={`${path}`}>
+            <Route path={`${path}profile`}>
               <ProfileTweet backUrl={url} />
             </Route>
             <Route path="*" component={NotFound} />
