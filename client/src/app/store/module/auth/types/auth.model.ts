@@ -32,5 +32,4 @@ export interface IError {
   errors: {
     message: string;
   }[];
-  router?: NextRouter;
 }

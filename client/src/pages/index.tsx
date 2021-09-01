@@ -10,7 +10,7 @@ const Index = () => {
   const checkLogin = useAppSelector(isLoggedIn);
 
   useEffect(() => {
-    dispatch(getUser(router));
+    dispatch(getUser());
   }, [dispatch]);
 
   return (

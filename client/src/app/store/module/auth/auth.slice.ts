@@ -25,12 +25,15 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
     },
-    getUser: (state, action: PayloadAction<NextRouter>) => state,
+    getUser: (state) => state,
     errorCatcher: (state, action: PayloadAction<IError>) => {
-      if (!!action.payload.router) {
-        action.payload.router.push("/");
-      }
       if (!!action.payload.errors && action.payload.errors.length > 0) {
+        if (
+          action.payload.errors[0].message === "not authenticated" &&
+          window.location.pathname !== "/"
+        ) {
+          window.location.href = "/";
+        }
         action.payload.errors.map((err) => {
           toast.error(err.message);
         });
