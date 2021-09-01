@@ -31,7 +31,7 @@ const PostContent: FC<IPostContent> = ({
 }) => {
   const HandleToProfile = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    Navigate?.push(`/${postedBy.username}`);
+    Navigate?.push(`/profile/${postedBy.username}`);
   };
   return (
     <div className="relative flex flex-row">

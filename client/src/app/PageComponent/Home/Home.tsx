@@ -1,7 +1,8 @@
 import Head from "next/head";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import Navigate from "../../utils/Navigate";
 import NotFound from "../NotFound/NotFound";
 import NotificationAction from "../Notification/components/NotificationAction";
 import NotificationPage from "../Notification/NotificationPage";
@@ -46,13 +47,15 @@ const Home = () => {
               path={`${path}:username/status/:tweetId`}
               component={SingleTweetPage}
             />
-            <Route path={`${path}:profileUsername`} component={ProfilePage} />
+            <Route
+              path={`${path}profile/:profileUsername`}
+              component={ProfilePage}
+            />
             <Route
               exact
               path={`${path}notification`}
               component={NotificationPage}
             />
-            <Route path={`${path}`} component={RedirectHome} />
             <Route path="*" component={NotFound} />
           </Switch>
           {scrollPosition > 200 && (

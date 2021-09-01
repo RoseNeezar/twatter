@@ -15,7 +15,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const homeRoute = "/home";
   const notificationRoute = "/notification";
-  const profileRoute = `/${currentUser?.username}`;
+  const profileRoute = `/profile/${currentUser?.username}`;
   const { pathname } = useLocation();
 
   const getUser = useAppSelector(
@@ -66,7 +66,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             }`}
           >
             <Link
-              to={`${url}${currentUser?.username}`}
+              to={`${url}profile/${currentUser?.username}`}
               className={`text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
               <i className="lg:pr-5 bx bx-user"></i>
