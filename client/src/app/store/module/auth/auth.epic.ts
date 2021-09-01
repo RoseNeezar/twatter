@@ -79,11 +79,7 @@ const getUserEpic: MyEpic = (action$, state$) =>
       from(agent.AuthService.currentUser()).pipe(
         map(setUser),
         catchError((err) => {
-          const errObj: IError = {
-            ...err.response.data,
-            router: action.payload,
-          };
-          return of(errorCatcher(errObj));
+          return of(errorCatcher(err.response.data));
         })
       )
     )
