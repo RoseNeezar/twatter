@@ -1,11 +1,11 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import Navigate from "../../utils/Navigate";
 
 const RedirectHome = () => {
-  console.log("redirect");
   useLayoutEffect(() => {
     Navigate?.push("/home");
-  }, []);
+  }, [Navigate]);
+
   return <div>Loading...</div>;
 };
 

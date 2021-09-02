@@ -1,20 +1,23 @@
 import dayjs from "dayjs";
 import React, { FC } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useAppSelector } from "../../../store/hooks/hooks";
+import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import { RootState } from "../../../store/store";
 interface IProfileBanner {
   url: string;
 }
 const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
-  const currentUser = useAppSelector(
-    (state: RootState) => state.user.userProfile
+  const currentUserProfile = useAppSelector(
+    (state: RootState) => state.user.currentUserProfile
   );
-  const homeRoute = `/profile/${currentUser?.username}`;
-  const likesRoute = `/profile/${currentUser?.username}/likes`;
-  const mediaRoute = `/profile/${currentUser?.username}/media`;
-  const repliesRoute = `/profile/${currentUser?.username}/with_replies`;
+  const currentUser = useAppSelector(selectCurrentUser);
+  const homeRoute = `/profile/${currentUserProfile?.username}`;
+  const likesRoute = `/profile/${currentUserProfile?.username}/likes`;
+  const mediaRoute = `/profile/${currentUserProfile?.username}/media`;
+  const repliesRoute = `/profile/${currentUserProfile?.username}/with_replies`;
   const { pathname } = useLocation();
+  const { profileUsername } = useParams<{ profileUsername: string }>();
 
   return (
     <div className="border-b mt-14 border-dark-third">
@@ -29,22 +32,36 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
       <div className="absolute left-10 top-44">
         <img
           className="object-cover w-32 h-32 border-2 rounded-full border-dark-main"
-          src={currentUser?.profilePic}
+          src={currentUserProfile?.profilePic}
           alt=""
         />
       </div>
       <div className="relative pl-4 mt-14 text-dark-txt">
         <div className="text-xl font-bold">
-          {currentUser?.firstName} {currentUser?.lastName}
+          {currentUserProfile?.firstName} {currentUserProfile?.lastName}
         </div>
-        <div className="-mt-2 text-gray-500">@{currentUser?.username}</div>
+        <div className="-mt-2 text-gray-500">
+          @{currentUserProfile?.username}
+        </div>
         <div className="mt-3 text-gray-500 ">
           <i className="bx bx-building"></i> Joined{" "}
-          {dayjs(currentUser?.createdAt).format("MMMM YYYY	")}
+          {dayjs(currentUserProfile?.createdAt).format("MMMM YYYY	")}
         </div>
-        <button className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt">
-          Edit Profile
-        </button>
+        {profileUsername === currentUser?.username ? (
+          <button className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt">
+            Edit Profile
+          </button>
+        ) : (
+          <>
+            <button className="absolute p-1 px-2 text-xl border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-10 text-dark-txt border-dark-txt">
+              <i className="bx bx-mail-send"></i>
+            </button>
+            <button className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt">
+              Follow
+            </button>
+          </>
+        )}
+
         <div className="flex flex-row mt-3 text-dark-txt">
           <div className="mr-5 font-bold">
             0 <span className="text-gray-500">Following</span>
