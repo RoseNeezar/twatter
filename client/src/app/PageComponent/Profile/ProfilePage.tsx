@@ -20,7 +20,7 @@ const ProfilePage = () => {
   const { profileUsername } = useParams<{ profileUsername: string }>();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(
-    (state: RootState) => state.user.userProfile
+    (state: RootState) => state.user.currentUserProfile
   );
 
   const HandleGoHome = () => {
@@ -46,7 +46,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     dispatch(getUserProfile(profileUsername));
-  }, []);
+  }, [profileUsername]);
 
   return (
     <>

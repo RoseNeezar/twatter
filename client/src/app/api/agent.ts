@@ -41,7 +41,8 @@ const AuthService = {
 
 const PostService = {
   createPost: (data: ICreatePost) => requests.post<IPost>("posts", data),
-  fetchPost: (data?: IFetchPost) => requests.get<IPost[]>("posts", data),
+  fetchPost: (data?: Partial<IFetchPost>) =>
+    requests.get<IPost[]>("posts", data),
   likePost: (id: string) => requests.put<IPost>(`posts/${id}/like`),
   retweetPost: (id: string) => requests.post<IPost>(`posts/${id}/retweet`),
   getPostById: (id: string) => requests.get<IGetReplyPost>(`posts/${id}`),
