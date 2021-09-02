@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../auth/types/auth.model";
 
 export interface userState {
-  userProfile: IUser | null;
+  currentUserProfile: IUser | null;
 }
 
 const initialState: userState = {
-  userProfile: null,
+  currentUserProfile: null,
 };
 
 export const userSlice = createSlice({
@@ -14,7 +14,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUserProfile: (state, action: PayloadAction<IUser>) => {
-      state.userProfile = action.payload;
+      state.currentUserProfile = action.payload;
     },
     getUserProfile: (state, action: PayloadAction<string>) => state,
   },
