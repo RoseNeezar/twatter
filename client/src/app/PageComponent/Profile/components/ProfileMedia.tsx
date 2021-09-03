@@ -3,7 +3,7 @@ interface IProfileMedia {
   backUrl: string;
 }
 const ProfileMedia: FC<IProfileMedia> = () => {
-  return <div>ProfileMedia</div>;
+  return <div className="text-dark-txt">TBD</div>;
 };
 
 export default ProfileMedia;
