@@ -17,6 +17,7 @@ export interface PostedBy {
 export interface ICreatePost {
   content: string;
   replyTo?: string;
+  path?: string;
 }
 
 export interface IFetchPost {
