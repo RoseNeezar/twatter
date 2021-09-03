@@ -95,23 +95,18 @@ const retweetPostEpic: MyEpic = (action$, state$) =>
 const getRetweetedPostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(retweetPostFulfilled.match),
-    switchMap((action) =>
-      from(agent.PostService.fetchPost()).pipe(
-        map(setFetchPost),
-        catchError((err) => of(errorCatcher(err.response.data)))
-      )
-    )
-  );
-
-const getRetweetedUserEpic: MyEpic = (action$, state$) =>
-  action$.pipe(
-    filter(retweetPostFulfilled.match),
-    switchMap((action) =>
-      from(agent.AuthService.currentUser()).pipe(
-        map(setUser),
-        catchError((err) => of(errorCatcher(err.response.data)))
-      )
-    )
+    concatMap((action) => {
+      return (
+        from(agent.AuthService.currentUser()).pipe(
+          map(setUser),
+          catchError((err) => of(errorCatcher(err.response.data)))
+        ),
+        from(agent.PostService.fetchPost()).pipe(
+          map(setFetchPost),
+          catchError((err) => of(errorCatcher(err.response.data)))
+        )
+      );
+    })
   );
 
 const GetReplyPostEpic: MyEpic = (action$, state$) =>
@@ -209,7 +204,6 @@ export default combineEpics(
   likePostEpic,
   getLikedUserEpic,
   retweetPostEpic,
-  getRetweetedUserEpic,
   getRetweetedPostEpic,
   GetReplyPostEpic,
   replyToPostEpic,
