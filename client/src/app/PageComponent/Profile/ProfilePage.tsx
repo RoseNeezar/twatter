@@ -1,9 +1,7 @@
-import { Transition, Dialog } from "@headlessui/react";
-import dayjs from "dayjs";
+import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { selectCurrentUser } from "../../store/module/auth/auth.slice";
 import { getUserProfile } from "../../store/module/user/user.slice";
 import { RootState } from "../../store/store";
 import Navigate from "../../utils/Navigate";
@@ -28,7 +26,7 @@ const ProfilePage = () => {
   };
 
   const HandleClosingModal = () => {
-    Navigate?.push(`/profile`);
+    Navigate?.goBack();
   };
 
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -92,7 +90,7 @@ const ProfilePage = () => {
         </div>
       </div>
       <Route
-        path={`${url}/tweet/:tweetId`}
+        path={[`${url}/tweet/:tweetId`, `${url}/with_replies/tweet/:tweetId`]}
         children={({ match }) => {
           return (
             <Transition appear show={Boolean(match)} as={Fragment}>
@@ -113,7 +111,7 @@ const ProfilePage = () => {
                     leaveTo="opacity-0 scale-95"
                   >
                     <div className="inline-block max-w-6xl my-16 overflow-hidden text-left align-middle transition-all transform bg-red-300 shadow-xl w-tweet rounded-2xl">
-                      <ReplyPostModal />
+                      <ReplyPostModal isProfilePost={true} />
                     </div>
                   </Transition.Child>
                 </div>
