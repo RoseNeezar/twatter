@@ -14,12 +14,14 @@ import {
 import agent from "../../../api/agent";
 import Navigate from "../../../utils/Navigate";
 import { RootState } from "../../store";
-import { errorCatcher } from "../auth/auth.slice";
+import { errorCatcher, setUser } from "../auth/auth.slice";
 import {
   deleteProfilePost,
   fetchProfilePost,
   getUserProfile,
   replyToProfilePost,
+  retweetProfilePost,
+  retweetProfilePostFulfilled,
   setProfilePost,
   setUserProfile,
 } from "./user.slice";
@@ -71,7 +73,7 @@ const replyToProfilePostEpic: MyEpic = (action$, state$) =>
             postedBy: state$.value.user.currentUserProfile?.id,
             isReply: !state$.value.user.path?.includes("with_replies")
               ? false
-              : undefined,
+              : true,
           })
         ).pipe(
           map(setProfilePost),
@@ -92,13 +94,49 @@ const deleteProfilePostEpic: MyEpic = (action$, state$) =>
           ignoreElements(),
           catchError((err) => of(errorCatcher(err.response.data)))
         ),
-        tap(() => console.log("del-", state$.value.user.path)),
         from(
           agent.PostService.fetchPost({
             postedBy: state$.value.user.currentUserProfile?.id,
             isReply: !state$.value.user.path?.includes("with_replies")
               ? false
-              : undefined,
+              : true,
+          })
+        ).pipe(
+          map(setProfilePost),
+          catchError((err) => {
+            return of(errorCatcher(err.response.data));
+          })
+        )
+      );
+    })
+  );
+
+const retweetProfilePostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(retweetProfilePost.match),
+    switchMap((action) =>
+      from(agent.PostService.retweetPost(action.payload.id)).pipe(
+        map(retweetProfilePostFulfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
+const getRetweetedPostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(retweetProfilePostFulfilled.match),
+    concatMap((action) => {
+      return (
+        from(agent.AuthService.currentUser()).pipe(
+          map(setUser),
+          catchError((err) => of(errorCatcher(err.response.data)))
+        ),
+        from(
+          agent.PostService.fetchPost({
+            postedBy: state$.value.user.currentUserProfile?.id,
+            isReply: !state$.value.user.path?.includes("with_replies")
+              ? false
+              : true,
           })
         ).pipe(
           map(setProfilePost),
@@ -114,5 +152,7 @@ export default combineEpics(
   getUserEpic,
   fetchProfilePostEpic,
   replyToProfilePostEpic,
-  deleteProfilePostEpic
+  deleteProfilePostEpic,
+  retweetProfilePostEpic,
+  getRetweetedPostEpic
 );

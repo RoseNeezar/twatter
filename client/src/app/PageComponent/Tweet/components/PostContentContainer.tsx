@@ -16,7 +16,10 @@ import {
   retweetPost,
 } from "../../../store/module/post/post.slice";
 import { IPost } from "../../../store/module/post/types/post.types";
-import { deleteProfilePost } from "../../../store/module/user/user.slice";
+import {
+  deleteProfilePost,
+  retweetProfilePost,
+} from "../../../store/module/user/user.slice";
 import Navigate from "../../../utils/Navigate";
 import PostContent from "./PostContent";
 interface IPostContentContainer {
@@ -59,7 +62,14 @@ const PostContentContainer: FC<IPostContentContainer> = ({
 
   const handleRetweetedPost = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    dispatch(retweetPost(id));
+    isProfilePost
+      ? dispatch(
+          retweetProfilePost({
+            id,
+            path: pathname,
+          })
+        )
+      : dispatch(retweetPost(id));
   };
 
   const handleRetweetLikedPost = (event: MouseEvent<HTMLDivElement>) => {
@@ -69,7 +79,14 @@ const PostContentContainer: FC<IPostContentContainer> = ({
 
   const handleRetweetRetweetedPost = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    dispatch(retweetPost(retweetData.id));
+    isProfilePost
+      ? dispatch(
+          retweetProfilePost({
+            id: retweetData.id,
+            path: pathname,
+          })
+        )
+      : dispatch(retweetPost(retweetData.id));
   };
 
   const checkLikedPost = () => {

@@ -34,9 +34,15 @@ export const userSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; replyTo?: string; path: string }>
     ) => {
-      console.log("deleteProfilePost", action.payload);
       state.path = action.payload.path;
     },
+    retweetProfilePost: (
+      state,
+      action: PayloadAction<{ id: string; path: string }>
+    ) => {
+      state.path = action.payload.path;
+    },
+    retweetProfilePostFulfilled: (state) => state,
   },
 });
 
@@ -47,6 +53,8 @@ export const {
   getUserProfile,
   replyToProfilePost,
   deleteProfilePost,
+  retweetProfilePost,
+  retweetProfilePostFulfilled,
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -1,6 +1,7 @@
 import React, { FC, MouseEvent, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
+import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import { fetchPost } from "../../../store/module/post/post.slice";
 import { fetchProfilePost } from "../../../store/module/user/user.slice";
 import { RootState } from "../../../store/store";
@@ -15,6 +16,7 @@ const ProfileTweet: FC<IProfileTweet> = () => {
   const currentUserProfile = useAppSelector(
     (state: RootState) => state.user.currentUserProfile
   );
+  const currentUser = useAppSelector(selectCurrentUser);
   const getPost = useAppSelector((state: RootState) => state.user.profilePost);
   const dispatch = useAppDispatch();
 
@@ -22,7 +24,7 @@ const ProfileTweet: FC<IProfileTweet> = () => {
     dispatch(
       fetchProfilePost({ postedBy: currentUserProfile?.id, isReply: false })
     );
-  }, [dispatch, fetchPost]);
+  }, [dispatch, fetchPost, currentUser]);
   return (
     <div className="flex flex-col w-full">
       {getPost?.map((res) => {
