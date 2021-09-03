@@ -1,6 +1,15 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
-import { catchError, filter, from, map, of, switchMap, tap } from "rxjs";
+import {
+  catchError,
+  concatMap,
+  filter,
+  from,
+  map,
+  of,
+  switchMap,
+  tap,
+} from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import { errorCatcher, setUser } from "../auth/auth.slice";
@@ -43,7 +52,7 @@ const fetchPostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(fetchPost.match),
     switchMap((action) =>
-      from(agent.PostService.fetchPost(action.payload)).pipe(
+      from(agent.PostService.fetchPost({})).pipe(
         map(setFetchPost),
         catchError((err) => of(errorCatcher(err.response.data)))
       )
@@ -173,7 +182,7 @@ const replyToSinglePostFullfilledEpic: MyEpic = (action$, state$) =>
 const deletePostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(deletePost.match),
-    switchMap((action) => {
+    concatMap((action) => {
       if (!!action.payload.replyTo) {
         return (
           from(agent.PostService.deletePostById(action.payload.id)).pipe(
