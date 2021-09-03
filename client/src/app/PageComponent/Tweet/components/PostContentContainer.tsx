@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import {
@@ -16,12 +16,14 @@ import {
   retweetPost,
 } from "../../../store/module/post/post.slice";
 import { IPost } from "../../../store/module/post/types/post.types";
+import { deleteProfilePost } from "../../../store/module/user/user.slice";
 import Navigate from "../../../utils/Navigate";
 import PostContent from "./PostContent";
 interface IPostContentContainer {
   post: IPost;
   backUrl: string;
   isSinglePost?: boolean;
+  isProfilePost?: boolean;
 }
 
 const PostContentContainer: FC<IPostContentContainer> = ({
@@ -38,6 +40,7 @@ const PostContentContainer: FC<IPostContentContainer> = ({
   },
   backUrl,
   isSinglePost,
+  isProfilePost,
 }) => {
   const { url } = useRouteMatch();
 
@@ -46,6 +49,9 @@ const PostContentContainer: FC<IPostContentContainer> = ({
 
   const [openPopover, setOpenPopover] = useState(false);
   const popoverButtonRef = useRef<HTMLButtonElement>(null);
+
+  const { pathname } = useLocation();
+
   const handleLikedPost = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     dispatch(likePost(id));
@@ -104,14 +110,16 @@ const PostContentContainer: FC<IPostContentContainer> = ({
 
   const HandleOpenPopover = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-
     setOpenPopover(!openPopover);
   };
 
   const HandleDeletePost = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    replyTo
+
+    replyTo && !isProfilePost
       ? dispatch(deletePost({ id, replyTo: replyTo.id }))
+      : isProfilePost
+      ? dispatch(deleteProfilePost({ id, path: pathname }))
       : dispatch(deletePost({ id }));
   };
 
@@ -211,7 +219,6 @@ const PostContentContainer: FC<IPostContentContainer> = ({
           handleLikedPost={handleRetweetLikedPost}
           handleRetweetedPost={handleRetweetRetweetedPost}
           isRetweet={true}
-          backUrl={backUrl}
         />
       ) : !retweetData && !content ? (
         <PostContent
@@ -223,7 +230,6 @@ const PostContentContainer: FC<IPostContentContainer> = ({
           handleLikedPost={handleLikedPost}
           handleRetweetedPost={handleRetweetedPost}
           isRetweet={false}
-          backUrl={backUrl}
         />
       ) : (
         <PostContent
@@ -234,7 +240,6 @@ const PostContentContainer: FC<IPostContentContainer> = ({
           handleLikedPost={handleLikedPost}
           handleRetweetedPost={handleRetweetedPost}
           isRetweet={false}
-          backUrl={backUrl}
         />
       )}
     </div>

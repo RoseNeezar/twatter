@@ -1,7 +1,7 @@
 import { Dialog } from "@headlessui/react";
 import dayjs from "dayjs";
 import React, { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import TextareaAutosize from "react-textarea-autosize";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import {
@@ -9,6 +9,7 @@ import {
   replyToPost,
   replyToSinglePost,
 } from "../../../store/module/post/post.slice";
+import { replyToProfilePost } from "../../../store/module/user/user.slice";
 import { RootState } from "../../../store/store";
 import Navigate from "../../../utils/Navigate";
 
@@ -16,10 +17,15 @@ const maxPostCharacter = 255;
 
 interface IReplyPostModal {
   isSinglePost?: boolean;
+  isProfilePost?: boolean;
 }
 
-const ReplyPostModal: FC<IReplyPostModal> = ({ isSinglePost }) => {
+const ReplyPostModal: FC<IReplyPostModal> = ({
+  isSinglePost,
+  isProfilePost,
+}) => {
   const { tweetId } = useParams<{ tweetId: string }>();
+  const { pathname } = useLocation();
 
   const getUser = useAppSelector((state: RootState) => state.auth.user);
   const getPost = useAppSelector((state: RootState) => state.posts.replyPost);
@@ -42,6 +48,14 @@ const ReplyPostModal: FC<IReplyPostModal> = ({ isSinglePost }) => {
             replyToSinglePost({
               content: reply,
               replyTo: getPost?.postData.id,
+            })
+          )
+        : isProfilePost
+        ? dispatch(
+            replyToProfilePost({
+              content: reply,
+              replyTo: getPost?.postData.id,
+              path: pathname,
             })
           )
         : dispatch(

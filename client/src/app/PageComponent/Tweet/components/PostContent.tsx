@@ -15,7 +15,6 @@ interface IPostContent {
   handleLikedPost: (event: MouseEvent<HTMLDivElement>) => void;
   isRetweet?: boolean;
   deletedPost?: boolean;
-  backUrl: string;
 }
 
 const PostContent: FC<IPostContent> = ({
@@ -27,7 +26,6 @@ const PostContent: FC<IPostContent> = ({
   handleRetweetedPost,
   isRetweet,
   deletedPost,
-  backUrl,
 }) => {
   const HandleToProfile = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
