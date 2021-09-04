@@ -51,6 +51,7 @@ const PostService = {
 
 const UserService = {
   getUserByUsername: (data: string) => requests.get<IUser>(`users/${data}`),
+  followUser: (data: string) => requests.put<IUser>(`users/${data}/follow`),
 };
 
 const agent = {

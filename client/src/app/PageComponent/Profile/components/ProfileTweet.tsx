@@ -2,6 +2,7 @@ import React, { FC, MouseEvent, useEffect, useRef, useState } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
+import { IUser } from "../../../store/module/auth/types/auth.model";
 import { fetchPost } from "../../../store/module/post/post.slice";
 import { fetchProfilePost } from "../../../store/module/user/user.slice";
 import { RootState } from "../../../store/store";
@@ -24,7 +25,7 @@ const ProfileTweet: FC<IProfileTweet> = () => {
     dispatch(
       fetchProfilePost({ postedBy: currentUserProfile?.id, isReply: false })
     );
-  }, [dispatch, fetchPost, currentUser]);
+  }, [dispatch, fetchPost, currentUser, currentUserProfile]);
   return (
     <div className="flex flex-col w-full">
       {getPost?.map((res) => {

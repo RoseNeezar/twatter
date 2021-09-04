@@ -23,7 +23,7 @@ const ProfileTweetReplies: FC<IProfileTweetReplies> = () => {
     dispatch(
       fetchProfilePost({ postedBy: currentUserProfile?.id, isReply: true })
     );
-  }, [dispatch, fetchPost, currentUser]);
+  }, [dispatch, fetchPost, currentUser, currentUserProfile]);
   return (
     <div className="flex flex-col w-full">
       {getPost?.map((res) => {

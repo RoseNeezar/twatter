@@ -43,6 +43,8 @@ export const userSlice = createSlice({
       state.path = action.payload.path;
     },
     retweetProfilePostFulfilled: (state) => state,
+    followUser: (state, action: PayloadAction<string>) => state,
+    followUserFullfilled: (state, action: PayloadAction<IUser>) => state,
   },
 });
 
@@ -55,6 +57,8 @@ export const {
   deleteProfilePost,
   retweetProfilePost,
   retweetProfilePostFulfilled,
+  followUser,
+  followUserFullfilled,
 } = userSlice.actions;
 
 export default userSlice.reducer;

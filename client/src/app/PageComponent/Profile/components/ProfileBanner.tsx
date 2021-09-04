@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { useAppSelector } from "../../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
+import { followUser } from "../../../store/module/user/user.slice";
 import { RootState } from "../../../store/store";
 interface IProfileBanner {
   url: string;
@@ -12,12 +13,25 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
     (state: RootState) => state.user.currentUserProfile
   );
   const currentUser = useAppSelector(selectCurrentUser);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const dispatch = useAppDispatch();
   const homeRoute = `/profile/${currentUserProfile?.username}`;
   const likesRoute = `/profile/${currentUserProfile?.username}/likes`;
   const mediaRoute = `/profile/${currentUserProfile?.username}/media`;
   const repliesRoute = `/profile/${currentUserProfile?.username}/with_replies`;
   const { pathname } = useLocation();
   const { profileUsername } = useParams<{ profileUsername: string }>();
+  const checkIsFollowing = () => {
+    return currentUser?.following?.findIndex(
+      (re) => re === currentUserProfile?.id
+    ) !== -1
+      ? true
+      : false;
+  };
+  const HandleFollowUser = () => {
+    dispatch(followUser(String(currentUserProfile?.id)));
+  };
 
   return (
     <div className="border-b mt-14 border-dark-third">
@@ -56,8 +70,22 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
             <button className="absolute p-1 px-2 text-xl border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-10 text-dark-txt border-dark-txt">
               <i className="bx bx-mail-send"></i>
             </button>
-            <button className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt">
-              Follow
+            <button
+              ref={buttonRef}
+              className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt"
+              onMouseEnter={() => {
+                if (buttonRef.current?.textContent === "Following") {
+                  buttonRef.current!.textContent = "Unfollow";
+                }
+              }}
+              onMouseLeave={() => {
+                if (buttonRef.current?.textContent === "Unfollow") {
+                  buttonRef.current!.textContent = "Following";
+                }
+              }}
+              onClick={() => HandleFollowUser()}
+            >
+              {checkIsFollowing() ? "Following" : "Follow"}
             </button>
           </>
         )}
