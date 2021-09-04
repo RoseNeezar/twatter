@@ -15,6 +15,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const homeRoute = "/home";
   const notificationRoute = "/notification";
+  const searchRoute = "/search";
   const profileRoute = `/profile/${currentUser?.username}`;
   const { pathname } = useLocation();
 
@@ -42,11 +43,23 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               to={`${url}home`}
               className={` text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
-              <i className=" lg:pr-5 bx bx-notepad"></i>
+              <i className="text-2xl lg:pr-5 bx bx-notepad"></i>
               <span className="hidden lg:inline-block"> Home</span>
             </Link>
           </li>
-
+          <li
+            className={`mb-10 lg:mr-auto rounded-full p-4 mr-3  lg:rounded-3xl lg:py-2 lg:pr-5 lg:pl-2 hover:bg-dark-third ${
+              pathname === searchRoute && "bg-dark-third "
+            }`}
+          >
+            <Link
+              to={`${url}search`}
+              className={` text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
+            >
+              <i className="text-2xl lg:pr-5 bx bx-search-alt"></i>
+              <span className="hidden lg:inline-block"> Search</span>
+            </Link>
+          </li>
           <li
             className={`mb-10 lg:mr-auto rounded-full p-4 mr-3  lg:rounded-3xl lg:py-2 lg:pr-5 lg:pl-2 hover:bg-dark-third ${
               pathname === notificationRoute && "bg-dark-third "
@@ -56,7 +69,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               to={`${url}notification`}
               className={`text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
-              <i className="lg:pr-5 bx bx-calendar"></i>
+              <i className="text-2xl lg:pr-5 bx bx-calendar"></i>
               <span className="hidden lg:inline-block"> Notification</span>
             </Link>
           </li>
@@ -69,7 +82,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               to={`${url}profile/${currentUser?.username}`}
               className={`text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
-              <i className="lg:pr-5 bx bx-user"></i>
+              <i className="text-2xl lg:pr-5 bx bx-user"></i>
               <span className="hidden lg:inline-block"> Profile</span>
             </Link>
           </li>

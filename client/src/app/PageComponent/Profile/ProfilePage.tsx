@@ -17,7 +17,7 @@ const ProfilePage = () => {
   let { path, url } = useRouteMatch();
   const { profileUsername } = useParams<{ profileUsername: string }>();
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector(
+  const currentProfileUser = useAppSelector(
     (state: RootState) => state.user.currentUserProfile
   );
 
@@ -60,7 +60,7 @@ const ProfilePage = () => {
             <i className="bx bx-left-arrow-alt"></i>
           </div>
 
-          <div className="text-xl ">{currentUser?.username}</div>
+          <div className="text-xl ">{currentProfileUser?.username}</div>
         </div>
         <ProfileBanner url={url} />
         <div className="relative w-tweet">
