@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { NextRouter } from "next/dist/client/router";
 import { toast } from "react-toastify";
 import { RootState } from "../../store";
+import { followUser, followUserFullfilled } from "../user/user.slice";
 import { IError, ILogin, IRegister, IUser } from "./types/auth.model";
 
 export interface authState {
@@ -46,6 +47,11 @@ export const authSlice = createSlice({
     resetUser: (state) => {
       state.user = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(followUserFullfilled, (state, action) => {
+      state.user = action.payload;
+    });
   },
 });
 

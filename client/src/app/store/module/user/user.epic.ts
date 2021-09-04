@@ -18,6 +18,8 @@ import { errorCatcher, setUser } from "../auth/auth.slice";
 import {
   deleteProfilePost,
   fetchProfilePost,
+  followUser,
+  followUserFullfilled,
   getUserProfile,
   replyToProfilePost,
   retweetProfilePost,
@@ -148,11 +150,22 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
     })
   );
 
+const followUserEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(followUser.match),
+    switchMap((action) =>
+      from(agent.UserService.followUser(action.payload)).pipe(
+        map(followUserFullfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
 export default combineEpics(
   getUserEpic,
   fetchProfilePostEpic,
   replyToProfilePostEpic,
   deleteProfilePostEpic,
   retweetProfilePostEpic,
-  getRetweetedPostEpic
+  getRetweetedPostEpic,
+  followUserEpic
 );
