@@ -10,6 +10,7 @@ import {
   IGetReplyPost,
   IPost,
 } from "../store/module/post/types/post.types";
+import { IUserProfile } from "../store/module/user/types/user.model";
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
@@ -52,6 +53,10 @@ const PostService = {
 const UserService = {
   getUserByUsername: (data: string) => requests.get<IUser>(`users/${data}`),
   followUser: (data: string) => requests.put<IUser>(`users/${data}/follow`),
+  getUsersFollower: (data: string) =>
+    requests.get<IUserProfile>(`users/${data}/followers`),
+  getUsersFollowing: (data: string) =>
+    requests.get<IUserProfile>(`users/${data}/following`),
 };
 
 const agent = {

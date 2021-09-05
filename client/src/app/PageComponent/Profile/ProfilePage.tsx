@@ -1,13 +1,23 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
-import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { selectCurrentUser } from "../../store/module/auth/auth.slice";
 import { getUserProfile } from "../../store/module/user/user.slice";
 import { RootState } from "../../store/store";
 import Navigate from "../../utils/Navigate";
 import NotFound from "../NotFound/NotFound";
 import ReplyPostModal from "../Tweet/components/ReplyPostModal";
 import ProfileBanner from "./components/ProfileBanner";
+import ProfileFollowBanner from "./components/ProfileFollowBanner";
+import ProfileFollowers from "./components/ProfileFollowers";
+import ProfileFollowing from "./components/ProfileFollowing";
 import ProfileLikes from "./components/ProfileLikes";
 import ProfileMedia from "./components/ProfileMedia";
 import ProfileTweet from "./components/ProfileTweet";
@@ -15,14 +25,18 @@ import ProfileTweetReplies from "./components/ProfileTweetReplies";
 
 const ProfilePage = () => {
   let { path, url } = useRouteMatch();
+  const { pathname } = useLocation();
+  const followRoutes = [`/followers`, `/following`];
   const { profileUsername } = useParams<{ profileUsername: string }>();
   const dispatch = useAppDispatch();
   const currentProfileUser = useAppSelector(
     (state: RootState) => state.user.currentUserProfile
   );
-
+  const currentUser = useAppSelector(selectCurrentUser);
   const HandleGoHome = () => {
-    Navigate?.push("/home");
+    checkFollowRoute()
+      ? Navigate?.push(`/profile/${profileUsername}`)
+      : Navigate?.push("/home");
   };
 
   const HandleClosingModal = () => {
@@ -41,17 +55,21 @@ const ProfilePage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+  const checkFollowRoute = () => {
+    return followRoutes.findIndex((re) => pathname.includes(re)) !== -1
+      ? true
+      : false;
+  };
   useEffect(() => {
     dispatch(getUserProfile(profileUsername));
-  }, [profileUsername]);
+  }, [profileUsername, currentUser]);
 
   return (
     <>
       <div className="flex flex-col w-full min-h-screen border-l border-r border-dark-third">
         <div
           style={{ width: 598 }}
-          className="fixed top-0 flex flex-row items-center p-2 font-bold border-b bg-dark-main text-dark-txt border-dark-third"
+          className="fixed top-0 z-50 flex flex-row items-center p-2 font-bold border-b bg-dark-main text-dark-txt border-dark-third"
         >
           <div
             className="flex justify-center p-2 mr-5 text-2xl font-bold rounded-full cursor-pointer text-dark-txt hover:bg-dark-third"
@@ -62,7 +80,11 @@ const ProfilePage = () => {
 
           <div className="text-xl ">{currentProfileUser?.username}</div>
         </div>
-        <ProfileBanner url={url} />
+        {!checkFollowRoute() ? (
+          <ProfileBanner url={url} />
+        ) : (
+          <ProfileFollowBanner backUrl={url} />
+        )}
         <div className="relative w-tweet">
           <Switch>
             <Route path={`${path}profile/likes`}>
@@ -74,19 +96,25 @@ const ProfilePage = () => {
             <Route path={`${path}profile/with_replies`}>
               <ProfileTweetReplies backUrl={url} />
             </Route>
+            <Route path={`${path}profile/followers`}>
+              <ProfileFollowers backUrl={url} />
+            </Route>
+            <Route path={`${path}profile/following`}>
+              <ProfileFollowing backUrl={url} />
+            </Route>
             <Route path={`${path}profile`}>
               <ProfileTweet backUrl={url} />
             </Route>
             <Route path="*" component={NotFound} />
+            {scrollPosition > 200 && (
+              <div
+                className="fixed z-50 p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                Back to top
+              </div>
+            )}
           </Switch>
-          {scrollPosition > 200 && (
-            <div
-              className="fixed z-50 p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
-              onClick={() => window.scrollTo(0, 0)}
-            >
-              Back to top
-            </div>
-          )}
         </div>
       </div>
       <Route

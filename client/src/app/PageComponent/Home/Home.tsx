@@ -72,21 +72,14 @@ const Home = () => {
         </div>
         <div className="flex-col justify-start flex-1 hidden h-full lg:flex">
           <Switch>
-            <Route exact path={`${path}home`} component={TweetAction} />
             <Route
               exact
               path={`${path}:username/status/:tweetId`}
               component={TweetAction}
             />
             <Route path={`${path}profile`} component={ProfilePageActions} />
-            <Route exact path={`${path}search`} component={SearchAction} />
-            <Route
-              exact
-              path={`${path}notification`}
-              component={NotificationAction}
-            />
             <Route path="*">
-              <span></span>
+              <TweetAction />
             </Route>
           </Switch>
         </div>
