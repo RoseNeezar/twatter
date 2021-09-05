@@ -35,6 +35,9 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
   const HandleFollowUser = () => {
     dispatch(followUser(String(currentUserProfile?.id)));
   };
+  const HandleEditProfile = () => {
+    Navigate?.push(`${url}/settings/profile`);
+  };
 
   return (
     <div className="border-b mt-14 border-dark-third">
@@ -65,7 +68,10 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
           {dayjs(currentUserProfile?.createdAt).format("MMMM YYYY	")}
         </div>
         {profileUsername === currentUser?.username ? (
-          <button className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt">
+          <button
+            className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt"
+            onClick={() => HandleEditProfile()}
+          >
             Edit Profile
           </button>
         ) : (
