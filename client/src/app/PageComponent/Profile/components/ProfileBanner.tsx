@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import { followUser } from "../../../store/module/user/user.slice";
 import { RootState } from "../../../store/store";
+import Navigate from "../../../utils/Navigate";
 interface IProfileBanner {
   url: string;
 }
@@ -16,10 +17,12 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const dispatch = useAppDispatch();
+
   const homeRoute = `/profile/${currentUserProfile?.username}`;
   const likesRoute = `/profile/${currentUserProfile?.username}/likes`;
   const mediaRoute = `/profile/${currentUserProfile?.username}/media`;
   const repliesRoute = `/profile/${currentUserProfile?.username}/with_replies`;
+
   const { pathname } = useLocation();
   const { profileUsername } = useParams<{ profileUsername: string }>();
   const checkIsFollowing = () => {
@@ -67,12 +70,16 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
           </button>
         ) : (
           <>
-            <button className="absolute p-1 px-2 text-xl border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-10 text-dark-txt border-dark-txt">
+            <button className="absolute p-1 px-2 text-xl text-white border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-10 hover:border-dark-txt">
               <i className="bx bx-mail-send"></i>
             </button>
             <button
               ref={buttonRef}
-              className="absolute p-1 px-2 border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-dark-txt border-dark-txt"
+              className={`absolute p-2  border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-white hover:border-dark-txt ${
+                checkIsFollowing()
+                  ? "bg-blue-500 font-bold border-blue-500 "
+                  : ""
+              }`}
               onMouseEnter={() => {
                 if (buttonRef.current?.textContent === "Following") {
                   buttonRef.current!.textContent = "Unfollow";
@@ -91,11 +98,19 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
         )}
 
         <div className="flex flex-row mt-3 text-dark-txt">
-          <div className="mr-5 font-bold">
-            0 <span className="text-gray-500">Following</span>
+          <div
+            className="mr-5 font-bold cursor-pointer hover:underline"
+            onClick={() => Navigate?.push(`${url}/following`)}
+          >
+            {currentUserProfile?.following?.length}{" "}
+            <span className="text-gray-500">Following</span>
           </div>
-          <div className="font-bold">
-            12 <span className="text-gray-500">Followers</span>
+          <div
+            className="font-bold cursor-pointer hover:underline"
+            onClick={() => Navigate?.push(`${url}/followers`)}
+          >
+            {currentUserProfile?.followers?.length}{" "}
+            <span className="text-gray-500">Followers</span>
           </div>
         </div>
       </div>
