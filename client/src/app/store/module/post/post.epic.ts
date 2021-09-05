@@ -52,7 +52,7 @@ const fetchPostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(fetchPost.match),
     switchMap((action) =>
-      from(agent.PostService.fetchPost({})).pipe(
+      from(agent.PostService.fetchPost(action.payload)).pipe(
         map(setFetchPost),
         catchError((err) => of(errorCatcher(err.response.data)))
       )

@@ -23,7 +23,11 @@ const TweetPage: FC<ITweetPage> = ({ backUrl }) => {
   };
 
   useEffect(() => {
-    dispatch(fetchPost({}));
+    dispatch(
+      fetchPost({
+        followingOnly: true,
+      })
+    );
   }, []);
 
   return (

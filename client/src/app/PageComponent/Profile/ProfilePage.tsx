@@ -14,6 +14,7 @@ import { RootState } from "../../store/store";
 import Navigate from "../../utils/Navigate";
 import NotFound from "../NotFound/NotFound";
 import ReplyPostModal from "../Tweet/components/ReplyPostModal";
+import EditProfileModal from "./components/EditProfileModal";
 import ProfileBanner from "./components/ProfileBanner";
 import ProfileFollowBanner from "./components/ProfileFollowBanner";
 import ProfileFollowers from "./components/ProfileFollowers";
@@ -118,7 +119,7 @@ const ProfilePage = () => {
         </div>
       </div>
       <Route
-        path={[`${url}/tweet/:tweetId`, `${url}/with_replies/tweet/:tweetId`]}
+        path={[`${url}/tweet/:tweetId`]}
         children={({ match }) => {
           return (
             <Transition appear show={Boolean(match)} as={Fragment}>
@@ -140,6 +141,40 @@ const ProfilePage = () => {
                   >
                     <div className="inline-block max-w-6xl my-16 overflow-hidden text-left align-middle transition-all transform bg-red-300 shadow-xl w-tweet rounded-2xl">
                       <ReplyPostModal isProfilePost={true} />
+                    </div>
+                  </Transition.Child>
+                </div>
+              </Dialog>
+            </Transition>
+          );
+        }}
+      />
+      <Route
+        path={[
+          `${url}/settings/profile`,
+          `${url}/with_replies/settings/profile`,
+        ]}
+        children={({ match }) => {
+          return (
+            <Transition appear show={Boolean(match)} as={Fragment}>
+              <Dialog
+                as="div"
+                className="fixed inset-0 z-50 overflow-y-auto"
+                onClose={() => HandleClosingModal()}
+              >
+                <div className="min-h-screen px-4 text-center">
+                  <Dialog.Overlay className="fixed inset-0 bg-gray-600 opacity-25" />
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <div className="inline-block max-w-6xl my-16 overflow-hidden text-left align-middle transition-all transform bg-red-300 shadow-xl w-tweet rounded-2xl">
+                      <EditProfileModal />
                     </div>
                   </Transition.Child>
                 </div>
