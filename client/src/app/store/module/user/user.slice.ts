@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../auth/types/auth.model";
 import { ICreatePost, IFetchPost, IPost } from "../post/types/post.types";
+import { IUserProfile } from "./types/user.model";
 
 export interface userState {
   currentUserProfile: IUser | null;
   profilePost: IPost[] | null;
+  userProfileFollows: IUserProfile | null;
   path: string | undefined;
 }
 
 const initialState: userState = {
   currentUserProfile: null,
   profilePost: null,
+  userProfileFollows: null,
   path: undefined,
 };
 
@@ -45,6 +48,11 @@ export const userSlice = createSlice({
     retweetProfilePostFulfilled: (state) => state,
     followUser: (state, action: PayloadAction<string>) => state,
     followUserFullfilled: (state, action: PayloadAction<IUser>) => state,
+    getUserProfileFollowers: (state, action: PayloadAction<string>) => state,
+    getUserProfileFollowing: (state, action: PayloadAction<string>) => state,
+    getfollowUserFullfilled: (state, action: PayloadAction<IUserProfile>) => {
+      state.userProfileFollows = action.payload;
+    },
   },
 });
 
@@ -59,6 +67,9 @@ export const {
   retweetProfilePostFulfilled,
   followUser,
   followUserFullfilled,
+  getUserProfileFollowers,
+  getUserProfileFollowing,
+  getfollowUserFullfilled,
 } = userSlice.actions;
 
 export default userSlice.reducer;

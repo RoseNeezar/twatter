@@ -20,7 +20,10 @@ import {
   fetchProfilePost,
   followUser,
   followUserFullfilled,
+  getfollowUserFullfilled,
   getUserProfile,
+  getUserProfileFollowers,
+  getUserProfileFollowing,
   replyToProfilePost,
   retweetProfilePost,
   retweetProfilePostFulfilled,
@@ -153,13 +156,36 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
 const followUserEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(followUser.match),
-    switchMap((action) =>
-      from(agent.UserService.followUser(action.payload)).pipe(
+    switchMap((action) => {
+      return from(agent.UserService.followUser(action.payload)).pipe(
         map(followUserFullfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      );
+    })
+  );
+
+const getFollowerProfilePostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(getUserProfileFollowers.match),
+    switchMap((action) =>
+      from(agent.UserService.getUsersFollower(action.payload)).pipe(
+        map(getfollowUserFullfilled),
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
   );
+
+const getFollowingProfilePostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(getUserProfileFollowing.match),
+    switchMap((action) =>
+      from(agent.UserService.getUsersFollowing(action.payload)).pipe(
+        map(getfollowUserFullfilled),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
+  );
+
 export default combineEpics(
   getUserEpic,
   fetchProfilePostEpic,
@@ -167,5 +193,7 @@ export default combineEpics(
   deleteProfilePostEpic,
   retweetProfilePostEpic,
   getRetweetedPostEpic,
-  followUserEpic
+  followUserEpic,
+  getFollowerProfilePostEpic,
+  getFollowingProfilePostEpic
 );
