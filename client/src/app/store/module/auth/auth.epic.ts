@@ -1,15 +1,6 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
-import {
-  catchError,
-  concatMap,
-  delay,
-  filter,
-  from,
-  map,
-  of,
-  switchMap,
-} from "rxjs";
+import { catchError, concatMap, filter, from, map, of, switchMap } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import {
@@ -21,7 +12,6 @@ import {
   resetUser,
   setUser,
 } from "./auth.slice";
-import { IError } from "./types/auth.model";
 
 export type MyEpic = Epic<AnyAction, AnyAction, RootState>;
 
@@ -29,13 +19,11 @@ const loginEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(login.match),
     switchMap((action) =>
-      from(
-        agent.AuthService.login({
-          email: action.payload.email,
-          password: action.payload.password,
-        })
-      ).pipe(
-        map(setUser),
+      agent.AuthService.login({
+        email: action.payload.email,
+        password: action.payload.password,
+      }).pipe(
+        map(({ response }) => setUser(response)),
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -44,18 +32,15 @@ const loginEpic: MyEpic = (action$, state$) =>
 const registerEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(register.match),
-    delay(500),
     concatMap((action) =>
-      from(
-        agent.AuthService.register({
-          firstName: action.payload.firstName,
-          lastName: action.payload.lastName,
-          username: action.payload.username,
-          email: action.payload.email,
-          password: action.payload.password,
-        })
-      ).pipe(
-        map(setUser),
+      agent.AuthService.register({
+        firstName: action.payload.firstName,
+        lastName: action.payload.lastName,
+        username: action.payload.username,
+        email: action.payload.email,
+        password: action.payload.password,
+      }).pipe(
+        map(({ response }) => setUser(response)),
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -76,8 +61,8 @@ const getUserEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(getUser.match),
     switchMap((action) =>
-      from(agent.AuthService.currentUser()).pipe(
-        map(setUser),
+      agent.AuthService.currentUser().pipe(
+        map(({ response }) => setUser(response)),
         catchError((err) => {
           return of(errorCatcher(err.response.data));
         })

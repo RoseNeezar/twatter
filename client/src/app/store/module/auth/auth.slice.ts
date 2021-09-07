@@ -47,6 +47,9 @@ export const authSlice = createSlice({
     resetUser: (state) => {
       state.user = null;
     },
+    routeChange: (state, action: PayloadAction<Location>) => {
+      console.log("rotue-change", action.payload.pathname);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(followUserFullfilled, (state, action) => {
@@ -64,6 +67,7 @@ export const {
   errorCatcher,
   setAppLoaded,
   getUser,
+  routeChange,
 } = authSlice.actions;
 
 export default authSlice.reducer;

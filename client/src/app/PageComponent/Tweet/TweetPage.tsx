@@ -28,7 +28,7 @@ const TweetPage: FC<ITweetPage> = ({ backUrl }) => {
         followingOnly: true,
       })
     );
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
