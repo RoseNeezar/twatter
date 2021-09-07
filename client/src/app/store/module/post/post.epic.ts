@@ -5,12 +5,15 @@ import {
   concatMap,
   debounceTime,
   filter,
+  forkJoin,
   from,
+  ignoreElements,
   map,
   of,
   switchMap,
   takeUntil,
   tap,
+  zip,
 } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import agent from "../../../api/agent";
@@ -44,7 +47,7 @@ const createPostEpic: MyEpic = (action$, state$) =>
         content: action.payload.content,
       }).pipe(
         map((res) => setPost(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -68,7 +71,7 @@ const likePostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.likePost(action.payload).pipe(
         map((res) => likePostFulfilled(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -78,8 +81,8 @@ const getLikedUserEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(likePostFulfilled.match),
     switchMap((action) =>
-      from(agent.AuthService.currentUser()).pipe(
-        map(setUser),
+      agent.AuthService.currentUser().pipe(
+        map(({ response }) => setUser(response)),
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -91,7 +94,7 @@ const retweetPostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.retweetPost(action.payload).pipe(
         map((res) => retweetPostFulfilled(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -100,19 +103,19 @@ const retweetPostEpic: MyEpic = (action$, state$) =>
 const getRetweetedPostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(retweetPostFulfilled.match),
-    concatMap((action) => {
-      return (
-        from(agent.AuthService.currentUser()).pipe(
-          map(setUser),
-          catchError((err) => of(errorCatcher(err.response.data)))
-        ),
-        agent.PostService.fetchPost().pipe(
-          map(({ response }) => setFetchPost(response)),
-          takeUntil(action$.pipe(filter(routeChange.match))),
-          catchError((err) => of(errorCatcher(err.response.data)))
-        )
-      );
-    })
+    switchMap((action) =>
+      agent.AuthService.currentUser().pipe(
+        map(({ response }) => setUser(response)),
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    ),
+    concatMap((action) =>
+      agent.PostService.fetchPost().pipe(
+        map(({ response }) => setFetchPost(response)),
+
+        catchError((err) => of(errorCatcher(err.response.data)))
+      )
+    )
   );
 
 const GetReplyPostEpic: MyEpic = (action$, state$) =>
@@ -121,7 +124,7 @@ const GetReplyPostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.getPostById(action.payload).pipe(
         map((res) => getReplyPostFulfilled(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -136,7 +139,7 @@ const replyToPostEpic: MyEpic = (action$, state$) =>
         replyTo: action.payload.replyTo,
       }).pipe(
         map((res) => replyToPostFullfilled(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -148,7 +151,7 @@ const replyToPostFullfilledEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.fetchPost().pipe(
         map(({ response }) => setFetchPost(response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -163,7 +166,7 @@ const replyToSinglePostEpic: MyEpic = (action$, state$) =>
         replyTo: action.payload.replyTo,
       }).pipe(
         map((res) => replyToSinglePostFullfilled(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -175,7 +178,7 @@ const replyToSinglePostFullfilledEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.getPostById(action.payload.replyTo.id).pipe(
         map((res) => getReplyPostFulfilled(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -186,22 +189,16 @@ const deletePostEpic: MyEpic = (action$, state$) =>
     filter(deletePost.match),
     concatMap((action) => {
       if (!!action.payload.replyTo) {
-        return (
-          agent.PostService.deletePostById(action.payload.id).pipe(
-            map(({ response }) => fetchPost(response)),
-            takeUntil(action$.pipe(filter(routeChange.match))),
-            catchError((err) => of(errorCatcher(err.response.data)))
-          ),
-          agent.PostService.getPostById(action.payload.replyTo).pipe(
-            map(({ response }) => getReplyPostFulfilled(response)),
-            takeUntil(action$.pipe(filter(routeChange.match))),
-            catchError((err) => of(errorCatcher(err.response.data)))
-          )
+        return forkJoin({
+          deleted: agent.PostService.deletePostById(action.payload.id),
+          post: agent.PostService.getPostById(action.payload.replyTo),
+        }).pipe(
+          map(({ post }) => getReplyPostFulfilled(post.response)),
+          catchError((err) => of(errorCatcher(err.response.data)))
         );
       } else {
         return agent.PostService.deletePostById(action.payload.id).pipe(
-          map(({ response }) => fetchPost(response)),
-          takeUntil(action$.pipe(filter(routeChange.match))),
+          map(() => fetchPost({ followingOnly: true })),
           catchError((err) => of(errorCatcher(err.response.data)))
         );
       }

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import queryString from "query-string";
 import { ajax } from "rxjs/ajax";
 import {
   ILogin,
@@ -12,30 +12,8 @@ import {
   IPost,
 } from "../store/module/post/types/post.types";
 import { IUserProfile } from "../store/module/user/types/user.model";
-import queryString from "query-string";
-
-const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const baseURL = "http://localhost:3030/api/";
-
-const requests = {
-  get: <T>(url: string, data?: any) =>
-    axios
-      .get<T>(url, {
-        withCredentials: true,
-        params: data,
-      })
-      .then(responseBody),
-  post: <T>(url: string, body?: {}) =>
-    axios.post<T>(url, body).then(responseBody),
-  put: <T>(url: string, body?: {}, params?: any) =>
-    axios
-      .put<T>(url, body, {
-        params,
-      })
-      .then(responseBody),
-  del: <T>(url: string) => axios.delete<T>(url).then(responseBody),
-};
 
 const requestRxjs = {
   get: <T>(url: string) =>
@@ -67,10 +45,22 @@ const requestRxjs = {
 };
 
 const AuthService = {
-  login: (data: ILogin) => requests.post<IUser>("auth/login", data),
-  register: (data: IRegister) => requests.post<IUser>("auth/signup", data),
-  logout: () => requests.post("auth/logout"),
-  currentUser: () => requests.get<IUser>("auth/current-user"),
+  login: (data: ILogin) =>
+    requestRxjs.post<IUser>(
+      queryString.stringifyUrl({ url: "auth/login" }),
+      data
+    ),
+  register: (data: IRegister) =>
+    requestRxjs.post<IUser>(
+      queryString.stringifyUrl({ url: "auth/signup" }),
+      data
+    ),
+  logout: () =>
+    requestRxjs.post(queryString.stringifyUrl({ url: "auth/logout" })),
+  currentUser: () =>
+    requestRxjs.get<IUser>(
+      queryString.stringifyUrl({ url: "auth/current-user" })
+    ),
 };
 
 const PostService = {
@@ -99,12 +89,20 @@ const PostService = {
 };
 
 const UserService = {
-  getUserByUsername: (data: string) => requests.get<IUser>(`users/${data}`),
-  followUser: (data: string) => requests.put<IUser>(`users/${data}/follow`),
+  getUserByUsername: (data: string) =>
+    requestRxjs.get<IUser>(queryString.stringifyUrl({ url: `users/${data}` })),
+  followUser: (data: string) =>
+    requestRxjs.put<IUser>(
+      queryString.stringifyUrl({ url: `users/${data}/follow` })
+    ),
   getUsersFollower: (data: string) =>
-    requests.get<IUserProfile>(`users/${data}/followers`),
+    requestRxjs.get<IUserProfile>(
+      queryString.stringifyUrl({ url: `users/${data}/followers` })
+    ),
   getUsersFollowing: (data: string) =>
-    requests.get<IUserProfile>(`users/${data}/following`),
+    requestRxjs.get<IUserProfile>(
+      queryString.stringifyUrl({ url: `users/${data}/following` })
+    ),
 };
 
 const agent = {

@@ -4,18 +4,14 @@ import {
   catchError,
   concatMap,
   filter,
-  from,
   ignoreElements,
   map,
   of,
   switchMap,
-  takeUntil,
-  tap,
 } from "rxjs";
 import agent from "../../../api/agent";
-import Navigate from "../../../utils/Navigate";
 import { RootState } from "../../store";
-import { errorCatcher, routeChange, setUser } from "../auth/auth.slice";
+import { errorCatcher, setUser } from "../auth/auth.slice";
 import {
   deleteProfilePost,
   fetchProfilePost,
@@ -38,8 +34,8 @@ const getUserEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(getUserProfile.match),
     switchMap((action) =>
-      from(agent.UserService.getUserByUsername(action.payload)).pipe(
-        map(setUserProfile),
+      agent.UserService.getUserByUsername(action.payload).pipe(
+        map(({ response }) => setUserProfile(response)),
         catchError((err) => {
           return of(errorCatcher(err.response.data));
         })
@@ -124,8 +120,8 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
     filter(retweetProfilePostFulfilled.match),
     concatMap((action) => {
       return (
-        from(agent.AuthService.currentUser()).pipe(
-          map(setUser),
+        agent.AuthService.currentUser().pipe(
+          map(({ response }) => setUser(response)),
           catchError((err) => of(errorCatcher(err.response.data)))
         ),
         agent.PostService.fetchPost({
@@ -146,20 +142,20 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
 const followUserEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(followUser.match),
-    switchMap((action) => {
-      return from(agent.UserService.followUser(action.payload)).pipe(
-        map(followUserFullfilled),
+    switchMap((action) =>
+      agent.UserService.followUser(action.payload).pipe(
+        map(({ response }) => followUserFullfilled(response)),
         catchError((err) => of(errorCatcher(err.response.data)))
-      );
-    })
+      )
+    )
   );
 
 const getFollowerProfilePostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(getUserProfileFollowers.match),
     switchMap((action) =>
-      from(agent.UserService.getUsersFollower(action.payload)).pipe(
-        map(getfollowUserFullfilled),
+      agent.UserService.getUsersFollower(action.payload).pipe(
+        map(({ response }) => getfollowUserFullfilled(response)),
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )
@@ -169,8 +165,8 @@ const getFollowingProfilePostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(getUserProfileFollowing.match),
     switchMap((action) =>
-      from(agent.UserService.getUsersFollowing(action.payload)).pipe(
-        map(getfollowUserFullfilled),
+      agent.UserService.getUsersFollowing(action.payload).pipe(
+        map(({ response }) => getfollowUserFullfilled(response)),
         catchError((err) => of(errorCatcher(err.response.data)))
       )
     )

@@ -65,7 +65,11 @@ const ReplyPostModal: FC<IReplyPostModal> = ({
             })
           );
       setReply("");
-      Navigate?.goBack();
+      if (!isSinglePost && !isProfilePost) {
+        Navigate?.push("/home");
+      } else {
+        Navigate?.goBack();
+      }
     }
   };
 
