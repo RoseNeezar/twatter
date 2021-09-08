@@ -1,6 +1,15 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
-import { catchError, concatMap, filter, from, map, of, switchMap } from "rxjs";
+import {
+  catchError,
+  concatMap,
+  filter,
+  from,
+  map,
+  of,
+  switchMap,
+  tap,
+} from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import {
@@ -24,7 +33,7 @@ const loginEpic: MyEpic = (action$, state$) =>
         password: action.payload.password,
       }).pipe(
         map(({ response }) => setUser(response)),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -41,7 +50,7 @@ const registerEpic: MyEpic = (action$, state$) =>
         password: action.payload.password,
       }).pipe(
         map(({ response }) => setUser(response)),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -52,7 +61,7 @@ const logoutEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       from(agent.AuthService.logout()).pipe(
         map(resetUser),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -64,7 +73,7 @@ const getUserEpic: MyEpic = (action$, state$) =>
       agent.AuthService.currentUser().pipe(
         map(({ response }) => setUser(response)),
         catchError((err) => {
-          return of(errorCatcher(err.response.data));
+          return of(errorCatcher(err.response));
         })
       )
     )
