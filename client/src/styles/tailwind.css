@@ -19,6 +19,14 @@
     border-color: #fff transparent #fff transparent;
     animation: loading-spinner 1.2s linear infinite;
   }
+  .slider-thumb::-webkit-slider-thumb {
+    @apply w-4 h-4 bg-blue-500 rounded-full appearance-none cursor-pointer;
+  }
+
+  .slider-thumb::-webkit-slider-thumb:hover {
+    @apply bg-blue-700;
+  }
+
   @keyframes loading-spinner {
     0% {
       transform: rotate(0deg);
