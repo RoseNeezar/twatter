@@ -48,7 +48,7 @@ const createPostEpic: MyEpic = (action$, state$) =>
       }).pipe(
         map((res) => setPost(res.response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -60,7 +60,7 @@ const fetchPostEpic: MyEpic = (action$, state$) =>
       agent.PostService.fetchPost(action.payload).pipe(
         map((res) => setFetchPost(res.response)),
         takeUntil(action$.pipe(filter(routeChange.match))),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -72,7 +72,7 @@ const likePostEpic: MyEpic = (action$, state$) =>
       agent.PostService.likePost(action.payload).pipe(
         map((res) => likePostFulfilled(res.response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -83,7 +83,7 @@ const getLikedUserEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.AuthService.currentUser().pipe(
         map(({ response }) => setUser(response)),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -95,7 +95,7 @@ const retweetPostEpic: MyEpic = (action$, state$) =>
       agent.PostService.retweetPost(action.payload).pipe(
         map((res) => retweetPostFulfilled(res.response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -106,14 +106,14 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.AuthService.currentUser().pipe(
         map(({ response }) => setUser(response)),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     ),
     concatMap((action) =>
       agent.PostService.fetchPost().pipe(
         map(({ response }) => setFetchPost(response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -125,7 +125,7 @@ const GetReplyPostEpic: MyEpic = (action$, state$) =>
       agent.PostService.getPostById(action.payload).pipe(
         map((res) => getReplyPostFulfilled(res.response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -140,7 +140,7 @@ const replyToPostEpic: MyEpic = (action$, state$) =>
       }).pipe(
         map((res) => replyToPostFullfilled(res.response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -152,7 +152,7 @@ const replyToPostFullfilledEpic: MyEpic = (action$, state$) =>
       agent.PostService.fetchPost().pipe(
         map(({ response }) => setFetchPost(response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -167,7 +167,7 @@ const replyToSinglePostEpic: MyEpic = (action$, state$) =>
       }).pipe(
         map((res) => replyToSinglePostFullfilled(res.response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -179,7 +179,7 @@ const replyToSinglePostFullfilledEpic: MyEpic = (action$, state$) =>
       agent.PostService.getPostById(action.payload.replyTo.id).pipe(
         map((res) => getReplyPostFulfilled(res.response)),
 
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -194,12 +194,12 @@ const deletePostEpic: MyEpic = (action$, state$) =>
           post: agent.PostService.getPostById(action.payload.replyTo),
         }).pipe(
           map(({ post }) => getReplyPostFulfilled(post.response)),
-          catchError((err) => of(errorCatcher(err.response.data)))
+          catchError((err) => of(errorCatcher(err.response)))
         );
       } else {
         return agent.PostService.deletePostById(action.payload.id).pipe(
           map(() => fetchPost({ followingOnly: true })),
-          catchError((err) => of(errorCatcher(err.response.data)))
+          catchError((err) => of(errorCatcher(err.response)))
         );
       }
     })

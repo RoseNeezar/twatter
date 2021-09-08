@@ -37,7 +37,7 @@ const getUserEpic: MyEpic = (action$, state$) =>
       agent.UserService.getUserByUsername(action.payload).pipe(
         map(({ response }) => setUserProfile(response)),
         catchError((err) => {
-          return of(errorCatcher(err.response.data));
+          return of(errorCatcher(err.response));
         })
       )
     )
@@ -50,7 +50,7 @@ const fetchProfilePostEpic: MyEpic = (action$, state$) =>
       agent.PostService.fetchPost(action.payload).pipe(
         map(({ response }) => setProfilePost(response)),
         catchError((err) => {
-          return of(errorCatcher(err.response.data));
+          return of(errorCatcher(err.response));
         })
       )
     )
@@ -63,7 +63,7 @@ const replyToProfilePostEpic: MyEpic = (action$, state$) =>
       return agent.PostService.createPost({
         content: action.payload.content,
         replyTo: action.payload.replyTo,
-      }).pipe(catchError((err) => of(errorCatcher(err.response.data))));
+      }).pipe(catchError((err) => of(errorCatcher(err.response))));
     }),
     concatMap((action) =>
       agent.PostService.fetchPost({
@@ -74,7 +74,7 @@ const replyToProfilePostEpic: MyEpic = (action$, state$) =>
       }).pipe(
         map(({ response }) => setProfilePost(response)),
         catchError((err) => {
-          return of(errorCatcher(err.response.data));
+          return of(errorCatcher(err.response));
         })
       )
     )
@@ -87,7 +87,7 @@ const deleteProfilePostEpic: MyEpic = (action$, state$) =>
       return (
         agent.PostService.deletePostById(action.payload.id).pipe(
           ignoreElements(),
-          catchError((err) => of(errorCatcher(err.response.data)))
+          catchError((err) => of(errorCatcher(err.response)))
         ),
         agent.PostService.fetchPost({
           postedBy: state$.value.user.currentUserProfile?.id,
@@ -97,7 +97,7 @@ const deleteProfilePostEpic: MyEpic = (action$, state$) =>
         }).pipe(
           map(({ response }) => setProfilePost(response)),
           catchError((err) => {
-            return of(errorCatcher(err.response.data));
+            return of(errorCatcher(err.response));
           })
         )
       );
@@ -110,7 +110,7 @@ const retweetProfilePostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.retweetPost(action.payload.id).pipe(
         map(({ response }) => retweetProfilePostFulfilled()),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -122,7 +122,7 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
       return (
         agent.AuthService.currentUser().pipe(
           map(({ response }) => setUser(response)),
-          catchError((err) => of(errorCatcher(err.response.data)))
+          catchError((err) => of(errorCatcher(err.response)))
         ),
         agent.PostService.fetchPost({
           postedBy: state$.value.user.currentUserProfile?.id,
@@ -132,7 +132,7 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
         }).pipe(
           map(({ response }) => setProfilePost(response)),
           catchError((err) => {
-            return of(errorCatcher(err.response.data));
+            return of(errorCatcher(err.response));
           })
         )
       );
@@ -145,7 +145,7 @@ const followUserEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.UserService.followUser(action.payload).pipe(
         map(({ response }) => followUserFullfilled(response)),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -156,7 +156,7 @@ const getFollowerProfilePostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.UserService.getUsersFollower(action.payload).pipe(
         map(({ response }) => getfollowUserFullfilled(response)),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
@@ -167,7 +167,7 @@ const getFollowingProfilePostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.UserService.getUsersFollowing(action.payload).pipe(
         map(({ response }) => getfollowUserFullfilled(response)),
-        catchError((err) => of(errorCatcher(err.response.data)))
+        catchError((err) => of(errorCatcher(err.response)))
       )
     )
   );
