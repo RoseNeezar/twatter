@@ -5,21 +5,36 @@ import ReactAvatarEditor from "react-avatar-editor";
 import { useAppSelector } from "../../../store/hooks/hooks";
 import { RootState } from "../../../store/store";
 import TextareaAutosize from "react-textarea-autosize";
+import dataURLtoFile from "../../../utils/dataURLToFile";
+import axios from "axios";
 
 const EditProfileModal = () => {
   const width = 500;
   const height = 500;
 
   const [image, setImage] = useState("");
-  const [saveImage, setSaveImage] = useState("");
+  const [bannerImage, setBannerImage] = useState("");
+  const [saveImage, setSaveImage] = useState<{
+    data: string;
+    filename: string;
+  } | null>();
+  const [saveBannerImage, setSaveBannerImage] = useState<{
+    data: string;
+    filename: string;
+  } | null>();
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
   });
   const [scale, setScale] = useState(1);
+  const [fileName, setFileName] = useState("");
+  const currentUserProfile = useAppSelector(
+    (state: RootState) => state.user.currentUserProfile
+  );
+  const imageRef = useRef<ReactAvatarEditor>(null);
 
   const [formState, setFormState] = useState({
-    username: "",
+    username: currentUserProfile?.username || "",
     bio: "",
   });
   const { username, bio } = formState;
@@ -30,19 +45,39 @@ const EditProfileModal = () => {
       setFormState({ ...formState, [name]: e.target.value });
     };
 
-  const currentUserProfile = useAppSelector(
-    (state: RootState) => state.user.currentUserProfile
-  );
-  const imageRef = useRef<ReactAvatarEditor>(null);
-
   const handleNewImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       return;
     }
+    setImage("");
+    setBannerImage("");
+    setSaveImage(null);
+
     const files = e.target.files!;
+
+    setFileName(files[0].name);
     const reader = new FileReader();
     reader.onload = (ev: ProgressEvent<FileReader>) => {
       setImage(String(ev.target?.result));
+    };
+
+    reader.readAsDataURL(files[0]);
+  };
+
+  const handleNewBannerImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+    setImage("");
+    setBannerImage("");
+    setSaveBannerImage(null);
+    const files = e.target.files!;
+
+    setFileName(files[0].name);
+
+    const reader = new FileReader();
+    reader.onload = (ev: ProgressEvent<FileReader>) => {
+      setBannerImage(String(ev.target?.result));
     };
 
     reader.readAsDataURL(files[0]);
@@ -65,7 +100,42 @@ const EditProfileModal = () => {
     if (!canvas) {
       return;
     }
-    setSaveImage(canvas);
+
+    if (image) {
+      setSaveImage({ data: canvas, filename: fileName });
+    }
+    if (bannerImage) {
+      setSaveBannerImage({ data: canvas, filename: fileName });
+    }
+  };
+
+  const HandleUpdateImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const toFileBanner = dataURLtoFile(
+      saveBannerImage?.data,
+      String(saveBannerImage?.filename)
+    );
+    const toFileProfile = dataURLtoFile(
+      saveImage?.data,
+      String(saveImage?.filename)
+    );
+
+    const formDataBanner = new FormData();
+    formDataBanner.append("croppedImage", toFileBanner);
+
+    const formDataProfile = new FormData();
+    formDataProfile.append("croppedImage", toFileProfile);
+
+    if (!!toFileBanner) {
+      await axios.post("users/coverPhoto", formDataBanner, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    }
+    if (!!toFileProfile) {
+      await axios.post("users/profilePicture", formDataProfile, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    }
+    console.log(toFileBanner, toFileProfile);
   };
   return (
     <div className="flex flex-col w-full pt-3 m-auto rounded-md bg-dark-main text-dark-txt">
@@ -80,14 +150,14 @@ const EditProfileModal = () => {
                 >
                   <i className="pl-3 text-3xl text-dark-txt bx bx-x"></i>
                 </div>
-                {image && !saveImage ? (
+                {(image && !saveImage) || (bannerImage && !saveBannerImage) ? (
                   <h1 className="font-bold">Edit Media</h1>
                 ) : (
                   <h1 className="font-bold">Edit Profile</h1>
                 )}
               </div>
             </Dialog.Title>
-            {image && !saveImage ? (
+            {(image && !saveImage) || (bannerImage && !saveBannerImage) ? (
               <button
                 className="px-5 py-3 mr-3 text-white bg-blue-500 rounded-3xl"
                 onClick={(e) => HandleSaveImage(e)}
@@ -95,13 +165,16 @@ const EditProfileModal = () => {
                 Apply
               </button>
             ) : (
-              <button className="px-5 py-1 mr-3 text-dark-main bg-dark-txt rounded-3xl hover:bg-gray-400">
+              <button
+                className="px-5 py-1 mr-3 text-dark-main bg-dark-txt rounded-3xl hover:bg-gray-400"
+                onClick={(e) => HandleUpdateImage(e)}
+              >
                 Save
               </button>
             )}
           </div>
 
-          {image && !saveImage ? (
+          {(image && !saveImage) || (bannerImage && !saveBannerImage) ? (
             <div className="flex flex-col items-center w-full">
               <div>
                 <ReactAvatarEditor
@@ -112,7 +185,7 @@ const EditProfileModal = () => {
                   position={position}
                   onPositionChange={handlePositionChange}
                   rotate={0}
-                  image={image}
+                  image={image || bannerImage}
                 />
               </div>
               <div className="flex flex-row justify-center w-full">
@@ -141,9 +214,11 @@ const EditProfileModal = () => {
               <div className="">
                 <div className="relative">
                   <img
-                    className="w-tweet"
+                    className="object-cover w-full "
                     style={{ height: 200 }}
-                    src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+                    src={
+                      saveBannerImage?.data || currentUserProfile?.coverPhoto
+                    }
                     alt=""
                   />
                   <div className="absolute px-2 py-1 text-2xl rounded-full top-20 left-72">
@@ -153,10 +228,11 @@ const EditProfileModal = () => {
                     className="absolute z-30 w-24 opacity-0 top-20 left-64"
                     name="bannerImg"
                     type="file"
+                    onChange={handleNewBannerImage}
                   />
                   <img
                     className="absolute left-0 object-cover w-24 h-24 border-2 rounded-full -bottom-12 border-dark-main"
-                    src={image || currentUserProfile?.profilePic}
+                    src={saveImage?.data || currentUserProfile?.profilePic}
                     alt="profile-image"
                   />
                   <div className="absolute px-2 py-1 text-2xl rounded-full left-7 -bottom-5">
@@ -178,6 +254,7 @@ const EditProfileModal = () => {
           `}
                   placeholder="Name"
                   value={username}
+                  disabled
                   onChange={onChangeText("username")}
                 />
                 <TextareaAutosize
@@ -186,6 +263,7 @@ const EditProfileModal = () => {
                   minRows={2}
                   maxRows={6}
                   value={bio}
+                  disabled
                   onChange={onChangeText("bio")}
                 />
               </div>

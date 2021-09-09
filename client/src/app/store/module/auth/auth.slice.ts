@@ -47,9 +47,7 @@ export const authSlice = createSlice({
     resetUser: (state) => {
       state.user = null;
     },
-    routeChange: (state, action: PayloadAction<Location>) => {
-      console.log("rotue-change", action.payload.pathname);
-    },
+    routeChange: (state, action: PayloadAction<Location>) => {},
   },
   extraReducers: (builder) => {
     builder.addCase(followUserFullfilled, (state, action) => {

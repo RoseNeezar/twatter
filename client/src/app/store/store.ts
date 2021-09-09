@@ -8,7 +8,7 @@ import postSlice from "./module/post/post.slice";
 import userEpic from "./module/user/user.epic";
 import userSlice from "./module/user/user.slice";
 
-const reducer = combineReducers({
+export const reducer = combineReducers({
   auth: authSlice,
   posts: postSlice,
   user: userSlice,

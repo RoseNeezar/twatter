@@ -8,7 +8,7 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
-import { selectCurrentUser } from "../../store/module/auth/auth.slice";
+import { getUser, selectCurrentUser } from "../../store/module/auth/auth.slice";
 import { getUserProfile } from "../../store/module/user/user.slice";
 import { RootState } from "../../store/store";
 import Navigate from "../../utils/Navigate";
@@ -42,6 +42,7 @@ const ProfilePage = () => {
 
   const HandleClosingModal = () => {
     Navigate?.goBack();
+    dispatch(getUser());
   };
 
   const [scrollPosition, setScrollPosition] = useState(0);

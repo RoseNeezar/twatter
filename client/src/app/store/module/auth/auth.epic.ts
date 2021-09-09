@@ -6,12 +6,15 @@ import {
   filter,
   from,
   map,
+  mergeMap,
   of,
   switchMap,
   tap,
 } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
+import { resetPost } from "../post/post.slice";
+import { resetUserProfile } from "../user/user.slice";
 import {
   errorCatcher,
   getUser,
@@ -59,8 +62,12 @@ const logoutEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(logout.match),
     switchMap((action) =>
-      from(agent.AuthService.logout()).pipe(
-        map(resetUser),
+      agent.AuthService.logout().pipe(
+        mergeMap(({ response }) => [
+          resetUser(),
+          resetPost(),
+          resetUserProfile(),
+        ]),
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
