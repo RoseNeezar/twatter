@@ -53,6 +53,9 @@ export const userSlice = createSlice({
     getfollowUserFullfilled: (state, action: PayloadAction<IUserProfile>) => {
       state.userProfileFollows = action.payload;
     },
+    resetUserProfile: (state) => {
+      state.profilePost = null;
+    },
   },
 });
 
@@ -70,6 +73,7 @@ export const {
   getUserProfileFollowers,
   getUserProfileFollowing,
   getfollowUserFullfilled,
+  resetUserProfile,
 } = userSlice.actions;
 
 export default userSlice.reducer;

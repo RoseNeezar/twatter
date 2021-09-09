@@ -96,6 +96,9 @@ export const postSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; replyTo?: string }>
     ) => state,
+    resetPost: (state) => {
+      state.post = null;
+    },
   },
 });
 
@@ -116,6 +119,7 @@ export const {
   replyToSinglePostFullfilled,
   updateSinglePost,
   deletePost,
+  resetPost,
 } = postSlice.actions;
 
 export default postSlice.reducer;

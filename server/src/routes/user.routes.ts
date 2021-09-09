@@ -5,8 +5,11 @@ import {
   getUserFollowers,
   getUserFollowing,
   searchUser,
+  updateProfileBanner,
+  updateProfileImage,
 } from "../controller/user.controller";
 import { currentUser } from "../middlewares/currrent-user.middleware";
+import { upload } from "../middlewares/image.middleware";
 import { requireAuth } from "../middlewares/require-auth.middleware";
 
 const UserRoute = express.Router();
@@ -26,7 +29,19 @@ UserRoute.route("/:userId/followers").get(
   requireAuth,
   getUserFollowers
 );
-UserRoute.route("/profilePicture").post(currentUser, requireAuth);
-UserRoute.route("/coverPhoto").post(currentUser, requireAuth);
+
+UserRoute.route("/profilePicture").post(
+  currentUser,
+  requireAuth,
+  upload.single("croppedImage"),
+  updateProfileImage
+);
+
+UserRoute.route("/coverPhoto").post(
+  currentUser,
+  requireAuth,
+  upload.single("croppedImage"),
+  updateProfileBanner
+);
 
 export default UserRoute;

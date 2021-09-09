@@ -2,6 +2,8 @@ import { Response } from "express";
 import { BadRequestError } from "../errors/bad-request-error";
 import { User, UserDoc } from "../models/user.models";
 import { RequestTyped } from "../types/types";
+import path from "path";
+import fs from "fs";
 
 export const getUserByUsername = async (
   req: RequestTyped<{}, {}, { username: string }>,
@@ -104,4 +106,60 @@ export const getUserFollowers = async (
       console.log(error);
       throw new BadRequestError("no user found");
     });
+};
+
+export const updateProfileImage = async (
+  req: RequestTyped<{}, {}, { userId: string }>,
+  res: Response
+) => {
+  if (!req.file) {
+    console.log("No file uploaded with ajax request.");
+    return res.sendStatus(400);
+  }
+
+  const filePath = `/uploads/images/${req.file.filename}.png`;
+  const tempPath = req.file.path;
+  const targetPath = path.join(__dirname, `../../${filePath}`);
+
+  fs.rename(tempPath, targetPath, async (error) => {
+    if (error != null) {
+      console.log(error);
+      return res.sendStatus(400);
+    }
+
+    req.currentUser = await User.findByIdAndUpdate(
+      req.currentUser?.id,
+      { profilePic: filePath },
+      { new: true }
+    );
+    res.sendStatus(204);
+  });
+};
+
+export const updateProfileBanner = async (
+  req: RequestTyped<{}, {}, { userId: string }>,
+  res: Response
+) => {
+  if (!req.file) {
+    console.log("No file uploaded with ajax request.");
+    return res.sendStatus(400);
+  }
+
+  const filePath = `/uploads/images/${req.file.filename}.png`;
+  const tempPath = req.file.path;
+  const targetPath = path.join(__dirname, `../../${filePath}`);
+
+  fs.rename(tempPath, targetPath, async (error) => {
+    if (error != null) {
+      console.log(error);
+      return res.sendStatus(400);
+    }
+
+    req.currentUser = await User.findByIdAndUpdate(
+      req.currentUser?.id,
+      { coverPhoto: filePath },
+      { new: true }
+    );
+    res.sendStatus(204);
+  });
 };
