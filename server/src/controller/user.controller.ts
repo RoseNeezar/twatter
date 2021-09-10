@@ -117,23 +117,21 @@ export const updateProfileImage = async (
     return res.sendStatus(400);
   }
 
-  const filePath = `/uploads/images/${req.file.filename}.png`;
-  const tempPath = req.file.path;
-  const targetPath = path.join(__dirname, `../../${filePath}`);
-
-  fs.rename(tempPath, targetPath, async (error) => {
-    if (error != null) {
-      console.log(error);
-      return res.sendStatus(400);
-    }
-
+  if (!req.file) {
+    console.log("No file uploaded with ajax request.");
+    throw new BadRequestError("No file uploaded with ajax request.");
+  }
+  try {
     req.currentUser = await User.findByIdAndUpdate(
       req.currentUser?.id,
-      { profilePic: filePath },
+      { profilePic: `${process.env.APP_URL}/images/${req.file.filename}` },
       { new: true }
     );
     res.sendStatus(204);
-  });
+  } catch (error) {
+    console.log(error);
+    throw new BadRequestError("no file found");
+  }
 };
 
 export const updateProfileBanner = async (
@@ -142,24 +140,18 @@ export const updateProfileBanner = async (
 ) => {
   if (!req.file) {
     console.log("No file uploaded with ajax request.");
-    return res.sendStatus(400);
+    throw new BadRequestError("No file uploaded with ajax request.");
   }
-
-  const filePath = `/uploads/images/${req.file.filename}.png`;
-  const tempPath = req.file.path;
-  const targetPath = path.join(__dirname, `../../${filePath}`);
-
-  fs.rename(tempPath, targetPath, async (error) => {
-    if (error != null) {
-      console.log(error);
-      return res.sendStatus(400);
-    }
-
+  try {
     req.currentUser = await User.findByIdAndUpdate(
       req.currentUser?.id,
-      { coverPhoto: filePath },
+      { coverPhoto: `${process.env.APP_URL}/images/${req.file.filename}` },
       { new: true }
     );
+
     res.sendStatus(204);
-  });
+  } catch (error) {
+    console.log(error);
+    throw new BadRequestError("no file found");
+  }
 };

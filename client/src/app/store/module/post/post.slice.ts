@@ -96,6 +96,7 @@ export const postSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; replyTo?: string }>
     ) => state,
+    pinnedPost: (state, action: PayloadAction<string>) => state,
     resetPost: (state) => {
       state.post = null;
     },
@@ -120,6 +121,7 @@ export const {
   updateSinglePost,
   deletePost,
   resetPost,
+  pinnedPost,
 } = postSlice.actions;
 
 export default postSlice.reducer;

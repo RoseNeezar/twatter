@@ -19,6 +19,7 @@ import { ajax } from "rxjs/ajax";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import { errorCatcher, routeChange, setUser } from "../auth/auth.slice";
+import { setProfilePost } from "../user/user.slice";
 import {
   createPost,
   deletePost,
@@ -27,6 +28,7 @@ import {
   getReplyPostFulfilled,
   likePost,
   likePostFulfilled,
+  pinnedPost,
   replyToPost,
   replyToPostFullfilled,
   replyToSinglePost,
@@ -178,7 +180,6 @@ const replyToSinglePostFullfilledEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.getPostById(action.payload.replyTo.id).pipe(
         map((res) => getReplyPostFulfilled(res.response)),
-
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
@@ -205,6 +206,23 @@ const deletePostEpic: MyEpic = (action$, state$) =>
     })
   );
 
+const pinnedPostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(pinnedPost.match),
+    switchMap((action) =>
+      forkJoin({
+        pinnedPost: agent.PostService.pinnedPostById(action.payload),
+        profilePost: agent.PostService.fetchPost({
+          postedBy: state$.value.user.currentUserProfile?.id,
+          isReply: false,
+        }),
+      }).pipe(
+        map(({ profilePost: { response } }) => setProfilePost(response)),
+        catchError((err) => of(errorCatcher(err.response)))
+      )
+    )
+  );
+
 export default combineEpics(
   createPostEpic,
   fetchPostEpic,
@@ -217,5 +235,6 @@ export default combineEpics(
   replyToPostFullfilledEpic,
   replyToSinglePostEpic,
   replyToSinglePostFullfilledEpic,
-  deletePostEpic
+  deletePostEpic,
+  pinnedPostEpic
 );

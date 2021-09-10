@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import { ICreatePost, IGetPostQuery, IPinnedPost } from "../dto/post.dto";
 import { BadRequestError } from "../errors/bad-request-error";
 import { Post, PostAttrs } from "../models/post.models";
@@ -44,7 +45,8 @@ export const getPosts = async (
   let searchObj = req.query;
 
   if (searchObj.isReply !== undefined) {
-    const isReply = searchObj.isReply === true;
+    const isReply = searchObj.isReply;
+
     searchObj.replyTo = { $exists: isReply };
 
     delete searchObj.isReply;
@@ -56,27 +58,31 @@ export const getPosts = async (
   }
 
   if (searchObj.followingOnly !== undefined) {
-    const followingOnly = searchObj.followingOnly === true;
+    const followingOnly = searchObj.followingOnly;
 
     if (followingOnly) {
-      var objectIds = [];
+      const objectIds: Types.ObjectId[] = [];
 
       if (!req.currentUser?.following) {
         req.currentUser!.following = [];
       }
 
       req.currentUser?.following.forEach((user) => {
-        objectIds.push(user);
+        objectIds.push(Types.ObjectId(user));
       });
 
-      objectIds.push(req.currentUser?.id);
-      searchObj.postedBy = { $in: objectIds };
+      objectIds.push(Types.ObjectId(req.currentUser?.id));
+
+      const option = "$in";
+
+      searchObj.postedBy = { [option]: objectIds };
     }
 
     delete searchObj.followingOnly;
   }
 
   const results = await GetPosts.getPosts(searchObj);
+
   res.status(200).send(results);
 };
 
@@ -106,7 +112,7 @@ export const deletePost = async (
   req: RequestTyped<{}, {}, { id: string }>,
   res: Response
 ) => {
-  Post.findByIdAndDelete(req.params.id)
+  await Post.findByIdAndDelete(req.params.id)
     .then(() => res.sendStatus(202))
     .catch((error) => {
       console.log(error);
@@ -118,17 +124,15 @@ export const pinnedPost = async (
   req: RequestTyped<IPinnedPost, {}, { id: string }>,
   res: Response
 ) => {
-  if (req.body.pinned !== undefined) {
-    await Post.updateMany(
-      { postedBy: req.currentUser!.id },
-      { pinned: false }
-    ).catch((error) => {
-      console.log(error);
-      throw new BadRequestError("no post with id");
-    });
-  }
+  await Post.updateMany(
+    { postedBy: req.currentUser!.id },
+    { pinned: false }
+  ).catch((error) => {
+    console.log(error);
+    throw new BadRequestError("no post with id");
+  });
 
-  Post.findByIdAndUpdate(req.params.id, req.body)
+  Post.findByIdAndUpdate(req.params.id, { pinned: true })
     .then(() => res.sendStatus(204))
     .catch((error) => {
       console.log(error);
@@ -161,15 +165,19 @@ export const likePost = async (
   });
 
   // Insert post like
-  const post = await Post.findByIdAndUpdate(
+  let post = await Post.findByIdAndUpdate(
     postId,
     { [option]: { likes: userId } },
     { new: true }
-  ).catch((error) => {
-    console.log(error);
-    throw new BadRequestError("no post with id");
-  });
+  )
+    .populate("postedBy")
+    .populate("replyTo")
+    .catch((error) => {
+      console.log(error);
+      throw new BadRequestError("no post with id");
+    });
 
+  post = await User.populate(post, { path: "replyTo.postedBy" });
   res.status(200).send(post);
 };
 
@@ -213,14 +221,19 @@ export const retweetPost = async (
   });
 
   // Insert post like
-  const post = await Post.findByIdAndUpdate(
+  let post = await Post.findByIdAndUpdate(
     postId,
     { [option]: { retweetUsers: userId } },
     { new: true }
-  ).catch((error) => {
-    console.log(error);
-    throw new BadRequestError("no post with id");
-  });
+  )
+    .populate("postedBy")
+    .populate("replyTo")
+    .catch((error) => {
+      console.log(error);
+      throw new BadRequestError("no post with id");
+    });
+
+  post = await User.populate(post, { path: "replyTo.postedBy" });
 
   res.status(200).send(post);
 };
