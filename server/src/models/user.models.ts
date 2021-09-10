@@ -70,6 +70,7 @@ const userSchema = new mongoose.Schema(
     },
     coverPhoto: {
       type: String,
+      default: `${process.env.APP_URL}/images/img.jpeg`,
     },
     likes: [
       {

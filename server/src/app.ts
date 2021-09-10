@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { json } from "body-parser";
-import cookieSession from "cookie-session";
 import AuthRoute from "./routes/auth.routes";
 import { errorHandler } from "./middlewares/error-handler.middleware";
 import cors from "cors";
@@ -13,10 +12,12 @@ import { NotFoundError } from "./errors/not-found-error";
 import PostRoute from "./routes/post.routes";
 import cookieParser from "cookie-parser";
 import UserRoute from "./routes/user.routes";
+import bodyParser from "body-parser";
 
 const app = express();
 app.set("trust proxy", true);
-app.use(json());
+app.use(json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 app.use(cookieParser());
 
 app.use(
