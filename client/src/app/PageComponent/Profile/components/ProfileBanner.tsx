@@ -43,9 +43,9 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
     <div className="border-b mt-14 border-dark-third">
       <div className="relative">
         <img
-          className="w-tweet"
+          className="object-cover w-tweet"
           style={{ height: 200 }}
-          src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+          src={currentUser?.coverPhoto}
           alt=""
         />
       </div>

@@ -2,16 +2,17 @@ import { Dialog } from "@headlessui/react";
 import React, { ChangeEvent, useRef, useState } from "react";
 import Navigate from "../../../utils/Navigate";
 import ReactAvatarEditor from "react-avatar-editor";
-import { useAppSelector } from "../../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { RootState } from "../../../store/store";
 import TextareaAutosize from "react-textarea-autosize";
 import dataURLtoFile from "../../../utils/dataURLToFile";
 import axios from "axios";
+import { getUser } from "../../../store/module/auth/auth.slice";
 
 const EditProfileModal = () => {
   const width = 500;
   const height = 500;
-
+  const dispatch = useAppDispatch();
   const [image, setImage] = useState("");
   const [bannerImage, setBannerImage] = useState("");
   const [saveImage, setSaveImage] = useState<{
@@ -110,32 +111,36 @@ const EditProfileModal = () => {
   };
 
   const HandleUpdateImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const toFileBanner = dataURLtoFile(
-      saveBannerImage?.data,
-      String(saveBannerImage?.filename)
-    );
-    const toFileProfile = dataURLtoFile(
-      saveImage?.data,
-      String(saveImage?.filename)
-    );
+    let toFileBanner;
+    let toFileProfile;
 
-    const formDataBanner = new FormData();
-    formDataBanner.append("croppedImage", toFileBanner);
+    let formDataBanner = new FormData();
+    let formDataProfile = new FormData();
 
-    const formDataProfile = new FormData();
-    formDataProfile.append("croppedImage", toFileProfile);
-
-    if (!!toFileBanner) {
+    if (saveBannerImage?.data && saveBannerImage?.data.length > 0) {
+      toFileBanner = dataURLtoFile(
+        saveBannerImage?.data,
+        String(saveBannerImage?.filename)
+      );
+      formDataBanner.append("croppedImage", toFileBanner);
       await axios.post("users/coverPhoto", formDataBanner, {
         headers: { "Content-Type": "multipart/form-data" },
       });
     }
-    if (!!toFileProfile) {
+
+    if (saveImage?.data && saveImage.data.length > 0) {
+      toFileProfile = dataURLtoFile(
+        saveImage?.data,
+        String(saveImage?.filename)
+      );
+      formDataProfile.append("croppedImage", toFileProfile);
       await axios.post("users/profilePicture", formDataProfile, {
         headers: { "Content-Type": "multipart/form-data" },
       });
     }
-    console.log(toFileBanner, toFileProfile);
+
+    Navigate?.goBack();
+    dispatch(getUser());
   };
   return (
     <div className="flex flex-col w-full pt-3 m-auto rounded-md bg-dark-main text-dark-txt">
@@ -180,8 +185,8 @@ const EditProfileModal = () => {
                 <ReactAvatarEditor
                   ref={imageRef}
                   scale={scale}
-                  width={width}
-                  height={height}
+                  width={height}
+                  height={bannerImage ? width / 2 : width}
                   position={position}
                   onPositionChange={handlePositionChange}
                   rotate={0}
@@ -199,8 +204,8 @@ const EditProfileModal = () => {
                     type="range"
                     onChange={handleScale}
                     min={1}
-                    max="2"
-                    step="0.01"
+                    max="10"
+                    step="0.02"
                     defaultValue="1"
                   />
                 </div>
