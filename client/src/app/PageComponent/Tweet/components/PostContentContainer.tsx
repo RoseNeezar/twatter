@@ -42,6 +42,7 @@ const PostContentContainer: FC<IPostContentContainer> = ({
     id,
     retweetData,
     replyTo,
+    pinned,
   },
   backUrl,
   isSinglePost,
@@ -145,7 +146,12 @@ const PostContentContainer: FC<IPostContentContainer> = ({
 
   const HandlePinnedPost = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    dispatch(pinnedPost(id));
+    dispatch(
+      pinnedPost({
+        id,
+        pinned: typeof pinned === "undefined" ? true : !pinned,
+      })
+    );
   };
 
   const handleClickOutside = (event: Event) => {
@@ -235,13 +241,12 @@ const PostContentContainer: FC<IPostContentContainer> = ({
                           content &&
                           postedBy.id === currentUser?.id &&
                           !replyTo &&
-                          !isPinnedPost &&
                           isProfilePost && (
                             <div
                               className="relative grid gap-1 p-3 text-center hover:bg-dark-second bg-dark-third text-dark-txt"
                               onClick={(event) => HandlePinnedPost(event)}
                             >
-                              Pinned Twat
+                              {isPinnedPost ? "Unpinned" : "Pinned Twat"}
                             </div>
                           )}
                       </div>

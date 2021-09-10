@@ -211,7 +211,9 @@ const pinnedPostEpic: MyEpic = (action$, state$) =>
     filter(pinnedPost.match),
     switchMap((action) =>
       forkJoin({
-        pinnedPost: agent.PostService.pinnedPostById(action.payload),
+        pinnedPost: agent.PostService.pinnedPostById(action.payload.id, {
+          pinned: action.payload.pinned,
+        }),
         profilePost: agent.PostService.fetchPost({
           postedBy: state$.value.user.currentUserProfile?.id,
           isReply: false,

@@ -86,8 +86,11 @@ const PostService = {
     requestRxjs.del<IGetReplyPost>(
       queryString.stringifyUrl({ url: `posts/${id}` })
     ),
-  pinnedPostById: (id: string) =>
-    requestRxjs.put<void>(queryString.stringifyUrl({ url: `posts/${id}` })),
+  pinnedPostById: (id: string, data: { pinned: boolean }) =>
+    requestRxjs.put<void>(
+      queryString.stringifyUrl({ url: `posts/${id}` }),
+      data
+    ),
 };
 
 const UserService = {

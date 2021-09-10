@@ -96,7 +96,10 @@ export const postSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; replyTo?: string }>
     ) => state,
-    pinnedPost: (state, action: PayloadAction<string>) => state,
+    pinnedPost: (
+      state,
+      action: PayloadAction<{ id: string; pinned: boolean }>
+    ) => state,
     resetPost: (state) => {
       state.post = null;
     },

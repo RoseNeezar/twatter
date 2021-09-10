@@ -124,15 +124,17 @@ export const pinnedPost = async (
   req: RequestTyped<IPinnedPost, {}, { id: string }>,
   res: Response
 ) => {
-  await Post.updateMany(
-    { postedBy: req.currentUser!.id },
-    { pinned: false }
-  ).catch((error) => {
-    console.log(error);
-    throw new BadRequestError("no post with id");
-  });
+  if (req.body.pinned !== undefined) {
+    await Post.updateMany(
+      { postedBy: req.currentUser!.id },
+      { pinned: false }
+    ).catch((error) => {
+      console.log(error);
+      throw new BadRequestError("no post with id");
+    });
+  }
 
-  Post.findByIdAndUpdate(req.params.id, { pinned: true })
+  Post.findByIdAndUpdate(req.params.id, { pinned: req.body.pinned })
     .then(() => res.sendStatus(204))
     .catch((error) => {
       console.log(error);

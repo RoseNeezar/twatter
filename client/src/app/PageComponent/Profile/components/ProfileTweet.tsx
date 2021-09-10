@@ -29,7 +29,7 @@ const ProfileTweet: FC<IProfileTweet> = () => {
   }, [dispatch, fetchPost, currentUser, currentUserProfile]);
   return (
     <div className="flex flex-col w-full">
-      {getPost?.findIndex((re) => re.pinned === true) !== -1 ? (
+      {getPost && getPost?.findIndex((re) => re.pinned === true) !== -1 ? (
         <PostContentContainer
           key={getPost?.find((re) => re.pinned === true)?.id}
           post={getPost?.find((re) => re.pinned === true) as IPost}
