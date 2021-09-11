@@ -108,6 +108,10 @@ const UserService = {
     requestRxjs.get<IUserProfile>(
       queryString.stringifyUrl({ url: `users/${data}/following` })
     ),
+  searchUser: (data: { search: string }) =>
+    requestRxjs.get<IUser[]>(
+      queryString.stringifyUrl({ url: "users", query: data })
+    ),
 };
 
 const agent = {

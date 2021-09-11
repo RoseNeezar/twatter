@@ -16,7 +16,7 @@ const CreatePost = () => {
   };
 
   const submitPost = () => {
-    if (post.length > 0 && post.length < maxPostCharacter) {
+    if (post.trim().length > 0 && post.length < maxPostCharacter) {
       dispatch(
         createPost({
           content: post,

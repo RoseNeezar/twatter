@@ -120,7 +120,7 @@ const ProfilePage = () => {
         </div>
       </div>
       <Route
-        path={[`${url}/tweet/:tweetId`]}
+        path={[`${url}/tweet/:tweetId`, `${url}/with_replies/tweet/:tweetId`]}
         children={({ match }) => {
           return (
             <Transition appear show={Boolean(match)} as={Fragment}>

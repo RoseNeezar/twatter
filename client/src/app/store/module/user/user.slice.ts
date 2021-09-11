@@ -8,6 +8,7 @@ export interface userState {
   profilePost: IPost[] | null;
   userProfileFollows: IUserProfile | null;
   path: string | undefined;
+  userSearched: IUser[] | null;
 }
 
 const initialState: userState = {
@@ -15,6 +16,7 @@ const initialState: userState = {
   profilePost: null,
   userProfileFollows: null,
   path: undefined,
+  userSearched: null,
 };
 
 export const userSlice = createSlice({
@@ -56,6 +58,13 @@ export const userSlice = createSlice({
     resetUserProfile: (state) => {
       state.profilePost = null;
     },
+    searchUser: (state, action: PayloadAction<{ content: string }>) => state,
+    searchUserSuccess: (state, action: PayloadAction<IUser[]>) => {
+      state.userSearched = action.payload;
+    },
+    resetSearchUser: (state) => {
+      state.userSearched = null;
+    },
   },
 });
 
@@ -74,6 +83,9 @@ export const {
   getUserProfileFollowing,
   getfollowUserFullfilled,
   resetUserProfile,
+  searchUser,
+  searchUserSuccess,
+  resetSearchUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

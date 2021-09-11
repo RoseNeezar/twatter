@@ -6,16 +6,11 @@ import {
   debounceTime,
   filter,
   forkJoin,
-  from,
-  ignoreElements,
   map,
   of,
   switchMap,
   takeUntil,
-  tap,
-  zip,
 } from "rxjs";
-import { ajax } from "rxjs/ajax";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import { errorCatcher, routeChange, setUser } from "../auth/auth.slice";
@@ -35,6 +30,7 @@ import {
   replyToSinglePostFullfilled,
   retweetPost,
   retweetPostFulfilled,
+  searchPost,
   setFetchPost,
   setPost,
 } from "./post.slice";
@@ -225,6 +221,20 @@ const pinnedPostEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const searchPostEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(searchPost.match),
+    debounceTime(1500),
+    switchMap((action) =>
+      agent.PostService.fetchPost({
+        search: action.payload.content,
+      }).pipe(
+        map((res) => setFetchPost(res.response)),
+        catchError((err) => of(errorCatcher(err.response)))
+      )
+    )
+  );
+
 export default combineEpics(
   createPostEpic,
   fetchPostEpic,
@@ -238,5 +248,6 @@ export default combineEpics(
   replyToSinglePostEpic,
   replyToSinglePostFullfilledEpic,
   deletePostEpic,
-  pinnedPostEpic
+  pinnedPostEpic,
+  searchPostEpic
 );

@@ -10,11 +10,13 @@ import {
 export interface postState {
   post: IPost[] | null;
   replyPost: IGetReplyPost | null;
+  searchedPost: IPost[] | null;
 }
 
 const initialState: postState = {
   post: null,
   replyPost: null,
+  searchedPost: null,
 };
 
 export const postSlice = createSlice({
@@ -103,6 +105,10 @@ export const postSlice = createSlice({
     resetPost: (state) => {
       state.post = null;
     },
+    searchPost: (state, action: PayloadAction<{ content: string }>) => state,
+    searchPostSuccess: (state, action: PayloadAction<IPost[]>) => {
+      state.searchedPost = action.payload;
+    },
   },
 });
 
@@ -125,6 +131,8 @@ export const {
   deletePost,
   resetPost,
   pinnedPost,
+  searchPost,
+  searchPostSuccess,
 } = postSlice.actions;
 
 export default postSlice.reducer;

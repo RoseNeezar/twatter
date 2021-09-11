@@ -29,6 +29,7 @@ interface IPostContentContainer {
   isSinglePost?: boolean;
   isProfilePost?: boolean;
   isPinnedPost?: boolean;
+  isSearchPost?: boolean;
 }
 
 const PostContentContainer: FC<IPostContentContainer> = ({
@@ -48,6 +49,7 @@ const PostContentContainer: FC<IPostContentContainer> = ({
   isSinglePost,
   isProfilePost,
   isPinnedPost,
+  isSearchPost,
 }) => {
   const { url } = useRouteMatch();
 
@@ -124,6 +126,10 @@ const PostContentContainer: FC<IPostContentContainer> = ({
 
   const HandleToTweet = (event: MouseEvent<HTMLDivElement>) => {
     if (isSinglePost || (!content && !retweetData)) {
+      return;
+    }
+    if (isSearchPost) {
+      Navigate?.push(`/${postedBy.username}/status/${id}`);
       return;
     }
     Navigate?.push(`${backUrl}${postedBy.username}/status/${id}`);
