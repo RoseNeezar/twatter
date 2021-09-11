@@ -3,6 +3,7 @@ import { combineEpics, Epic } from "redux-observable";
 import {
   catchError,
   concatMap,
+  debounceTime,
   filter,
   ignoreElements,
   map,
@@ -24,6 +25,8 @@ import {
   replyToProfilePost,
   retweetProfilePost,
   retweetProfilePostFulfilled,
+  searchUser,
+  searchUserSuccess,
   setProfilePost,
   setUserProfile,
 } from "./user.slice";
@@ -172,6 +175,20 @@ const getFollowingProfilePostEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const searchUserEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(searchUser.match),
+    debounceTime(1500),
+    switchMap((action) =>
+      agent.UserService.searchUser({
+        search: action.payload.content,
+      }).pipe(
+        map((res) => searchUserSuccess(res.response)),
+        catchError((err) => of(errorCatcher(err.response)))
+      )
+    )
+  );
+
 export default combineEpics(
   getUserEpic,
   fetchProfilePostEpic,
@@ -181,5 +198,6 @@ export default combineEpics(
   getRetweetedPostEpic,
   followUserEpic,
   getFollowerProfilePostEpic,
-  getFollowingProfilePostEpic
+  getFollowingProfilePostEpic,
+  searchUserEpic
 );

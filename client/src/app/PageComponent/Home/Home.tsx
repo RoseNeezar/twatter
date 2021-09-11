@@ -1,19 +1,15 @@
 import Head from "next/head";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import Navigate from "../../utils/Navigate";
 import NotFound from "../NotFound/NotFound";
-import NotificationAction from "../Notification/components/NotificationAction";
 import NotificationPage from "../Notification/NotificationPage";
 import ProfilePageActions from "../Profile/components/ProfilePageActions";
 import ProfilePage from "../Profile/ProfilePage";
-import SearchAction from "../Search/component/component/SearchAction";
 import SearchPage from "../Search/SearchPage";
 import TweetAction from "../Tweet/components/TweetAction";
 import SingleTweetPage from "../Tweet/SingleTweetPage";
 import TweetPage from "../Tweet/TweetPage";
-import RedirectHome from "./RedirectHome";
 
 const Home = () => {
   let { path, url } = useRouteMatch();
@@ -53,7 +49,7 @@ const Home = () => {
               path={`${path}profile/:profileUsername`}
               component={ProfilePage}
             />
-            <Route exact path={`${path}search`} component={SearchPage} />
+            <Route path={`${path}search`} component={SearchPage} />
             <Route
               exact
               path={`${path}notification`}

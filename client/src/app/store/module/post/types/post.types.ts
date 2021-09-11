@@ -27,6 +27,7 @@ export interface IFetchPost {
   content: any;
   followingOnly: boolean;
   postedBy: any;
+  pinned?: boolean;
 }
 
 export interface RetweetData {
@@ -51,6 +52,7 @@ export interface IPost {
   id: string;
   content: string;
   replyTo: IPost;
+  pinned?: boolean;
 }
 
 export interface IGetReplyPost {

@@ -49,11 +49,11 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
           </li>
           <li
             className={`mb-10 lg:mr-auto rounded-full p-4 mr-3  lg:rounded-3xl lg:py-2 lg:pr-5 lg:pl-2 hover:bg-dark-third ${
-              pathname === searchRoute && "bg-dark-third "
+              pathname.includes(searchRoute) && "bg-dark-third "
             }`}
           >
             <Link
-              to={`${url}search`}
+              to={`${url}search/posts`}
               className={` text-center text-xl  text-dark-txt flex justify-center lg:justify-start items-center`}
             >
               <i className="text-2xl lg:pr-5 bx bx-search-alt"></i>

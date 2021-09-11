@@ -13,6 +13,7 @@ import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import {
   deletePost,
   likePost,
+  pinnedPost,
   retweetPost,
 } from "../../../store/module/post/post.slice";
 import { IPost } from "../../../store/module/post/types/post.types";
@@ -27,6 +28,8 @@ interface IPostContentContainer {
   backUrl: string;
   isSinglePost?: boolean;
   isProfilePost?: boolean;
+  isPinnedPost?: boolean;
+  isSearchPost?: boolean;
 }
 
 const PostContentContainer: FC<IPostContentContainer> = ({
@@ -40,10 +43,13 @@ const PostContentContainer: FC<IPostContentContainer> = ({
     id,
     retweetData,
     replyTo,
+    pinned,
   },
   backUrl,
   isSinglePost,
   isProfilePost,
+  isPinnedPost,
+  isSearchPost,
 }) => {
   const { url } = useRouteMatch();
 
@@ -122,6 +128,10 @@ const PostContentContainer: FC<IPostContentContainer> = ({
     if (isSinglePost || (!content && !retweetData)) {
       return;
     }
+    if (isSearchPost) {
+      Navigate?.push(`/${postedBy.username}/status/${id}`);
+      return;
+    }
     Navigate?.push(`${backUrl}${postedBy.username}/status/${id}`);
   };
 
@@ -138,6 +148,16 @@ const PostContentContainer: FC<IPostContentContainer> = ({
       : isProfilePost
       ? dispatch(deleteProfilePost({ id, path: pathname }))
       : dispatch(deletePost({ id }));
+  };
+
+  const HandlePinnedPost = (event: MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    dispatch(
+      pinnedPost({
+        id,
+        pinned: typeof pinned === "undefined" ? true : !pinned,
+      })
+    );
   };
 
   const handleClickOutside = (event: Event) => {
@@ -181,8 +201,14 @@ const PostContentContainer: FC<IPostContentContainer> = ({
             Retweeted by {postedBy.username}
           </div>
         )}
-        {!retweetData && content && postedBy.id === currentUser?.id && (
-          <div className="mt-1 ml-auto mr-3">
+
+        <div className="flex flex-row mt-1 ml-auto mr-3">
+          {isPinnedPost && (
+            <div className="ml-auto mr-4 text-2xl text-dark-txt">
+              <i className="bx bx-pin"></i>
+            </div>
+          )}
+          {!retweetData && content && postedBy.id === currentUser?.id && (
             <Popover className="relative h-5">
               <>
                 <Popover.Button
@@ -212,19 +238,31 @@ const PostContentContainer: FC<IPostContentContainer> = ({
                     >
                       <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                         <div
-                          className="relative grid gap-1 p-3 text-center bg-dark-third text-dark-txt"
+                          className="relative grid gap-1 p-3 text-center hover:bg-dark-second bg-dark-third text-dark-txt"
                           onClick={(event) => HandleDeletePost(event)}
                         >
                           Delete
                         </div>
+                        {!retweetData &&
+                          content &&
+                          postedBy.id === currentUser?.id &&
+                          !replyTo &&
+                          isProfilePost && (
+                            <div
+                              className="relative grid gap-1 p-3 text-center hover:bg-dark-second bg-dark-third text-dark-txt"
+                              onClick={(event) => HandlePinnedPost(event)}
+                            >
+                              {isPinnedPost ? "Unpinned" : "Pinned Twat"}
+                            </div>
+                          )}
                       </div>
                     </Popover.Panel>
                   )}
                 </Transition>
               </>
             </Popover>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {retweetData ? (

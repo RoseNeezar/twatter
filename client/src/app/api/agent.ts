@@ -86,6 +86,11 @@ const PostService = {
     requestRxjs.del<IGetReplyPost>(
       queryString.stringifyUrl({ url: `posts/${id}` })
     ),
+  pinnedPostById: (id: string, data: { pinned: boolean }) =>
+    requestRxjs.put<void>(
+      queryString.stringifyUrl({ url: `posts/${id}` }),
+      data
+    ),
 };
 
 const UserService = {
@@ -102,6 +107,10 @@ const UserService = {
   getUsersFollowing: (data: string) =>
     requestRxjs.get<IUserProfile>(
       queryString.stringifyUrl({ url: `users/${data}/following` })
+    ),
+  searchUser: (data: { search: string }) =>
+    requestRxjs.get<IUser[]>(
+      queryString.stringifyUrl({ url: "users", query: data })
     ),
 };
 
