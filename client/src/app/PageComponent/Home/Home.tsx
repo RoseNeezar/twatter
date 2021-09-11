@@ -1,7 +1,9 @@
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import MessagesAction from "../Messages/components/MessagesAction";
+import MessagesPage from "../Messages/MessagesPage";
 import NotFound from "../NotFound/NotFound";
 import NotificationPage from "../Notification/NotificationPage";
 import ProfilePageActions from "../Profile/components/ProfilePageActions";
@@ -13,6 +15,8 @@ import TweetPage from "../Tweet/TweetPage";
 
 const Home = () => {
   let { path, url } = useRouteMatch();
+  const { pathname } = useLocation();
+  const messagesRoute = "/messages";
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const handleScroll = () => {
@@ -32,11 +36,20 @@ const Home = () => {
         <title>Twatter</title>
       </Head>
 
-      <div className="flex justify-start overflow-auto lg:justify-center">
+      <div
+        className={`flex justify-start overflow-auto lg:justify-center ${
+          !pathname.includes(messagesRoute) ? "mr-48" : "mr-24"
+        }`}
+      >
         <div className="flex-col justify-end h-full sm:w-1/6 lg:flex-1 md:flex">
           <Sidebar url={url} />
         </div>
-        <div className="relative w-tweet ">
+        <div
+          className={`relative w-tweet ${
+            pathname.includes(messagesRoute) &&
+            "w-channels  relative bg-red-400"
+          }`}
+        >
           <Switch>
             <Route path={`${path}home`}>
               <TweetPage backUrl={url} />
@@ -50,6 +63,7 @@ const Home = () => {
               component={ProfilePage}
             />
             <Route path={`${path}search`} component={SearchPage} />
+            <Route path={`${path}messages`} component={MessagesPage} />
             <Route
               exact
               path={`${path}notification`}
@@ -66,7 +80,7 @@ const Home = () => {
             </div>
           )}
         </div>
-        <div className="flex-col justify-start flex-1 hidden h-full lg:flex">
+        <div className={`flex-col justify-start flex-1 hidden h-full lg:flex `}>
           <Switch>
             <Route
               exact
@@ -74,6 +88,7 @@ const Home = () => {
               component={TweetAction}
             />
             <Route path={`${path}profile`} component={ProfilePageActions} />
+            <Route path={`${path}messages`} component={MessagesAction} />
             <Route path="*">
               <TweetAction />
             </Route>
