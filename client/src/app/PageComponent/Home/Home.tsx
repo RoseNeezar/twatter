@@ -46,8 +46,7 @@ const Home = () => {
         </div>
         <div
           className={`relative w-tweet ${
-            pathname.includes(messagesRoute) &&
-            "w-channels  relative bg-red-400"
+            pathname.includes(messagesRoute) && "w-channels  relative "
           }`}
         >
           <Switch>
