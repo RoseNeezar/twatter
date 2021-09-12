@@ -19,6 +19,7 @@ module.exports = {
         tweet: "600px",
         channels: "388px",
         messages: "590px",
+        messageContainer: "987px",
       },
       colors: {
         "dark-main": "#18191A",

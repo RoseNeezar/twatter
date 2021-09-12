@@ -46,7 +46,7 @@ const Home = () => {
         </div>
         <div
           className={`relative w-tweet ${
-            pathname.includes(messagesRoute) && "w-channels  relative "
+            pathname.includes(messagesRoute) && "w-messageContainer  relative "
           }`}
         >
           <Switch>
@@ -79,7 +79,11 @@ const Home = () => {
             </div>
           )}
         </div>
-        <div className={`flex-col justify-start flex-1 hidden h-full lg:flex `}>
+        <div
+          className={`flex-col justify-start flex-1 hidden h-full lg:flex ${
+            pathname.includes(messagesRoute) && "lg:hidden "
+          }`}
+        >
           <Switch>
             <Route
               exact
@@ -87,7 +91,6 @@ const Home = () => {
               component={TweetAction}
             />
             <Route path={`${path}profile`} component={ProfilePageActions} />
-            <Route path={`${path}messages`} component={MessagesAction} />
             <Route path="*">
               <TweetAction />
             </Route>

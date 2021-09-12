@@ -52,8 +52,8 @@ const MessagesAddUser = () => {
   };
 
   return (
-    <div className="flex flex-col w-full pt-2 m-auto rounded-md bg-dark-main h-addUser">
-      <div className="flex flex-col">
+    <div className="flex flex-col pt-2 m-auto rounded-md bg-dark-main h-addUser">
+      <div className="flex flex-col overflow-x-hidden overflow-y-auto ">
         <div className="flex justify-between p-1 ">
           <Dialog.Title>
             <div className="flex flex-row items-center text-dark-txt">
@@ -67,7 +67,7 @@ const MessagesAddUser = () => {
             Next
           </button>
         </div>
-        <div className="border-b border-dark-third ">
+        <div className="-mr-3 border-b border-dark-third">
           <div className="relative flex flex-row my-3 ">
             <div className="absolute text-2xl top-0.5 left-5 text-blue-500 cursor-pointer z-30">
               <i className="bx bx-search"></i>
@@ -113,7 +113,7 @@ const MessagesAddUser = () => {
           userSearched?.map((re) => (
             <div
               key={re.id}
-              className="px-3 py-4 cursor-pointer hover:bg-gray-400 hover:bg-opacity-10"
+              className="px-3 py-4 -mr-3 cursor-pointer hover:bg-gray-400 hover:bg-opacity-10"
               onClick={() =>
                 CheckSearchedUser(re.id)
                   ? HandleRemoveSearched(re.id)
