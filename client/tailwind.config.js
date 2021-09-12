@@ -13,6 +13,7 @@ module.exports = {
       height: {
         big: "90%",
         full: "100%",
+        addUser: "650px",
       },
       width: {
         tweet: "600px",
