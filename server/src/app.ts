@@ -13,6 +13,7 @@ import PostRoute from "./routes/post.routes";
 import cookieParser from "cookie-parser";
 import UserRoute from "./routes/user.routes";
 import bodyParser from "body-parser";
+import ChatsRoute from "./routes/chats.routes";
 
 const app = express();
 app.set("trust proxy", true);
@@ -33,6 +34,7 @@ app.use(express.static("public"));
 app.use("/api/auth", AuthRoute);
 app.use("/api/users", UserRoute);
 app.use("/api/posts", PostRoute);
+app.use("/api/chats", ChatsRoute);
 
 app.all("*", async () => {
   throw new NotFoundError();

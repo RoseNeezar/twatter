@@ -1,17 +1,18 @@
 import mongoose, { Schema } from "mongoose";
+import { MessageDoc } from "./message.models";
 
 export interface ChatAttrs {
   chatName?: string;
   isGroupChat?: string;
   users?: string[];
-  latestMessage?: string[];
+  latestMessage?: string | MessageDoc;
 }
 
 interface ChatDoc extends mongoose.Document {
   chatName?: string;
   isGroupChat?: string;
   users?: string[];
-  latestMessage?: string[];
+  latestMessage?: string | MessageDoc;
 }
 
 interface ChatModel extends mongoose.Model<ChatDoc> {

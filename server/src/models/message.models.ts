@@ -7,7 +7,7 @@ export interface MessageAttrs {
   readBy?: string[];
 }
 
-interface MessageDoc extends mongoose.Document {
+export interface MessageDoc extends mongoose.Document {
   sender?: string;
   content?: string;
   chat?: string;
