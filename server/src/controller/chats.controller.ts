@@ -50,7 +50,7 @@ export const getUsersChat = async (
     .populate("latestMessage")
     .sort({ updatedAt: -1 })
     .then(async (results) => {
-      if (!!req.query.unreadOnly) {
+      if (!!req.query.unreadOnly && req.query.unreadOnly === "true") {
         results = results.filter((r) => {
           const newType = r.latestMessage as MessageDoc;
           return newType && !newType.readBy?.includes(req.currentUser?.id);

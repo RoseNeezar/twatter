@@ -3,6 +3,8 @@ import { combineEpics, createEpicMiddleware } from "redux-observable";
 import { catchError } from "rxjs/operators";
 import authEpic, { MyEpic } from "./module/auth/auth.epic";
 import authSlice from "./module/auth/auth.slice";
+import chatsEpic from "./module/chats/chats.epic";
+import chatsSlice from "./module/chats/chats.slice";
 import postEpic from "./module/post/post.epic";
 import postSlice from "./module/post/post.slice";
 import userEpic from "./module/user/user.epic";
@@ -12,6 +14,7 @@ export const reducer = combineReducers({
   auth: authSlice,
   posts: postSlice,
   user: userSlice,
+  chats: chatsSlice,
 });
 
 export type ReducerState = ReturnType<typeof reducer>;
@@ -31,7 +34,7 @@ export const store = configureStore({
     }).concat(epicMiddleware),
 });
 
-const epics = combineEpics(authEpic, postEpic, userEpic);
+const epics = combineEpics(authEpic, postEpic, userEpic, chatsEpic);
 
 const rootEpic: MyEpic = (action$, store$, dependencies) =>
   combineEpics(epics)(action$, store$, dependencies).pipe(

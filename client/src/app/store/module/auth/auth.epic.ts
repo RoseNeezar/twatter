@@ -22,6 +22,7 @@ import {
   logout,
   register,
   resetUser,
+  setAppLoaded,
   setUser,
 } from "./auth.slice";
 
@@ -78,7 +79,7 @@ const getUserEpic: MyEpic = (action$, state$) =>
     filter(getUser.match),
     switchMap((action) =>
       agent.AuthService.currentUser().pipe(
-        map(({ response }) => setUser(response)),
+        mergeMap(({ response }) => [setUser(response), setAppLoaded()]),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })

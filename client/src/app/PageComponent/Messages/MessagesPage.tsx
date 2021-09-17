@@ -1,15 +1,17 @@
 import { Transition, Dialog } from "@headlessui/react";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useRouteMatch, Route, Switch } from "react-router";
+import { useAppDispatch } from "../../store/hooks/hooks";
+import { getUserChat } from "../../store/module/chats/chats.slice";
 import Navigate from "../../utils/Navigate";
+import MessageChannels from "./components/MessageChannels";
 import MessageEmptyChat from "./components/MessageEmptyChat";
 import MessageGroupChat from "./components/MessageGroupChat";
 import MessagesAddUser from "./components/MessagesAddUser";
-import MessageSingleChat from "./components/MessageSingleChat";
 
 const MessagesPage = () => {
   let { path, url } = useRouteMatch();
-
+  const dispatch = useAppDispatch();
   const HandleClosingModal = () => {
     Navigate?.goBack();
   };
@@ -18,11 +20,18 @@ const MessagesPage = () => {
     Navigate?.push(`${url}/compose`);
   };
 
+  useEffect(() => {
+    dispatch(
+      getUserChat({
+        unreadOnly: false,
+      })
+    );
+  }, []);
   return (
     <>
-      <div className="flex flex-col w-full min-h-screen border-l border-r border-dark-third">
+      <div className="flex flex-col w-full min-h-screen border-l border-dark-third">
         <div
-          style={{ width: 388 }}
+          style={{ width: 387 }}
           className="fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third"
         >
           <div className="text-xl ">Inbox</div>
@@ -35,15 +44,12 @@ const MessagesPage = () => {
         </div>
         <div className="flex flex-row border-r border-dark-third">
           <div className="relative mt-12 border-r text-dark-txt w-channels border-dark-third">
-            Messages
+            <MessageChannels backUrl={url} />
           </div>
           <div className="relative w-messages">
             <Switch>
-              <Route path={`${path}/group`}>
+              <Route path={`${path}/chat/:chatId`}>
                 <MessageGroupChat backUrl={url} />
-              </Route>
-              <Route path={`${path}/chat/:userId`}>
-                <MessageSingleChat backUrl={url} />
               </Route>
               <Route path="*">
                 <MessageEmptyChat compose={HandleAddUserToChat} />

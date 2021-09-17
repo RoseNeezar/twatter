@@ -5,6 +5,7 @@ import {
   IRegister,
   IUser,
 } from "../store/module/auth/types/auth.model";
+import { IChat } from "../store/module/chats/types/chats.types";
 import {
   ICreatePost,
   IFetchPost,
@@ -114,10 +115,20 @@ const UserService = {
     ),
 };
 
+const ChatService = {
+  createChat: (data: IUser[]) =>
+    requestRxjs.post<IChat>(queryString.stringifyUrl({ url: "chats" }), data),
+  fetchUserChat: (data: { unreadOnly: boolean }) =>
+    requestRxjs.get<IChat[]>(
+      queryString.stringifyUrl({ url: "chats", query: data })
+    ),
+};
+
 const agent = {
   AuthService,
   PostService,
   UserService,
+  ChatService,
 };
 
 export default agent;
