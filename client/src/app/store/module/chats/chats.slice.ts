@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../auth/types/auth.model";
-import { IChat } from "./types/chats.types";
+import { IChat, IMessage } from "./types/chats.types";
 
 export interface chatsState {
   chatChannels: IChat[] | null;
   chatChannelDetail: IChat | null;
+  chatChannelMessages: IMessage[] | null;
 }
 
 const initialState: chatsState = {
   chatChannels: null,
   chatChannelDetail: null,
+  chatChannelMessages: null,
 };
 
 export const chatsSlice = createSlice({
@@ -26,6 +28,17 @@ export const chatsSlice = createSlice({
     getChatDetailsSuccess: (state, action: PayloadAction<IChat>) => {
       state.chatChannelDetail = action.payload;
     },
+    getChatMessages: (state, action: PayloadAction<string>) => state,
+    getChatMessagesSuccess: (state, action: PayloadAction<IMessage[]>) => {
+      state.chatChannelMessages = action.payload;
+    },
+    sendMessage: (
+      state,
+      action: PayloadAction<{ content: string; chatId: string }>
+    ) => state,
+    sendMessageSuccess: (state, action: PayloadAction<IMessage>) => {
+      state.chatChannelMessages?.push(action.payload);
+    },
   },
 });
 
@@ -35,6 +48,10 @@ export const {
   getUserChatSuccess,
   getChatDetails,
   getChatDetailsSuccess,
+  sendMessage,
+  sendMessageSuccess,
+  getChatMessages,
+  getChatMessagesSuccess,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;

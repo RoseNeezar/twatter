@@ -24,7 +24,7 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
           <MessageContent />
         </div>
         <div className="mt-auto bg-dark-main">
-          <MessageInput />
+          <MessageInput chadId={chatId} />
         </div>
       </>
     </div>

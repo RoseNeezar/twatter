@@ -1,8 +1,13 @@
 import React, { ChangeEvent, FC, KeyboardEvent, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-
-const MessageInput: FC = () => {
+import { useAppDispatch } from "../../../store/hooks/hooks";
+import { sendMessage } from "../../../store/module/chats/chats.slice";
+interface IMessageInput {
+  chadId: string;
+}
+const MessageInput: FC<IMessageInput> = ({ chadId }) => {
   const [message, setMessage] = useState("");
+  const dispatch = useAppDispatch();
 
   const handleMessage = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -10,13 +15,21 @@ const MessageInput: FC = () => {
     setMessage(e.target.value);
   };
   const handleSendMessage = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey && message.length > 0) {
+    if (e.key === "Enter" && !e.shiftKey && message.trim().length > 0) {
       e.preventDefault();
       setMessage("");
     }
   };
 
-  const HandleSendButton =() => {
+  const HandleSendButton = () => {
+    if (message.trim().length > 0) {
+      dispatch(
+        sendMessage({
+          content: message,
+          chatId: chadId,
+        })
+      );
+    }
     setMessage("");
   };
   return (
@@ -32,7 +45,10 @@ const MessageInput: FC = () => {
           onKeyDown={(e) => handleSendMessage(e)}
         />
         <div className="flex items-center justify-center ">
-          <span className="grid w-10 h-10 text-2xl text-blue-500 rounded-full cursor-pointer place-items-center hover:bg-blue-300 hover:bg-opacity-25 hover:text-blue-400 " onClick={()=>HandleSendButton()}>
+          <span
+            className="grid w-10 h-10 text-2xl text-blue-500 rounded-full cursor-pointer place-items-center hover:bg-blue-300 hover:bg-opacity-25 hover:text-blue-400 "
+            onClick={() => HandleSendButton()}
+          >
             <i className="bx bx-send"></i>
           </span>
         </div>

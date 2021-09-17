@@ -25,9 +25,9 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
       {chatChannels &&
         chatChannels.map((re) => {
           return (
-            <div className="border-b border-dark-third">
+            <div className="border-b border-dark-third" key={re.id}>
               <div
-                className={`relative flex flex-row items-center py-3 px-1 cursor-pointer hover:bg-dark-third overflow-ellipsis ${
+                className={`relative flex flex-row items-center py-5 px-1 cursor-pointer hover:bg-dark-third overflow-ellipsis ${
                   pathname.includes(re.id) && "border-r-2 border-blue-500"
                 }`}
                 onClick={() => HandleOpenChat(re.id)}
@@ -60,6 +60,7 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                         }
                         return (
                           <div
+                            key={c.id}
                             className={`absolute top-0 `}
                             style={{
                               zIndex: index !== 0 ? index + 10 : 0,
@@ -67,7 +68,6 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                             }}
                           >
                             <img
-                              key={c.id}
                               className="object-cover w-12 h-12 border-2 rounded-full cursor-pointer border-dark-main"
                               src={c.profilePic}
                               alt="profile-pic"
@@ -78,30 +78,41 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                     </div>
                   </>
                 )}
-                <div className="flex flex-row mx-1 truncate w-80 ">
-                  {re.users.length === 2
-                    ? re.users.map((r, index) => {
-                        const c = r as IUser;
-                        if (c.id !== currentUser?.id) {
+                <div className="truncate w-80">
+                  <div className="flex flex-row mx-1 ">
+                    {re.users.length === 2
+                      ? re.users.map((r, index) => {
+                          const c = r as IUser;
+                          if (c.id !== currentUser?.id) {
+                            return (
+                              <h1 key={c.id} className="ml-1">
+                                {c.username}
+                              </h1>
+                            );
+                          } else {
+                            return null;
+                          }
+                        })
+                      : re.users.map((r, index) => {
+                          const c = r as IUser;
                           return (
-                            <>
+                            <div key={c.id} className="flex ">
+                              <span>{index > 0 && ","}</span>
                               <h1 className="ml-1">{c.username}</h1>
-                            </>
+                            </div>
                           );
-                        } else {
-                          return null;
-                        }
-                      })
-                    : re.users.map((r, index) => {
-                        const c = r as IUser;
-                        return (
-                          <>
-                            <span>{index > 0 && ","}</span>
-                            <h1 className="ml-1">{c.username}</h1>
-                          </>
-                        );
-                      })}
+                        })}
+                  </div>
+                  {re.latestMessage && (
+                    <div className="flex flex-row mx-2 text-gray-500 ">
+                      <h1 className="mr-1">
+                        {re.latestMessage.sender.username}:
+                      </h1>
+                      <h1> {re.latestMessage.content}</h1>
+                    </div>
+                  )}
                 </div>
+
                 <div className="ml-auto text-sm text-gray-500 ">
                   {dayjs(re.updatedAt).format("	MMM D, YYYY")}
                 </div>
