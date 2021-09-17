@@ -1,12 +1,21 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { useParams } from "react-router";
+import { useAppDispatch } from "../../../store/hooks/hooks";
+import { getChatDetails } from "../../../store/module/chats/chats.slice";
 import MessageContent from "./MessageContent";
 import MessageHeader from "./MessageHeader";
 import MessageInput from "./MessageInput";
 interface IMessageGroupChat {
   backUrl: string;
 }
-const MessageGroupChat: FC<IMessageGroupChat> = () => {
+const MessageChatContainer: FC<IMessageGroupChat> = () => {
+  const { chatId } = useParams<{ chatId: string }>();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getChatDetails(chatId));
+  }, [chatId]);
+
   return (
     <div className="flex flex-col h-screen rounded-lg shadow text-dark-txt">
       <>
@@ -22,4 +31,4 @@ const MessageGroupChat: FC<IMessageGroupChat> = () => {
   );
 };
 
-export default MessageGroupChat;
+export default MessageChatContainer;

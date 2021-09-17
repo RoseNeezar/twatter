@@ -6,7 +6,7 @@ import { getUserChat } from "../../store/module/chats/chats.slice";
 import Navigate from "../../utils/Navigate";
 import MessageChannels from "./components/MessageChannels";
 import MessageEmptyChat from "./components/MessageEmptyChat";
-import MessageGroupChat from "./components/MessageGroupChat";
+import MessageChatContainer from "./components/MessageChatContainer";
 import MessagesAddUser from "./components/MessagesAddUser";
 
 const MessagesPage = () => {
@@ -31,7 +31,7 @@ const MessagesPage = () => {
     <>
       <div className="flex flex-col w-full min-h-screen border-l border-dark-third">
         <div
-          style={{ width: 387 }}
+          style={{ width: 388 }}
           className="fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third"
         >
           <div className="text-xl ">Messages</div>
@@ -49,7 +49,7 @@ const MessagesPage = () => {
           <div className="relative w-messages">
             <Switch>
               <Route path={`${path}/chat/:chatId`}>
-                <MessageGroupChat backUrl={url} />
+                <MessageChatContainer backUrl={url} />
               </Route>
               <Route path="*">
                 <MessageEmptyChat compose={HandleAddUserToChat} />
@@ -80,7 +80,7 @@ const MessagesPage = () => {
                     leaveTo="opacity-0 scale-95"
                   >
                     <div className="inline-block max-w-6xl my-16 overflow-hidden text-left align-middle transition-all transform bg-red-300 shadow-xl w-tweet rounded-2xl">
-                      <MessagesAddUser />
+                      <MessagesAddUser backUrl={url} />
                     </div>
                   </Transition.Child>
                 </div>

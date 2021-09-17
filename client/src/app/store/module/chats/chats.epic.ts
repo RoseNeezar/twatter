@@ -1,10 +1,16 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
-import { catchError, filter, ignoreElements, map, of, switchMap } from "rxjs";
+import { catchError, filter, map, of, switchMap } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import { errorCatcher } from "../auth/auth.slice";
-import { createChat, getUserChat, getUserChatSuccess } from "./chats.slice";
+import {
+  createChat,
+  getChatDetails,
+  getChatDetailsSuccess,
+  getUserChat,
+  getUserChatSuccess,
+} from "./chats.slice";
 
 export type MyEpic = Epic<AnyAction, AnyAction, RootState>;
 
@@ -13,7 +19,6 @@ const createChatEpic: MyEpic = (action$, state$) =>
     filter(createChat.match),
     switchMap((action) =>
       agent.ChatService.createChat(action.payload).pipe(
-        ignoreElements(),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })
@@ -42,4 +47,21 @@ const getChatChannelsEpic: MyEpic = (action$, state$) =>
     )
   );
 
-export default combineEpics(createChatEpic, getChatChannelsEpic);
+const getChatDetailsEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(getChatDetails.match),
+    switchMap((action) =>
+      agent.ChatService.getChatDetailsByChatId(action.payload).pipe(
+        map(({ response }) => getChatDetailsSuccess(response)),
+        catchError((err) => {
+          return of(errorCatcher(err.response));
+        })
+      )
+    )
+  );
+
+export default combineEpics(
+  createChatEpic,
+  getChatChannelsEpic,
+  getChatDetailsEpic
+);
