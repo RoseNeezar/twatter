@@ -117,10 +117,21 @@ const UserService = {
 
 const ChatService = {
   createChat: (data: IUser[]) =>
-    requestRxjs.post<IChat>(queryString.stringifyUrl({ url: "chats" }), data),
+    requestRxjs.post<IChat>(queryString.stringifyUrl({ url: "chats" }), {
+      users: data,
+    }),
   fetchUserChat: (data: { unreadOnly: boolean }) =>
     requestRxjs.get<IChat[]>(
       queryString.stringifyUrl({ url: "chats", query: data })
+    ),
+  getChatDetailsByChatId: (data: string) =>
+    requestRxjs.get<IChat>(queryString.stringifyUrl({ url: `chats/${data}` })),
+  updateChatTitleByChatId: (data: { id: string; title: string }) =>
+    requestRxjs.put<IChat>(
+      queryString.stringifyUrl({ url: `chats/${data.id}` }),
+      {
+        chatName: data.title,
+      }
     ),
 };
 

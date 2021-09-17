@@ -1,5 +1,12 @@
 import express from "express";
-import { createChat, getUsersChat } from "../controller/chats.controller";
+import {
+  createChat,
+  getChatDetailsByChatId,
+  getChatMessagesByChatId,
+  getUsersChat,
+  markReadMessageInChatByChatId,
+  updateChatNameByChatId,
+} from "../controller/chats.controller";
 import { currentUser } from "../middlewares/currrent-user.middleware";
 import { requireAuth } from "../middlewares/require-auth.middleware";
 
@@ -10,10 +17,18 @@ ChatsRoute.route("/")
   .get(currentUser, requireAuth, getUsersChat);
 
 ChatsRoute.route("/:chatId")
-  .get(currentUser, requireAuth)
-  .put(currentUser, requireAuth);
+  .get(currentUser, requireAuth, getChatDetailsByChatId)
+  .put(currentUser, requireAuth, updateChatNameByChatId);
 
-ChatsRoute.route("/:chatId/messages").get(currentUser, requireAuth);
-ChatsRoute.route("/:chatId/messages/markAsRead").put(currentUser, requireAuth);
+ChatsRoute.route("/:chatId/messages").get(
+  currentUser,
+  requireAuth,
+  getChatMessagesByChatId
+);
+ChatsRoute.route("/:chatId/messages/markAsRead").put(
+  currentUser,
+  requireAuth,
+  markReadMessageInChatByChatId
+);
 
 export default ChatsRoute;

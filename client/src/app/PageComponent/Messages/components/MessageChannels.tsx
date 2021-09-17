@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import React, { FC } from "react";
-import { useLocation, useParams } from "react-router";
+import { useLocation } from "react-router";
 import { useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import { IUser } from "../../../store/module/auth/types/auth.model";
@@ -27,7 +27,7 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
           return (
             <div className="border-b border-dark-third">
               <div
-                className={`relative flex flex-row items-center p-3 cursor-pointer hover:bg-dark-third overflow-ellipsis ${
+                className={`relative flex flex-row items-center py-3 px-1 cursor-pointer hover:bg-dark-third overflow-ellipsis ${
                   pathname.includes(re.id) && "border-r-2 border-blue-500"
                 }`}
                 onClick={() => HandleOpenChat(re.id)}
@@ -52,15 +52,18 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                   </>
                 ) : (
                   <>
-                    <div className="relative w-16 h-12 overflow-hidden">
+                    <div className="relative w-24 h-12 overflow-hidden">
                       {re.users.map((r, index) => {
                         const c = r as IUser;
+                        if (index > 2) {
+                          return null;
+                        }
                         return (
                           <div
                             className={`absolute top-0 `}
                             style={{
                               zIndex: index !== 0 ? index + 10 : 0,
-                              left: index !== 0 ? index + 10 : 0,
+                              left: index !== 0 ? index * 8 : 0,
                             }}
                           >
                             <img
@@ -75,14 +78,13 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                     </div>
                   </>
                 )}
-                <div className="flex flex-row max-w-xs overflow-ellipsis">
+                <div className="flex flex-row mx-1 truncate w-80 ">
                   {re.users.length === 2
                     ? re.users.map((r, index) => {
                         const c = r as IUser;
                         if (c.id !== currentUser?.id) {
                           return (
                             <>
-                              <span>{index > 0 && ","}</span>
                               <h1 className="ml-1">{c.username}</h1>
                             </>
                           );
@@ -100,8 +102,8 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                         );
                       })}
                 </div>
-                <div className="ml-auto text-sm text-gray-500">
-                  {dayjs(re.updatedAt).format("	MMMM D, YYYY")}
+                <div className="ml-auto text-sm text-gray-500 ">
+                  {dayjs(re.updatedAt).format("	MMM D, YYYY")}
                 </div>
               </div>
             </div>

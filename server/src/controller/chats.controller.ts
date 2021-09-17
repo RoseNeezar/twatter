@@ -2,7 +2,7 @@ import { Response } from "express";
 import mongoose from "mongoose";
 import { BadRequestError } from "../errors/bad-request-error";
 import { Chat } from "../models/chat.models";
-import { MessageDoc } from "../models/message.models";
+import { Message, MessageDoc } from "../models/message.models";
 import { User, UserDoc } from "../models/user.models";
 import { RequestTyped } from "../types/types";
 
@@ -96,5 +96,63 @@ export const getUsersChat = async (
     .catch((error) => {
       console.log(error);
       throw new BadRequestError("No user");
+    });
+};
+
+export const getChatDetailsByChatId = async (
+  req: RequestTyped<{}, {}, { chatId: string }>,
+  res: Response
+) => {
+  Chat.findOne({
+    _id: req.params.chatId,
+    users: {
+      $elemMatch: { $eq: mongoose.Types.ObjectId(req.currentUser?.id) },
+    },
+  })
+    .populate("users")
+    .then((results) => res.status(200).send(results))
+    .catch((error) => {
+      console.log(error);
+      throw new BadRequestError("No channel");
+    });
+};
+
+export const updateChatNameByChatId = async (
+  req: RequestTyped<{ chatName: string }, {}, { chatId: string }>,
+  res: Response
+) => {
+  Chat.findByIdAndUpdate(req.params.chatId, req.body)
+    .then((results) => res.sendStatus(204))
+    .catch((error) => {
+      console.log(error);
+      throw new BadRequestError("No channel");
+    });
+};
+
+export const getChatMessagesByChatId = async (
+  req: RequestTyped<{}, {}, { chatId: string }>,
+  res: Response
+) => {
+  Message.find({ chat: req.params.chatId })
+    .populate("sender")
+    .then((results) => res.status(200).send(results))
+    .catch((error) => {
+      console.log(error);
+      throw new BadRequestError("No messages");
+    });
+};
+
+export const markReadMessageInChatByChatId = async (
+  req: RequestTyped<{}, {}, { chatId: string }>,
+  res: Response
+) => {
+  Message.updateMany(
+    { chat: req.params.chatId },
+    { $addToSet: { readBy: mongoose.Types.ObjectId(req.currentUser?.id) } }
+  )
+    .then(() => res.sendStatus(204))
+    .catch((error) => {
+      console.log(error);
+      throw new BadRequestError("No messages");
     });
 };

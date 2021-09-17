@@ -1,7 +1,8 @@
 import { Dialog } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { IUser } from "../../../store/module/auth/types/auth.model";
+import { createChat } from "../../../store/module/chats/chats.slice";
 import {
   resetSearchUser,
   searchUser,
@@ -9,7 +10,11 @@ import {
 import { RootState } from "../../../store/store";
 import Navigate from "../../../utils/Navigate";
 
-const MessagesAddUser = () => {
+interface IMessagesAddUser {
+  backUrl: string;
+}
+
+const MessagesAddUser: FC<IMessagesAddUser> = ({ backUrl }) => {
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<IUser[]>([]);
   const dispatch = useAppDispatch();
@@ -18,7 +23,7 @@ const MessagesAddUser = () => {
   );
 
   const handleClose = () => {
-    Navigate?.goBack();
+    Navigate?.push(`${backUrl}`);
   };
   if (search.length === 0) {
     dispatch(resetSearchUser());
@@ -47,6 +52,14 @@ const MessagesAddUser = () => {
     setSearch("");
   };
 
+  const HandleCreateChat = () => {
+    console.log(selectedUser);
+    if (selectedUser.length > 0) {
+      dispatch(createChat(selectedUser));
+      Navigate?.push(`${backUrl}`);
+    }
+  };
+
   const CheckSearchedUser = (id: string) => {
     return selectedUser.findIndex((re) => re.id === id) !== -1 ? true : false;
   };
@@ -63,7 +76,10 @@ const MessagesAddUser = () => {
               <div className="pb-1 ml-10 text-xl font-bold">New Messages</div>
             </div>
           </Dialog.Title>
-          <button className="px-4 mr-4 font-semibold bg-gray-500 rounded-2xl">
+          <button
+            className="px-4 mr-4 font-semibold bg-gray-500 rounded-2xl"
+            onClick={() => HandleCreateChat()}
+          >
             Next
           </button>
         </div>
