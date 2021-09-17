@@ -3,14 +3,14 @@ import { MessageDoc } from "./message.models";
 
 export interface ChatAttrs {
   chatName?: string;
-  isGroupChat?: string;
+  isGroupChat?: boolean;
   users?: string[];
   latestMessage?: string | MessageDoc;
 }
 
 interface ChatDoc extends mongoose.Document {
   chatName?: string;
-  isGroupChat?: string;
+  isGroupChat?: boolean;
   users?: string[];
   latestMessage?: string | MessageDoc;
 }
