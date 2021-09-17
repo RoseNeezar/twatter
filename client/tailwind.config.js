@@ -18,7 +18,7 @@ module.exports = {
       width: {
         tweet: "600px",
         channels: "388px",
-        messages: "590px",
+        messages: "599px",
         messageContainer: "987px",
       },
       colors: {

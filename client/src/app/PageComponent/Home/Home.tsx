@@ -2,7 +2,6 @@ import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import MessagesAction from "../Messages/components/MessagesAction";
 import MessagesPage from "../Messages/MessagesPage";
 import NotFound from "../NotFound/NotFound";
 import NotificationPage from "../Notification/NotificationPage";
@@ -12,6 +11,7 @@ import SearchPage from "../Search/SearchPage";
 import TweetAction from "../Tweet/components/TweetAction";
 import SingleTweetPage from "../Tweet/SingleTweetPage";
 import TweetPage from "../Tweet/TweetPage";
+import RedirectHome from "./RedirectHome";
 
 const Home = () => {
   let { path, url } = useRouteMatch();
@@ -30,6 +30,7 @@ const Home = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   return (
     <>
       <Head>
@@ -68,6 +69,7 @@ const Home = () => {
               path={`${path}notification`}
               component={NotificationPage}
             />
+            <Route path={`${path}`} component={RedirectHome} />
             <Route path="*" component={NotFound} />
           </Switch>
           {scrollPosition > 200 && (
@@ -91,6 +93,7 @@ const Home = () => {
               component={TweetAction}
             />
             <Route path={`${path}profile`} component={ProfilePageActions} />
+            <Route path={`${path}`} component={ProfilePageActions} />
             <Route path="*">
               <TweetAction />
             </Route>

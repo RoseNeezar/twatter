@@ -45,7 +45,7 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
         <img
           className="object-cover w-tweet"
           style={{ height: 200 }}
-          src={currentUser?.coverPhoto}
+          src={currentUserProfile?.coverPhoto}
           alt=""
         />
       </div>

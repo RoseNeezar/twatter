@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { NextRouter } from "next/dist/client/router";
 import { toast } from "react-toastify";
 import { RootState } from "../../store";
-import { followUser, followUserFullfilled } from "../user/user.slice";
+import { followUserFullfilled } from "../user/user.slice";
 import { IError, ILogin, IRegister, IUser } from "./types/auth.model";
 
 export interface authState {
@@ -41,6 +40,7 @@ export const authSlice = createSlice({
       }
     },
     setAppLoaded: (state) => {
+      console.log("setAppLoaded");
       state.appLoaded = true;
     },
     logout: () => {},

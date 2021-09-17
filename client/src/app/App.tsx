@@ -1,26 +1,22 @@
 import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "./store/hooks/hooks";
-import { getUser, isLoggedIn } from "./store/module/auth/auth.slice";
-import { ReRoute } from "./utils/ReRoute";
+import LoadingPage from "./components/Loading/LoadingPage";
 import Home from "./PageComponent/Home/Home";
-import { useRouter } from "next/dist/client/router";
+import { useAppDispatch, useAppSelector } from "./store/hooks/hooks";
+import { getUser } from "./store/module/auth/auth.slice";
+import { RootState } from "./store/store";
+import { ReRoute } from "./utils/ReRoute";
 import ScrollToTop from "./utils/ScrollToTop";
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const checkLogin = useAppSelector(isLoggedIn);
-  const router = useRouter();
+  const appLoaded = useAppSelector((state: RootState) => state.auth.appLoaded);
 
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!!checkLogin) {
-      router.push("/app");
-    }
-  }, [checkLogin]);
+  if (!appLoaded) return <LoadingPage />;
   return (
     <>
       <ScrollToTop />
