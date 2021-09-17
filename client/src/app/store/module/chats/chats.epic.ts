@@ -1,6 +1,14 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
-import { catchError, filter, map, of, switchMap } from "rxjs";
+import {
+  catchError,
+  filter,
+  forkJoin,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+} from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
 import { errorCatcher } from "../auth/auth.slice";
@@ -8,8 +16,12 @@ import {
   createChat,
   getChatDetails,
   getChatDetailsSuccess,
+  getChatMessages,
+  getChatMessagesSuccess,
   getUserChat,
   getUserChatSuccess,
+  sendMessage,
+  sendMessageSuccess,
 } from "./chats.slice";
 
 export type MyEpic = Epic<AnyAction, AnyAction, RootState>;
@@ -51,8 +63,42 @@ const getChatDetailsEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(getChatDetails.match),
     switchMap((action) =>
-      agent.ChatService.getChatDetailsByChatId(action.payload).pipe(
-        map(({ response }) => getChatDetailsSuccess(response)),
+      forkJoin({
+        chatDetails: agent.ChatService.getChatDetailsByChatId(action.payload),
+        chatMessages: agent.MessageService.getChatMessagesChatId(
+          action.payload
+        ),
+      }).pipe(
+        mergeMap(({ chatDetails, chatMessages }) => [
+          getChatDetailsSuccess(chatDetails.response),
+          getChatMessagesSuccess(chatMessages.response),
+        ]),
+        catchError((err) => {
+          return of(errorCatcher(err.response));
+        })
+      )
+    )
+  );
+
+const sendMessageEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(sendMessage.match),
+    switchMap((action) =>
+      agent.MessageService.sendMessage(action.payload).pipe(
+        map(({ response }) => sendMessageSuccess(response)),
+        catchError((err) => {
+          return of(errorCatcher(err.response));
+        })
+      )
+    )
+  );
+
+const getChatMessageEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(getChatMessages.match),
+    switchMap((action) =>
+      agent.MessageService.getChatMessagesChatId(action.payload).pipe(
+        map(({ response }) => getChatMessagesSuccess(response)),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })
@@ -63,5 +109,7 @@ const getChatDetailsEpic: MyEpic = (action$, state$) =>
 export default combineEpics(
   createChatEpic,
   getChatChannelsEpic,
-  getChatDetailsEpic
+  getChatDetailsEpic,
+  sendMessageEpic,
+  getChatMessageEpic
 );

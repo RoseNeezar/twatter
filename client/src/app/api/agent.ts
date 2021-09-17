@@ -5,7 +5,7 @@ import {
   IRegister,
   IUser,
 } from "../store/module/auth/types/auth.model";
-import { IChat } from "../store/module/chats/types/chats.types";
+import { IChat, IMessage } from "../store/module/chats/types/chats.types";
 import {
   ICreatePost,
   IFetchPost,
@@ -137,10 +137,14 @@ const ChatService = {
 
 const MessageService = {
   sendMessage: (data: { content: string; chatId: string }) =>
-    requestRxjs.post<IChat>(queryString.stringifyUrl({ url: "message" }), {
+    requestRxjs.post<IMessage>(queryString.stringifyUrl({ url: "message" }), {
       content: data.content,
       chatId: data.chatId,
     }),
+  getChatMessagesChatId: (data: string) =>
+    requestRxjs.get<IMessage[]>(
+      queryString.stringifyUrl({ url: `chats/${data}/messages` })
+    ),
 };
 
 const agent = {

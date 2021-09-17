@@ -5,5 +5,16 @@ export interface IChat {
   users: string[] | IUser[];
   createdAt: Date;
   updatedAt: Date;
+  latestMessage: IMessage;
   id: string;
+}
+
+export interface IMessage {
+  chat: string;
+  content: string;
+  createdAt: string;
+  id: string;
+  readBy: string[] | IUser[];
+  sender: IUser;
+  updatedAt: string;
 }

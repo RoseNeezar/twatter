@@ -18,21 +18,24 @@ const MessageHeader: FC = () => {
           const c = r as IUser;
           if (index > 5) {
             return (
-              <div className="flex items-center text-center bg-gray-500 bg-opacity-50 rounded-full w-7 h-7">
+              <div
+                key={index}
+                className="flex items-center text-center bg-gray-500 bg-opacity-50 rounded-full w-7 h-7"
+              >
                 <h1 className="pl-1 text-sm">+ {total.length - 6}</h1>
               </div>
             );
           }
           return currentUser?.id === c.id ? (
-            <>
+            <div key={c.id} className="flex">
               <span className="py-3 ">{index > 0 && ","}</span>
               <h1 className="py-3 mr-1">You</h1>
-            </>
+            </div>
           ) : (
-            <>
+            <div key={c.id} className="flex">
               <span className="py-3 ">{index > 0 && ","}</span>
               <h1 className="py-3 mr-1">{c.username}</h1>
-            </>
+            </div>
           );
         })}
       </div>

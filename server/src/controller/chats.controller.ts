@@ -86,7 +86,7 @@ export const getUsersChat = async (
       if (!!req.query.unreadOnly && req.query.unreadOnly === "true") {
         results = results.filter((r) => {
           const newType = r.latestMessage as MessageDoc;
-          return newType && !newType.readBy?.includes(req.currentUser?.id);
+          return newType && !newType.readBy?.includes(req.currentUser!.id);
         });
       }
 

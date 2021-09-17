@@ -13,7 +13,7 @@ export interface MessageDoc extends mongoose.Document {
   sender?: string;
   content?: string;
   chat?: string | ChatDoc;
-  readBy?: string[] | UserDoc;
+  readBy?: string[];
 }
 
 interface MessageModel extends mongoose.Model<MessageDoc> {
