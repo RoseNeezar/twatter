@@ -135,11 +135,20 @@ const ChatService = {
     ),
 };
 
+const MessageService = {
+  sendMessage: (data: { content: string; chatId: string }) =>
+    requestRxjs.post<IChat>(queryString.stringifyUrl({ url: "message" }), {
+      content: data.content,
+      chatId: data.chatId,
+    }),
+};
+
 const agent = {
   AuthService,
   PostService,
   UserService,
   ChatService,
+  MessageService,
 };
 
 export default agent;
