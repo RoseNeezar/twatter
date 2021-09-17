@@ -34,7 +34,7 @@ const MessagesPage = () => {
           style={{ width: 387 }}
           className="fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third"
         >
-          <div className="text-xl ">Inbox</div>
+          <div className="text-xl ">Messages</div>
           <div
             className="flex items-center justify-center p-1 text-xl rounded-full cursor-pointer hover:bg-gray-500 hover:bg-opacity-50 text-dark-txt"
             onClick={() => HandleAddUserToChat()}

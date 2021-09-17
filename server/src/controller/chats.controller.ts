@@ -1,6 +1,7 @@
 import { Response } from "express";
+import mongoose from "mongoose";
 import { BadRequestError } from "../errors/bad-request-error";
-import { Chat, ChatAttrs } from "../models/chat.models";
+import { Chat } from "../models/chat.models";
 import { MessageDoc } from "../models/message.models";
 import { User, UserDoc } from "../models/user.models";
 import { RequestTyped } from "../types/types";
@@ -19,11 +20,43 @@ export const createChat = async (
       _id: re.id,
     };
   });
+
   const users = sanitize;
 
   if (users.length === 0) {
     console.log("Users array is empty");
     throw new BadRequestError("No user");
+  }
+
+  if (users.length === 1) {
+    return Chat.findOneAndUpdate(
+      {
+        isGroupChat: false,
+        users: {
+          $size: 2,
+          $all: [
+            {
+              $elemMatch: { $eq: mongoose.Types.ObjectId(req.currentUser?.id) },
+            },
+            { $elemMatch: { $eq: mongoose.Types.ObjectId(users[0].id) } },
+          ],
+        },
+      },
+      {
+        $setOnInsert: {
+          users: [req.currentUser as any, users[0]],
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+      }
+    )
+      .then((result) => res.status(200).send(result))
+      .catch((error) => {
+        console.log(error);
+        throw new BadRequestError("No user");
+      });
   }
 
   users.push(req.currentUser as any);
