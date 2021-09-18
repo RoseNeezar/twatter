@@ -27,7 +27,7 @@ const MessageContent = React.forwardRef<HTMLDivElement>((prop, ref) => {
     const isMine = message.sender.id === currentUser?.id;
 
     let liClassName = isMine
-      ? "bg-blue-500 ml-auto rounded-l-2xl"
+      ? "bg-blue-500  rounded-l-2xl"
       : "bg-dark-third rounded-r-2xl";
 
     let nameElement: ReactNode = "";
@@ -62,12 +62,36 @@ const MessageContent = React.forwardRef<HTMLDivElement>((prop, ref) => {
       imageContainer = <div className="mb-0">{profileImage}</div>;
     }
     return (
-      <div key={message.id} className={`mb-1 `}>
+      <div key={message.id} className={`mb-1 cursor-pointer`}>
         {nameElement}
-        <div
-          className={`max-w-xs p-2 mr-3 break-all  w-max text-dark-txt ${liClassName}`}
-        >
-          {message.content}
+        <div className="flex flex-row ">
+          {isMine ? (
+            <div className="flex flex-row items-center w-full ml-auto">
+              <div className="flex w-2/3 ml-auto opacity-0 hover:opacity-100">
+                <div className="ml-auto text-2xl text-dark-txt">
+                  <i className="bx bx-dots-horizontal-rounded"></i>
+                </div>
+              </div>
+              <div
+                className={`bg-gray-400 max-w-xs p-2 mr-3 ml-3 break-all  w-max text-dark-txt ${liClassName}`}
+              >
+                {message.content}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div
+                className={`max-w-xs p-2 mr-3 ml-3 break-all  w-max text-dark-txt ${liClassName}`}
+              >
+                {message.content}
+              </div>
+              <div className="flex items-center w-2/3 opacity-0 hover:opacity-100">
+                <div className="text-2xl text-dark-txt">
+                  <i className="bx bx-dots-horizontal-rounded"></i>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {imageContainer}
