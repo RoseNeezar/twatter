@@ -19,7 +19,7 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
   const HandleOpenChat = (chatId: string) => {
     Navigate?.push(`${backUrl}/chat/${chatId}`);
   };
-  console.log(pathname);
+
   return (
     <>
       {chatChannels &&
@@ -106,7 +106,10 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                   {re.latestMessage && (
                     <div className="flex flex-row mx-2 text-gray-500 ">
                       <h1 className="mr-1">
-                        {re.latestMessage.sender.username}:
+                        {re.latestMessage.sender.id === currentUser?.id
+                          ? "You"
+                          : re.latestMessage.sender.username}
+                        :
                       </h1>
                       <h1> {re.latestMessage.content}</h1>
                     </div>

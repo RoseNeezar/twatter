@@ -2,7 +2,7 @@ import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useEffect } from "react";
 import { useRouteMatch, Route, Switch } from "react-router";
 import { useAppDispatch } from "../../store/hooks/hooks";
-import { getUserChat } from "../../store/module/chats/chats.slice";
+import { getUserChat, sendMessage } from "../../store/module/chats/chats.slice";
 import Navigate from "../../utils/Navigate";
 import MessageChannels from "./components/MessageChannels";
 import MessageEmptyChat from "./components/MessageEmptyChat";
@@ -26,7 +26,7 @@ const MessagesPage = () => {
         unreadOnly: false,
       })
     );
-  }, []);
+  }, [sendMessage]);
   return (
     <>
       <div className="flex flex-col w-full min-h-screen border-l border-dark-third">
