@@ -118,7 +118,7 @@ const MessageContent = React.forwardRef<HTMLDivElement>((prop, ref) => {
   return (
     <div className="relative flex flex-col w-full h-full justify-items-start">
       {chatMessages && HandleMessageStyle()}
-      <div className="mt-10 opacity-0">""</div>
+      <div className="mt-0 opacity-0">""</div>
       <div ref={ref} />
     </div>
   );
