@@ -4,8 +4,9 @@ import { useAppDispatch } from "../../../store/hooks/hooks";
 import { sendMessage } from "../../../store/module/chats/chats.slice";
 interface IMessageInput {
   chadId: string;
+  scrollToBottom: () => void;
 }
-const MessageInput: FC<IMessageInput> = ({ chadId }) => {
+const MessageInput: FC<IMessageInput> = ({ chadId, scrollToBottom }) => {
   const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
 
@@ -17,7 +18,14 @@ const MessageInput: FC<IMessageInput> = ({ chadId }) => {
   const handleSendMessage = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && message.trim().length > 0) {
       e.preventDefault();
+      dispatch(
+        sendMessage({
+          content: message,
+          chatId: chadId,
+        })
+      );
       setMessage("");
+      scrollToBottom();
     }
   };
 
@@ -31,7 +39,9 @@ const MessageInput: FC<IMessageInput> = ({ chadId }) => {
       );
     }
     setMessage("");
+    scrollToBottom();
   };
+
   return (
     <div className="flex py-3 space-x-2 border-t border-dark-third">
       <div className="flex items-center justify-between flex-1 px-3 rounded-full dark:bg-dark-third">

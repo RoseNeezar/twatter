@@ -36,68 +36,62 @@ const Home = () => {
       <Head>
         <title>Twatter</title>
       </Head>
-
-      <div
-        className={`flex justify-start overflow-auto lg:justify-center ${
-          !pathname.includes(messagesRoute) ? "mr-48" : "mr-24"
-        }`}
-      >
-        <div className="flex-col justify-end h-full sm:w-1/6 lg:flex-1 md:flex">
-          <Sidebar url={url} />
-        </div>
+      <div className="overflow-x-hidden">
         <div
-          className={`relative w-tweet ${
-            pathname.includes(messagesRoute) && "w-messageContainer  relative "
-          }`}
+          className={` flex   ${
+            !pathname.includes(messagesRoute) ? "" : "-mr-96"
+          } `}
         >
-          <Switch>
-            <Route path={`${path}home`}>
-              <TweetPage backUrl={url} />
-            </Route>
-            <Route
-              path={`${path}:username/status/:tweetId`}
-              component={SingleTweetPage}
-            />
-            <Route
-              path={`${path}profile/:profileUsername`}
-              component={ProfilePage}
-            />
-            <Route path={`${path}search`} component={SearchPage} />
-            <Route path={`${path}messages`} component={MessagesPage} />
-            <Route
-              exact
-              path={`${path}notification`}
-              component={NotificationPage}
-            />
-            <Route path={`${path}`} component={RedirectHome} />
-            <Route path="*" component={NotFound} />
-          </Switch>
-          {scrollPosition > 200 && (
-            <div
-              className="fixed z-50 p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
-              onClick={() => window.scrollTo(0, 0)}
-            >
-              Back to top
-            </div>
-          )}
-        </div>
-        <div
-          className={`flex-col justify-start flex-1 hidden h-full lg:flex ${
-            pathname.includes(messagesRoute) && "lg:hidden "
-          }`}
-        >
-          <Switch>
-            <Route
-              exact
-              path={`${path}:username/status/:tweetId`}
-              component={TweetAction}
-            />
-            <Route path={`${path}profile`} component={ProfilePageActions} />
-            <Route path={`${path}`} component={ProfilePageActions} />
-            <Route path="*">
-              <TweetAction />
-            </Route>
-          </Switch>
+          <div className="flex-col justify-end h-full bg-purple-500 sm:w-1/6 lg:flex-1 md:flex">
+            <Sidebar url={url} />
+          </div>
+          <div
+            className={`relative w-tweet  ${
+              pathname.includes(messagesRoute) &&
+              "w-messageContainer  relative "
+            }`}
+          >
+            <Switch>
+              <Route path={`${path}home`}>
+                <TweetPage backUrl={url} />
+              </Route>
+              <Route
+                path={`${path}:username/status/:tweetId`}
+                component={SingleTweetPage}
+              />
+              <Route
+                path={`${path}profile/:profileUsername`}
+                component={ProfilePage}
+              />
+              <Route path={`${path}search`} component={SearchPage} />
+              <Route path={`${path}messages`} component={MessagesPage} />
+              <Route
+                exact
+                path={`${path}notification`}
+                component={NotificationPage}
+              />
+              <Route path={`${path}`} component={RedirectHome} />
+              <Route path="*" component={NotFound} />
+            </Switch>
+            {scrollPosition > 200 && (
+              <div
+                className="fixed z-50 p-3 cursor-pointer bottom-2 bg-dark-third text-dark-txt rounded-3xl left-3/4"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                Back to top
+              </div>
+            )}
+          </div>
+          <div
+            className={`flex-col justify-start flex-1 hidden h-full lg:flex `}
+          >
+            <Switch>
+              <Route path={`${path}messages`} component={ProfilePageActions} />
+              <Route path="*">
+                <TweetAction />
+              </Route>
+            </Switch>
+          </div>
         </div>
       </div>
     </>
