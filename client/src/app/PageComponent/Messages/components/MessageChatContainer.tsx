@@ -1,7 +1,8 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { useParams } from "react-router";
-import { useAppDispatch } from "../../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { getChatDetails } from "../../../store/module/chats/chats.slice";
+import { RootState } from "../../../store/store";
 import MessageContent from "./MessageContent";
 import MessageHeader from "./MessageHeader";
 import MessageInput from "./MessageInput";
@@ -11,6 +12,31 @@ interface IMessageGroupChat {
 const MessageChatContainer: FC<IMessageGroupChat> = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const dispatch = useAppDispatch();
+  const chatRef = useRef<HTMLDivElement>(null);
+  const chatMessages = useAppSelector(
+    (state: RootState) => state.chats.chatChannelMessages
+  );
+  const HandleInfiniteScroll = (e: React.UIEvent<HTMLDivElement | UIEvent>) => {
+    const event = e.target as HTMLDivElement;
+    if (event.scrollTop === 0 && event.scrollHeight > window.innerHeight) {
+      console.log("at top");
+    }
+  };
+
+  const scrollToMessage = () => {
+    if (!chatRef.current) {
+      return;
+    }
+
+    chatRef.current.scrollIntoView({ behavior: "auto" });
+  };
+
+  useEffect(() => {
+    scrollToMessage();
+    return () => {
+      scrollToMessage();
+    };
+  }, [chatMessages]);
 
   useEffect(() => {
     dispatch(getChatDetails(chatId));
@@ -20,11 +46,11 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
     <div className="flex flex-col h-screen rounded-lg shadow text-dark-txt">
       <>
         <MessageHeader />
-        <div className="h-full px-2 py-2 overflow-scroll ">
-          <MessageContent />
+        <div className="px-2 overflow-scroll " onScroll={HandleInfiniteScroll}>
+          <MessageContent ref={chatRef} />
         </div>
         <div className="mt-auto bg-dark-main">
-          <MessageInput chadId={chatId} />
+          <MessageInput scrollToBottom={scrollToMessage} chadId={chatId} />
         </div>
       </>
     </div>
