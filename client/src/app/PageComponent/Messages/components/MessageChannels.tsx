@@ -16,8 +16,17 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
     (state: RootState) => state.chats.chatChannels
   );
   const currentUser = useAppSelector(selectCurrentUser);
+  const unreadChannel = useAppSelector(
+    (state: RootState) => state.chats.unreadChat
+  );
   const HandleOpenChat = (chatId: string) => {
     Navigate?.push(`${backUrl}/chat/${chatId}`);
+  };
+
+  const CheckUnreadChannel = (channelId: string) => {
+    return unreadChannel?.findIndex((re) => re.id === channelId) !== -1
+      ? true
+      : false;
   };
 
   return (
@@ -29,6 +38,8 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
               <div
                 className={`relative flex flex-row items-center py-5 px-1 cursor-pointer hover:bg-dark-third overflow-ellipsis ${
                   pathname.includes(re.id) && "border-r-2 border-blue-500"
+                } ${
+                  CheckUnreadChannel(re.id) ? "bg-blue-500 bg-opacity-30" : ""
                 }`}
                 onClick={() => HandleOpenChat(re.id)}
               >
@@ -98,7 +109,9 @@ const MessageChannels: FC<IMessageChannels> = ({ backUrl }) => {
                           return (
                             <div key={c.id} className="flex ">
                               <span>{index > 0 && ","}</span>
-                              <h1 className="ml-1">{c.username}</h1>
+                              <h1 className="ml-1">
+                                {c.id === currentUser?.id ? "You" : c.username}
+                              </h1>
                             </div>
                           );
                         })}

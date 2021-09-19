@@ -9,6 +9,7 @@ export interface chatsState {
   socket: SocketIOClient.Socket | null;
   socketConnected: boolean;
   isTyping: boolean;
+  unreadChat: IChat[] | null;
 }
 
 const initialState: chatsState = {
@@ -18,6 +19,7 @@ const initialState: chatsState = {
   socket: null,
   socketConnected: false,
   isTyping: false,
+  unreadChat: null,
 };
 
 export const chatsSlice = createSlice({
@@ -44,6 +46,16 @@ export const chatsSlice = createSlice({
     ) => state,
     sendMessageSuccess: (state, action: PayloadAction<IMessage>) => {
       state.chatChannelMessages?.push(action.payload);
+
+      if (
+        state.chatChannels?.findIndex(
+          (re) => re.id === action.payload.chat.id
+        ) !== -1
+      ) {
+        state.chatChannels!.find(
+          (re) => re.id === action.payload.chat.id
+        )!.latestMessage = action.payload;
+      }
     },
     setSocket: (state, action: PayloadAction<SocketIOClient.Socket>) => {
       state.socket = action.payload;
@@ -55,6 +67,14 @@ export const chatsSlice = createSlice({
     setIsTyping: (state, action: PayloadAction<boolean>) => {
       state.isTyping = action.payload;
     },
+    refreshMessageBadgeChat: (
+      state,
+      action: PayloadAction<{ unreadOnly: boolean }>
+    ) => state,
+    refreshMessageBadgeChatSuccess: (state, action: PayloadAction<IChat[]>) => {
+      state.unreadChat = action.payload;
+    },
+    markMessageRead: (state, action: PayloadAction<string>) => state,
   },
 });
 
@@ -71,6 +91,9 @@ export const {
   setSocket,
   setSocketLoaded,
   setIsTyping,
+  refreshMessageBadgeChat,
+  refreshMessageBadgeChatSuccess,
+  markMessageRead,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;

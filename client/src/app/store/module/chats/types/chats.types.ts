@@ -10,7 +10,7 @@ export interface IChat {
 }
 
 export interface IMessage {
-  chat: string;
+  chat: IChat;
   content: string;
   createdAt: string;
   id: string;

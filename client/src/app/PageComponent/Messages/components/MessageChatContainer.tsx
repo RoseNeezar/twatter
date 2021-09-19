@@ -1,7 +1,10 @@
 import React, { FC, useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
-import { getChatDetails } from "../../../store/module/chats/chats.slice";
+import {
+  getChatDetails,
+  markMessageRead,
+} from "../../../store/module/chats/chats.slice";
 import { RootState } from "../../../store/store";
 import MessageContent from "./MessageContent";
 import MessageHeader from "./MessageHeader";
@@ -34,6 +37,7 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
   };
 
   useEffect(() => {
+    dispatch(markMessageRead(chatId));
     scrollToMessage();
     return () => {
       scrollToMessage();
@@ -48,7 +52,10 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
     <div className="flex flex-col h-screen rounded-lg shadow text-dark-txt">
       <>
         <MessageHeader />
-        <div className="px-2 overflow-scroll " onScroll={HandleInfiniteScroll}>
+        <div
+          className="px-2 pt-2 overflow-scroll"
+          onScroll={HandleInfiniteScroll}
+        >
           <MessageContent ref={chatRef} />
         </div>
         {isTyping && (

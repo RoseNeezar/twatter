@@ -101,6 +101,7 @@ const MessagesAddUser: FC<IMessagesAddUser> = ({ backUrl }) => {
               selectedUser.map((re) => {
                 return (
                   <div
+                    key={re.id}
                     className="flex flex-row items-center mx-1 border-2 cursor-pointer h-7 max-w-max border-dark-third rounded-xl"
                     onClick={() => HandleRemoveSearched(re.id)}
                   >

@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { logout, selectCurrentUser } from "../../store/module/auth/auth.slice";
 import { RootState } from "../../store/store";
+import NotificationBadge from "./components/NotificationBadge";
 
 interface ISidebar {
   url: string;
@@ -13,6 +14,9 @@ interface ISidebar {
 const Sidebar: FC<ISidebar> = ({ url }) => {
   const router = useRouter();
   const currentUser = useAppSelector(selectCurrentUser);
+  const badgeCount = useAppSelector(
+    (state: RootState) => state.chats.unreadChat
+  );
   const homeRoute = "/home";
   const notificationRoute = "/notification";
   const searchRoute = "/search";
@@ -62,10 +66,13 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             </Link>
           </li>
           <li
-            className={`mb-10 xl:mr-auto rounded-full p-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+            className={`relative mb-10 xl:mr-auto rounded-full p-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname.includes(messagesRoute) && "bg-dark-third "
             }`}
           >
+            {badgeCount && badgeCount?.length > 0 && (
+              <NotificationBadge badgeCount={badgeCount.length} />
+            )}
             <Link
               to={`${url}messages`}
               className={` text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}

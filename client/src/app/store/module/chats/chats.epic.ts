@@ -4,10 +4,12 @@ import {
   catchError,
   filter,
   forkJoin,
+  ignoreElements,
   map,
   mergeMap,
   of,
   switchMap,
+  takeUntil,
   tap,
 } from "rxjs";
 import agent from "../../../api/agent";
@@ -21,6 +23,9 @@ import {
   getChatMessagesSuccess,
   getUserChat,
   getUserChatSuccess,
+  markMessageRead,
+  refreshMessageBadgeChat,
+  refreshMessageBadgeChatSuccess,
   sendMessage,
   sendMessageSuccess,
 } from "./chats.slice";
@@ -32,6 +37,14 @@ const createChatEpic: MyEpic = (action$, state$) =>
     filter(createChat.match),
     switchMap((action) =>
       agent.ChatService.createChat(action.payload).pipe(
+        tap(
+          (data) =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit("new-channel", {
+              userIds: data.response.users,
+              currentUserId: state$.value.auth.user?.id,
+            })
+        ),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })
@@ -74,7 +87,11 @@ const getChatDetailsEpic: MyEpic = (action$, state$) =>
           getChatDetailsSuccess(chatDetails.response),
           getChatMessagesSuccess(chatMessages.response),
         ]),
-        tap(() => state$.value.chats.socket?.emit("join-room", action.payload)),
+        tap(
+          () =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit("join-room", action.payload)
+        ),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })
@@ -88,8 +105,10 @@ const sendMessageEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.MessageService.sendMessage(action.payload).pipe(
         map(({ response }) => sendMessageSuccess(response)),
-        tap((data) =>
-          state$.value.chats.socket?.emit("new-message", data.payload)
+        tap(
+          (data) =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit("new-message", data.payload)
         ),
         catchError((err) => {
           return of(errorCatcher(err.response));
@@ -111,10 +130,64 @@ const getChatMessageEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const refreshMessageBadgeEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(refreshMessageBadgeChat.match),
+    switchMap((action) =>
+      agent.ChatService.fetchUserChat(action.payload).pipe(
+        map(({ response }) => refreshMessageBadgeChatSuccess(response)),
+        catchError((err) => {
+          return of(errorCatcher(err.response));
+        })
+      )
+    )
+  );
+
+const markReadOnChannelEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(getChatDetailsSuccess.match),
+    switchMap((action) =>
+      agent.MessageService.markReadChatMessagesChatId(
+        state$.value.chats.chatChannelDetail?.id as string
+      ).pipe(
+        takeUntil(action$.pipe(filter(markMessageRead.match))),
+        map(() =>
+          refreshMessageBadgeChat({
+            unreadOnly: true,
+          })
+        ),
+        catchError((err) => {
+          return of(errorCatcher(err.response));
+        })
+      )
+    )
+  );
+
+const markReadOnMessageEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(markMessageRead.match),
+    switchMap((action) =>
+      agent.MessageService.markReadChatMessagesChatId(action.payload).pipe(
+        takeUntil(action$.pipe(filter(getChatDetailsSuccess.match))),
+        map(() =>
+          refreshMessageBadgeChat({
+            unreadOnly: true,
+          })
+        ),
+        catchError((err) => {
+          return of(errorCatcher(err.response));
+        })
+      )
+    )
+  );
+
 export default combineEpics(
   createChatEpic,
   getChatChannelsEpic,
   getChatDetailsEpic,
   sendMessageEpic,
-  getChatMessageEpic
+  getChatMessageEpic,
+  refreshMessageBadgeEpic,
+  markReadOnChannelEpic,
+  markReadOnMessageEpic
 );
