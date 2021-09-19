@@ -6,12 +6,18 @@ export interface chatsState {
   chatChannels: IChat[] | null;
   chatChannelDetail: IChat | null;
   chatChannelMessages: IMessage[] | null;
+  socket: SocketIOClient.Socket | null;
+  socketConnected: boolean;
+  isTyping: boolean;
 }
 
 const initialState: chatsState = {
   chatChannels: null,
   chatChannelDetail: null,
   chatChannelMessages: null,
+  socket: null,
+  socketConnected: false,
+  isTyping: false,
 };
 
 export const chatsSlice = createSlice({
@@ -39,6 +45,16 @@ export const chatsSlice = createSlice({
     sendMessageSuccess: (state, action: PayloadAction<IMessage>) => {
       state.chatChannelMessages?.push(action.payload);
     },
+    setSocket: (state, action: PayloadAction<SocketIOClient.Socket>) => {
+      state.socket = action.payload;
+    },
+    setSocketLoaded: (state) => {
+      console.log("setSocketLoaded");
+      state.socketConnected = true;
+    },
+    setIsTyping: (state, action: PayloadAction<boolean>) => {
+      state.isTyping = action.payload;
+    },
   },
 });
 
@@ -52,6 +68,9 @@ export const {
   sendMessageSuccess,
   getChatMessages,
   getChatMessagesSuccess,
+  setSocket,
+  setSocketLoaded,
+  setIsTyping,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;
