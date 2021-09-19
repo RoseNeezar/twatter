@@ -145,6 +145,10 @@ const MessageService = {
     requestRxjs.get<IMessage[]>(
       queryString.stringifyUrl({ url: `chats/${data}/messages` })
     ),
+  markReadChatMessagesChatId: (data: string) =>
+    requestRxjs.put<void>(
+      queryString.stringifyUrl({ url: `chats/${data}/messages/markAsRead` })
+    ),
 };
 
 const agent = {

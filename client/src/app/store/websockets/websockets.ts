@@ -2,6 +2,8 @@ import { Dispatch, useEffect } from "react";
 import socketClient from "socket.io-client";
 import { IUser } from "../module/auth/types/auth.model";
 import {
+  getUserChat,
+  refreshMessageBadgeChat,
   sendMessageSuccess,
   setIsTyping,
   setSocket,
@@ -19,6 +21,12 @@ const useSocket = (user: IUser, dispatch: Dispatch<any>) => {
 
     socket.emit("setup", user);
 
+    dispatch(
+      refreshMessageBadgeChat({
+        unreadOnly: true,
+      })
+    );
+
     socket.on("connected", () => {
       dispatch(setSocketLoaded());
     });
@@ -31,8 +39,21 @@ const useSocket = (user: IUser, dispatch: Dispatch<any>) => {
       dispatch(setIsTyping(false));
     });
 
+    socket.on("channel-created", () => {
+      dispatch(
+        getUserChat({
+          unreadOnly: false,
+        })
+      );
+    });
+
     socket.on("message-received", (message: IMessage) => {
       dispatch(sendMessageSuccess(message));
+      dispatch(
+        refreshMessageBadgeChat({
+          unreadOnly: true,
+        })
+      );
     });
 
     socket.on("error", (err: any) => {

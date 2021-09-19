@@ -36,6 +36,16 @@ export const socketServer = (server: http.Server) => {
         socket.in(chatters.id).emit("message-received", newMessage);
       });
     });
+    socket.on(
+      "new-channel",
+      (data: { userIds: string[]; currentUserId: string }) => {
+        if (!data.userIds) return;
+        data.userIds.forEach((user) => {
+          if (user === data.currentUserId) return;
+          socket.in(user).emit("channel-created");
+        });
+      }
+    );
     socket.on("error", function (err) {
       console.log("socket-err", err);
     });
