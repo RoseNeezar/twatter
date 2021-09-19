@@ -8,6 +8,7 @@ import {
   mergeMap,
   of,
   switchMap,
+  tap,
 } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
@@ -73,6 +74,7 @@ const getChatDetailsEpic: MyEpic = (action$, state$) =>
           getChatDetailsSuccess(chatDetails.response),
           getChatMessagesSuccess(chatMessages.response),
         ]),
+        tap(() => state$.value.chats.socket?.emit("join-room", action.payload)),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })
@@ -86,6 +88,9 @@ const sendMessageEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.MessageService.sendMessage(action.payload).pipe(
         map(({ response }) => sendMessageSuccess(response)),
+        tap((data) =>
+          state$.value.chats.socket?.emit("new-message", data.payload)
+        ),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })

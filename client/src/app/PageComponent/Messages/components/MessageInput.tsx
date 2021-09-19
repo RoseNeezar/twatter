@@ -1,7 +1,9 @@
 import React, { ChangeEvent, FC, KeyboardEvent, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { useAppDispatch } from "../../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
+import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import { sendMessage } from "../../../store/module/chats/chats.slice";
+import { RootState } from "../../../store/store";
 interface IMessageInput {
   chadId: string;
   scrollToBottom: () => void;
@@ -9,12 +11,30 @@ interface IMessageInput {
 const MessageInput: FC<IMessageInput> = ({ chadId, scrollToBottom }) => {
   const [message, setMessage] = useState("");
   const dispatch = useAppDispatch();
+  const socket = useAppSelector((state: RootState) => state.chats.socket);
+
+  const UpdateTyping = () => {
+    socket?.emit("typing", chadId);
+    const lastTypingTime = new Date().getTime();
+    const timerLength = 3000;
+
+    setTimeout(() => {
+      const timeNow = new Date().getTime();
+      const timeDiff = timeNow - lastTypingTime;
+
+      if (timeDiff >= timerLength) {
+        socket?.emit("stop-typing", chadId);
+      }
+    }, timerLength);
+  };
 
   const handleMessage = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    UpdateTyping();
     setMessage(e.target.value);
   };
+
   const handleSendMessage = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey && message.trim().length > 0) {
       e.preventDefault();
@@ -24,6 +44,7 @@ const MessageInput: FC<IMessageInput> = ({ chadId, scrollToBottom }) => {
           chatId: chadId,
         })
       );
+      socket?.emit("stop-typing", chadId);
       setMessage("");
       scrollToBottom();
     }
@@ -38,6 +59,7 @@ const MessageInput: FC<IMessageInput> = ({ chadId, scrollToBottom }) => {
         })
       );
     }
+    socket?.emit("stop-typing", chadId);
     setMessage("");
     scrollToBottom();
   };
