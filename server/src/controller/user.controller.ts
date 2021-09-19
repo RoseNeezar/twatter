@@ -2,7 +2,6 @@ import { Response } from "express";
 import { BadRequestError } from "../errors/bad-request-error";
 import { User, UserDoc } from "../models/user.models";
 import { RequestTyped } from "../types/types";
-import path from "path";
 import fs from "fs";
 
 export const getUserByUsername = async (
@@ -121,6 +120,15 @@ export const updateProfileImage = async (
     console.log("No file uploaded with ajax request.");
     throw new BadRequestError("No file uploaded with ajax request.");
   }
+  const oldImageTemp = req.currentUser!.profilePic!.split("/");
+  const imgRex = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
+  if (oldImageTemp) {
+    const oldImage = oldImageTemp[oldImageTemp!.length - 1];
+    if (imgRex.test(oldImage)) {
+      fs.unlinkSync(`public/images/${oldImage}`);
+    }
+  }
+
   try {
     req.currentUser = await User.findByIdAndUpdate(
       req.currentUser?.id,
@@ -142,6 +150,15 @@ export const updateProfileBanner = async (
     console.log("No file uploaded with ajax request.");
     throw new BadRequestError("No file uploaded with ajax request.");
   }
+  const oldBannerTemp = req.currentUser!.coverPhoto!.split("/");
+  const imgRex = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
+  if (oldBannerTemp) {
+    const oldBanner = oldBannerTemp[oldBannerTemp!.length - 1];
+    if (imgRex.test(oldBanner)) {
+      fs.unlinkSync(`public/images/${oldBanner}`);
+    }
+  }
+
   try {
     req.currentUser = await User.findByIdAndUpdate(
       req.currentUser?.id,

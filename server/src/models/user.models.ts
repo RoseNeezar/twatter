@@ -66,11 +66,11 @@ const userSchema = new mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: `${process.env.APP_URL}/images/img.jpeg`,
+      default: `https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y')`,
     },
     coverPhoto: {
       type: String,
-      default: `${process.env.APP_URL}/images/img.jpeg`,
+      default: `https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y')`,
     },
     likes: [
       {
