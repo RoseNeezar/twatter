@@ -16,6 +16,8 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
   const chatMessages = useAppSelector(
     (state: RootState) => state.chats.chatChannelMessages
   );
+  const isTyping = useAppSelector((state: RootState) => state.chats.isTyping);
+
   const HandleInfiniteScroll = (e: React.UIEvent<HTMLDivElement | UIEvent>) => {
     const event = e.target as HTMLDivElement;
     if (event.scrollTop === 0 && event.scrollHeight > window.innerHeight) {
@@ -49,6 +51,13 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
         <div className="px-2 overflow-scroll " onScroll={HandleInfiniteScroll}>
           <MessageContent ref={chatRef} />
         </div>
+        {isTyping && (
+          <div
+            className={`absolute bottom-20 left-0 py-5 px-7 text-sm ml-2 bg-dark-third rounded-3xl w-max`}
+          >
+            <div className="dot-elastic" />
+          </div>
+        )}
         <div className="mt-auto bg-dark-main">
           <MessageInput scrollToBottom={scrollToMessage} chadId={chatId} />
         </div>
