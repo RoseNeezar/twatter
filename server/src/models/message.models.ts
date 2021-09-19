@@ -3,14 +3,14 @@ import { ChatDoc } from "./chat.models";
 import { UserDoc } from "./user.models";
 
 export interface MessageAttrs {
-  sender?: string;
+  sender?: string | UserDoc;
   content?: string;
   chat?: string | ChatDoc;
   readBy?: string[] | UserDoc;
 }
 
 export interface MessageDoc extends mongoose.Document {
-  sender?: string;
+  sender?: string | UserDoc;
   content?: string;
   chat?: string | ChatDoc;
   readBy?: string[];

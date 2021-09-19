@@ -2,6 +2,10 @@ import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import { selectCurrentUser } from "../../store/module/auth/auth.slice";
+import { IUser } from "../../store/module/auth/types/auth.model";
+import useSocket from "../../store/websockets/websockets";
 import MessagesPage from "../Messages/MessagesPage";
 import NotFound from "../NotFound/NotFound";
 import NotificationPage from "../Notification/NotificationPage";
@@ -17,7 +21,8 @@ const Home = () => {
   let { path, url } = useRouteMatch();
   const { pathname } = useLocation();
   const messagesRoute = "/messages";
-
+  const currentUser = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
   const [scrollPosition, setScrollPosition] = useState(0);
   const handleScroll = () => {
     const position = window.pageYOffset;
@@ -30,6 +35,8 @@ const Home = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useSocket(currentUser as IUser, dispatch);
 
   return (
     <>

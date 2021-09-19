@@ -1,5 +1,6 @@
 import { app } from "./app";
 import mongoose from "mongoose";
+import { socketServer } from "./socket/socket";
 
 const start = async () => {
   try {
@@ -13,9 +14,11 @@ const start = async () => {
   } catch (err) {
     console.log(err);
   }
-  app.listen(5000, () => {
+  const server = app.listen(5000, () => {
     console.log("Listening on port 3000 !");
   });
+
+  socketServer(server);
 };
 
 start();

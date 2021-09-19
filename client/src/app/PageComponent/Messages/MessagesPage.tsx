@@ -31,7 +31,7 @@ const MessagesPage = () => {
     <>
       <div className="flex flex-col w-full min-h-screen border-l border-dark-third">
         <div
-          style={{ width: 388 }}
+          style={{ width: 387 }}
           className="fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third"
         >
           <div className="text-xl ">Messages</div>
