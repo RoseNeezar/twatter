@@ -156,9 +156,9 @@ const EditProfileModal = () => {
                   <i className="pl-3 text-3xl text-dark-txt bx bx-x"></i>
                 </div>
                 {(image && !saveImage) || (bannerImage && !saveBannerImage) ? (
-                  <h1 className="font-bold">Edit Media</h1>
+                  <h1 className="text-lg font-bold">Edit Media</h1>
                 ) : (
-                  <h1 className="font-bold">Edit Profile</h1>
+                  <h1 className="text-lg font-bold">Edit Profile</h1>
                 )}
               </div>
             </Dialog.Title>
@@ -263,7 +263,7 @@ const EditProfileModal = () => {
                   onChange={onChangeText("username")}
                 />
                 <TextareaAutosize
-                  placeholder="Bio"
+                  placeholder="Bio -  Who reads this thing anyway??"
                   className="w-full p-3 pt-3 mb-3 overflow-auto text-xl font-semibold transition duration-200 bg-transparent border border-gray-600 rounded outline-none resize-none text-dark-txt"
                   minRows={2}
                   maxRows={6}

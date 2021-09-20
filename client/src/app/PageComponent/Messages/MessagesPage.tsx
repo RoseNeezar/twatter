@@ -1,21 +1,28 @@
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useEffect } from "react";
 import { useRouteMatch, Route, Switch } from "react-router";
-import { useAppDispatch } from "../../store/hooks/hooks";
-import { getUserChat, sendMessage } from "../../store/module/chats/chats.slice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
+import {
+  getUserChat,
+  resetChannel,
+  sendMessage,
+} from "../../store/module/chats/chats.slice";
 import Navigate from "../../utils/Navigate";
 import MessageChannels from "./components/MessageChannels";
 import MessageEmptyChat from "./components/MessageEmptyChat";
 import MessageChatContainer from "./components/MessageChatContainer";
 import MessagesAddUser from "./components/MessagesAddUser";
+import { RootState } from "../../store/store";
 
 const MessagesPage = () => {
   let { path, url } = useRouteMatch();
   const dispatch = useAppDispatch();
+  const currentChat = useAppSelector(
+    (state: RootState) => state.chats.chatChannelDetail
+  );
   const HandleClosingModal = () => {
     Navigate?.goBack();
   };
-
   const HandleAddUserToChat = () => {
     Navigate?.push(`${url}/compose`);
   };
@@ -27,12 +34,16 @@ const MessagesPage = () => {
       })
     );
   }, [sendMessage]);
+
+  useEffect(() => {
+    dispatch(resetChannel());
+  }, []);
   return (
     <>
       <div className="flex flex-col w-full min-h-screen border-l border-dark-third">
         <div
           style={{ width: 387 }}
-          className="fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third"
+          className={` fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third  `}
         >
           <div className="text-xl ">Messages</div>
           <div
@@ -43,10 +54,12 @@ const MessagesPage = () => {
           </div>
         </div>
         <div className="flex flex-row border-r border-dark-third">
-          <div className="relative mt-12 border-r text-dark-txt w-channels border-dark-third">
+          <div
+            className={` relative mt-12 border-r text-dark-txt w-channels border-dark-third `}
+          >
             <MessageChannels backUrl={url} />
           </div>
-          <div className="relative w-messages">
+          <div className={`relative w-messages `}>
             <Switch>
               <Route path={`${path}/chat/:chatId`}>
                 <MessageChatContainer backUrl={url} />

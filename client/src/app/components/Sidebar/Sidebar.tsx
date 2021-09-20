@@ -36,7 +36,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
   };
 
   return (
-    <div className="flex justify-end ">
+    <div className="flex justify-start xl:justify-end">
       <div className="fixed top-0 h-full ">
         <ul className="flex flex-col items-end h-full pt-10 pl-10">
           <li

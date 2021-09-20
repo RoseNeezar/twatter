@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^1.6.1",
     "axios": "^0.21.1",
     "dayjs": "^1.10.6",
+    "lodash": "^4.17.21",
     "next": "10.2.3",
     "query-string": "^7.0.1",
     "react": "17.0.2",
@@ -27,13 +28,14 @@
     "socket.io-client": "^2.3.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.173",
     "@types/react": "^17.0.17",
     "@types/react-avatar-editor": "^10.3.6",
     "@types/react-router-dom": "^5.1.7",
+    "@types/socket.io-client": "^1.4.34",
     "autoprefixer": "^10.3.1",
     "postcss": "^8.3.6",
     "tailwindcss": "^2.2.7",
-    "typescript": "^4.3.5",
-    "@types/socket.io-client": "^1.4.34"
+    "typescript": "^4.3.5"
   }
 }

@@ -57,7 +57,7 @@ const fetchPostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.fetchPost(action.payload).pipe(
         map((res) => setFetchPost(res.response)),
-        takeUntil(action$.pipe(filter(routeChange.match))),
+        // takeUntil(action$.pipe(filter(routeChange.match))),
         catchError((err) => of(errorCatcher(err.response)))
       )
     )

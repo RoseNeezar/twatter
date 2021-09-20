@@ -75,6 +75,9 @@ export const chatsSlice = createSlice({
       state.unreadChat = action.payload;
     },
     markMessageRead: (state, action: PayloadAction<string>) => state,
+    resetChannel: (state) => {
+      state.chatChannelDetail = null;
+    },
   },
 });
 
@@ -94,6 +97,7 @@ export const {
   refreshMessageBadgeChat,
   refreshMessageBadgeChatSuccess,
   markMessageRead,
+  resetChannel,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;
