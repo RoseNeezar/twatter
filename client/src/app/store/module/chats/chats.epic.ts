@@ -143,26 +143,6 @@ const refreshMessageBadgeEpic: MyEpic = (action$, state$) =>
     )
   );
 
-const markReadOnChannelEpic: MyEpic = (action$, state$) =>
-  action$.pipe(
-    filter(getChatDetailsSuccess.match),
-    switchMap((action) =>
-      agent.MessageService.markReadChatMessagesChatId(
-        state$.value.chats.chatChannelDetail?.id as string
-      ).pipe(
-        takeUntil(action$.pipe(filter(markMessageRead.match))),
-        map(() =>
-          refreshMessageBadgeChat({
-            unreadOnly: true,
-          })
-        ),
-        catchError((err) => {
-          return of(errorCatcher(err.response));
-        })
-      )
-    )
-  );
-
 const markReadOnMessageEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(markMessageRead.match),
@@ -188,6 +168,5 @@ export default combineEpics(
   sendMessageEpic,
   getChatMessageEpic,
   refreshMessageBadgeEpic,
-  markReadOnChannelEpic,
   markReadOnMessageEpic
 );
