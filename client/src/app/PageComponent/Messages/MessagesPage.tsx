@@ -1,6 +1,6 @@
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useEffect } from "react";
-import { useRouteMatch, Route, Switch } from "react-router";
+import { useRouteMatch, Route, Switch, useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import {
   getUserChat,
@@ -16,6 +16,7 @@ import { RootState } from "../../store/store";
 
 const MessagesPage = () => {
   let { path, url } = useRouteMatch();
+
   const dispatch = useAppDispatch();
   const currentChat = useAppSelector(
     (state: RootState) => state.chats.chatChannelDetail
@@ -38,12 +39,15 @@ const MessagesPage = () => {
   useEffect(() => {
     dispatch(resetChannel());
   }, []);
+
   return (
     <>
       <div className="flex flex-col w-full min-h-screen border-l border-dark-third">
         <div
           style={{ width: 387 }}
-          className={` fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third  `}
+          className={` fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third  ${
+            currentChat ? "hidden lg:flex" : "flex"
+          }`}
         >
           <div className="text-xl ">Messages</div>
           <div
@@ -55,11 +59,21 @@ const MessagesPage = () => {
         </div>
         <div className="flex flex-row border-r border-dark-third">
           <div
-            className={` relative mt-12 border-r text-dark-txt w-channels border-dark-third `}
+            className={` relative mt-12 border-r text-dark-txt w-channels border-dark-third  ${
+              currentChat
+                ? "hidden lg:inline-block"
+                : "inline-block h-screen border-r border-dark-third"
+            } `}
           >
             <MessageChannels backUrl={url} />
           </div>
-          <div className={`relative w-messages `}>
+          <div
+            className={`relative w-messages ${
+              currentChat
+                ? "border-r border-dark-third lg:border-0"
+                : "hidden lg:inline-block"
+            }`}
+          >
             <Switch>
               <Route path={`${path}/chat/:chatId`}>
                 <MessageChatContainer backUrl={url} />

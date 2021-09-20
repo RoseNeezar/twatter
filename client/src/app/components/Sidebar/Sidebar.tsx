@@ -75,7 +75,9 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             )}
             <Link
               to={`${url}messages`}
-              className={` text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
+              className={`${
+                pathname.includes(messagesRoute) && "pointer-events-none "
+              }text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
               <i className="text-2xl xl:pr-5 bx bx-mail-send"></i>
               <span className="hidden xl:inline-block"> Messages</span>

@@ -1,15 +1,24 @@
-import { Menu } from "@headlessui/react";
 import React, { FC } from "react";
-import { useAppSelector } from "../../../store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import { IUser } from "../../../store/module/auth/types/auth.model";
+import { resetChannel } from "../../../store/module/chats/chats.slice";
 import { RootState } from "../../../store/store";
-
-const MessageHeader: FC = () => {
+import Navigate from "../../../utils/Navigate";
+interface IMessageHeader {
+  backUrl: string;
+}
+const MessageHeader: FC<IMessageHeader> = ({ backUrl }) => {
   const currentUser = useAppSelector(selectCurrentUser);
   const channelDetails = useAppSelector(
     (state: RootState) => state.chats.chatChannelDetail
   );
+  const dispatch = useAppDispatch();
+
+  const HandleCloseChat = () => {
+    dispatch(resetChannel());
+    Navigate?.push(`${backUrl}`);
+  };
 
   return (
     <div className="relative flex flex-row pt-1 border-b border-dark-third">
@@ -40,16 +49,15 @@ const MessageHeader: FC = () => {
         })}
       </div>
       <div className="absolute right-0 z-50 w-full text-right top-2">
-        <Menu as="div" className="relative inline-block text-left">
-          <div>
-            <Menu.Button
-              className="flex items-center justify-center p-2 mx-1 text-xl rounded-full cursor-pointer bg-dark-main text-dark-txt hover:bg-gray-300"
-              id="dark-mode-toggle"
-            >
-              <i className="bx bxs-exit"></i>
-            </Menu.Button>
+        <div className="relative inline-block text-left">
+          <div
+            className="flex items-center justify-center p-2 mx-1 text-xl rounded-full cursor-pointer bg-dark-main text-dark-txt hover:bg-dark-third"
+            id="dark-mode-toggle"
+            onClick={() => HandleCloseChat()}
+          >
+            <i className="bx bxs-exit"></i>
           </div>
-        </Menu>
+        </div>
       </div>
     </div>
   );

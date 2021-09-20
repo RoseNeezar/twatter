@@ -54,7 +54,6 @@ const Home = () => {
           } `}
         >
           <div className="flex-col justify-end h-full w-36 xl:flex-1">
-            <h1>helo</h1>
             <Sidebar url={url} />
           </div>
           <div
