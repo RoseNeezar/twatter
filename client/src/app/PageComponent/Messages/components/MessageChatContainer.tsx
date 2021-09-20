@@ -6,14 +6,16 @@ import {
   markMessageRead,
 } from "../../../store/module/chats/chats.slice";
 import { RootState } from "../../../store/store";
+import { useIsMount } from "../../../utils/isMounted";
 import MessageContent from "./MessageContent";
 import MessageHeader from "./MessageHeader";
 import MessageInput from "./MessageInput";
 interface IMessageGroupChat {
   backUrl: string;
 }
-const MessageChatContainer: FC<IMessageGroupChat> = () => {
+const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
   const { chatId } = useParams<{ chatId: string }>();
+  const isMounted = useIsMount();
   const dispatch = useAppDispatch();
   const chatRef = useRef<HTMLDivElement>(null);
   const chatMessages = useAppSelector(
@@ -37,8 +39,13 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
   };
 
   useEffect(() => {
-    dispatch(markMessageRead(chatId));
-    scrollToMessage();
+    if (isMounted) {
+      scrollToMessage();
+    } else {
+      dispatch(markMessageRead(chatId));
+      scrollToMessage();
+    }
+
     return () => {
       scrollToMessage();
     };
@@ -51,7 +58,7 @@ const MessageChatContainer: FC<IMessageGroupChat> = () => {
   return (
     <div className="flex flex-col h-screen rounded-lg shadow text-dark-txt">
       <>
-        <MessageHeader />
+        <MessageHeader backUrl={backUrl} />
         <div
           className="px-2 pt-2 overflow-scroll"
           onScroll={HandleInfiniteScroll}
