@@ -5,6 +5,7 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { selectCurrentUser } from "../../store/module/auth/auth.slice";
 import { IUser } from "../../store/module/auth/types/auth.model";
+import { RootState } from "../../store/store";
 import useSocket from "../../store/websockets/websockets";
 import MessagesPage from "../Messages/MessagesPage";
 import NotFound from "../NotFound/NotFound";
@@ -23,6 +24,9 @@ const Home = () => {
   const messagesRoute = "/messages";
   const currentUser = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
+  const currentChat = useAppSelector(
+    (state: RootState) => state.chats.chatChannelDetail
+  );
   const [scrollPosition, setScrollPosition] = useState(0);
   const handleScroll = () => {
     const position = window.pageYOffset;
@@ -45,15 +49,16 @@ const Home = () => {
       </Head>
       <div className="overflow-x-hidden">
         <div
-          className={` flex   ${
+          className={` flex  ${
             !pathname.includes(messagesRoute) ? "" : "-mr-96"
           } `}
         >
-          <div className="flex-col justify-end h-full bg-purple-500 sm:w-1/6 lg:flex-1 md:flex">
+          <div className="flex-col justify-end h-full w-36 xl:flex-1">
+            <h1>helo</h1>
             <Sidebar url={url} />
           </div>
           <div
-            className={`relative w-tweet  ${
+            className={`relative   w-tweet  ${
               pathname.includes(messagesRoute) &&
               "w-messageContainer  relative "
             }`}
