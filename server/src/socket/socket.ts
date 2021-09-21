@@ -1,6 +1,6 @@
 import socketIo from "socket.io";
 import http from "http";
-import { UserDoc } from "../models/user.models";
+import { User, UserDoc } from "../models/user.models";
 import { Request, Response } from "express";
 import { MessageDoc } from "../models/message.models";
 import { ChatDoc } from "../models/chat.models";
@@ -46,8 +46,15 @@ export const socketServer = (server: http.Server) => {
         });
       }
     );
+
     socket.on("error", function (err) {
       console.log("socket-err", err);
     });
+  });
+};
+
+const getAllUsers = async () => {
+  return User.find({}).then((user) => {
+    return user.map((re) => re.id);
   });
 };
