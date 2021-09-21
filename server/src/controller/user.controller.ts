@@ -172,3 +172,39 @@ export const updateProfileBanner = async (
     throw new BadRequestError("no file found");
   }
 };
+
+export const getRecommendUsersToFollow = async (
+  req: RequestTyped<{}, { search?: string }, {}>,
+  res: Response
+) => {
+  User.aggregate([
+    {
+      $addFields: {
+        followersLength: {
+          $size: "$followers",
+        },
+      },
+    },
+    {
+      $sort: {
+        followersLength: -1,
+      },
+    },
+    {
+      $limit: 3,
+    },
+  ])
+    .then((user) => {
+      user.map((re) => {
+        delete re.password;
+        delete re.tokenVersion;
+        delete Object.assign(re, { ["id"]: re["_id"] })["_id"];
+
+        return re;
+      });
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      throw new BadRequestError("no user found");
+    });
+};
