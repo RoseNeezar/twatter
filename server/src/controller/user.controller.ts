@@ -3,7 +3,7 @@ import { BadRequestError } from "../errors/bad-request-error";
 import { User, UserDoc } from "../models/user.models";
 import { RequestTyped } from "../types/types";
 import fs from "fs";
-
+import mongoose from "mongoose";
 export const getUserByUsername = async (
   req: RequestTyped<{}, {}, { username: string }>,
   res: Response
@@ -177,7 +177,17 @@ export const getRecommendUsersToFollow = async (
   req: RequestTyped<{}, { search?: string }, {}>,
   res: Response
 ) => {
+  let recommendUser = req.currentUser?.following;
+  recommendUser?.push(req.currentUser?.id);
+
   User.aggregate([
+    {
+      $match: {
+        _id: {
+          $nin: recommendUser?.map((re) => mongoose.Types.ObjectId(re)),
+        },
+      },
+    },
     {
       $addFields: {
         followersLength: {
@@ -195,13 +205,16 @@ export const getRecommendUsersToFollow = async (
     },
   ])
     .then((user) => {
-      user.map((re) => {
-        delete re.password;
-        delete re.tokenVersion;
-        delete Object.assign(re, { ["id"]: re["_id"] })["_id"];
+      if (user) {
+        user.map((re) => {
+          delete re.password;
+          delete re.tokenVersion;
+          delete Object.assign(re, { ["id"]: re["_id"] })["_id"];
 
-        return re;
-      });
+          return re;
+        });
+      }
+
       res.status(200).send(user);
     })
     .catch((err) => {

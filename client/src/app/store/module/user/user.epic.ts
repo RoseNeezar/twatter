@@ -16,6 +16,8 @@ import { errorCatcher, setUser } from "../auth/auth.slice";
 import {
   deleteProfilePost,
   fetchProfilePost,
+  fetchRecommendUser,
+  fetchRecommendUserSuccess,
   followUser,
   followUserFullfilled,
   getfollowUserFullfilled,
@@ -189,6 +191,17 @@ const searchUserEpic: MyEpic = (action$, state$) =>
     )
   );
 
+const recommendUserEpic: MyEpic = (action$, state$) =>
+  action$.pipe(
+    filter(fetchRecommendUser.match),
+    debounceTime(1500),
+    switchMap((action) =>
+      agent.UserService.getRecommendedUser().pipe(
+        map((res) => fetchRecommendUserSuccess(res.response)),
+        catchError((err) => of(errorCatcher(err.response)))
+      )
+    )
+  );
 export default combineEpics(
   getUserEpic,
   fetchProfilePostEpic,
@@ -199,5 +212,6 @@ export default combineEpics(
   followUserEpic,
   getFollowerProfilePostEpic,
   getFollowingProfilePostEpic,
-  searchUserEpic
+  searchUserEpic,
+  recommendUserEpic
 );

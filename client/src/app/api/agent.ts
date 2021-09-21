@@ -113,6 +113,10 @@ const UserService = {
     requestRxjs.get<IUser[]>(
       queryString.stringifyUrl({ url: "users", query: data })
     ),
+  getRecommendedUser: () =>
+    requestRxjs.get<IUser[]>(
+      queryString.stringifyUrl({ url: "users/recommend/user" })
+    ),
 };
 
 const ChatService = {
