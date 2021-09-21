@@ -44,7 +44,7 @@ const TweetAction = () => {
               {recommendUsers &&
                 recommendUsers.map((re) => {
                   return (
-                    <div className="flex flex-row w-72">
+                    <div className="flex flex-row mb-6 w-72">
                       <div className="flex w-12 pt-2 ">
                         <img
                           className="w-10 h-10 rounded-full cursor-pointer"
