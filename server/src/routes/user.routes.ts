@@ -1,6 +1,7 @@
 import express from "express";
 import {
   followUser,
+  getRecommendUsersToFollow,
   getUserByUsername,
   getUserFollowers,
   getUserFollowing,
@@ -60,6 +61,12 @@ UserRoute.route("/coverPhoto").post(
   requireAuth,
   upload.single("croppedImage"),
   updateProfileBanner
+);
+
+UserRoute.route("/recommend/user").get(
+  currentUser,
+  requireAuth,
+  getRecommendUsersToFollow
 );
 
 export default UserRoute;
