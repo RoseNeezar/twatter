@@ -53,7 +53,6 @@ const MessagesAddUser: FC<IMessagesAddUser> = ({ backUrl }) => {
   };
 
   const HandleCreateChat = () => {
-    console.log(selectedUser);
     if (selectedUser.length > 0) {
       dispatch(createChat(selectedUser));
       Navigate?.push(`${backUrl}`);
