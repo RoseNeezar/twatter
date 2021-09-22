@@ -44,7 +44,7 @@ const TweetAction = () => {
               {recommendUsers &&
                 recommendUsers.map((re) => {
                   return (
-                    <div className="flex flex-row mb-6 w-72">
+                    <div className="flex flex-row items-center mb-6 w-72">
                       <div className="flex w-12 pt-2 ">
                         <img
                           className="w-10 h-10 rounded-full cursor-pointer"
@@ -53,7 +53,7 @@ const TweetAction = () => {
                         />
                       </div>
                       <div className="flex flex-col flex-1 text-dark-txt ">
-                        <div className="flex flex-row mt-2">
+                        <div className="flex flex-col mt-2">
                           <div className="mr-3 font-bold">{re.username}</div>
                           <div className="mr-3 text-gray-500">@{re.email}</div>
                         </div>
@@ -61,7 +61,7 @@ const TweetAction = () => {
 
                       <button
                         ref={buttonRef}
-                        className={` py-2 px-4  text-sm  border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl  text-white hover:border-dark-txt ${
+                        className={` h-10 w-20   text-sm  border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl  text-white hover:border-dark-txt ${
                           checkIsFollowing(re.id)
                             ? "bg-blue-500 font-bold border-blue-500 "
                             : ""

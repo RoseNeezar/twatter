@@ -3,6 +3,8 @@ import React, { FC, useRef } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
+import { IUser } from "../../../store/module/auth/types/auth.model";
+import { createChat } from "../../../store/module/chats/chats.slice";
 import { followUser } from "../../../store/module/user/user.slice";
 import { RootState } from "../../../store/store";
 import Navigate from "../../../utils/Navigate";
@@ -38,6 +40,11 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
   const HandleEditProfile = () => {
     Navigate?.push(`${url}/settings/profile`);
   };
+
+  const HandleCreateChat = ()=>{
+    dispatch(createChat([currentUserProfile as IUser]));
+      Navigate?.push('/messages');
+  }
 
   return (
     <div className="border-b mt-14 border-dark-third">
@@ -76,12 +83,12 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
           </button>
         ) : (
           <>
-            <button className="absolute p-1 px-2 text-xl text-white border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-10 hover:border-dark-txt">
+            <button className="absolute p-1 px-2 text-xl text-white border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-9 hover:border-dark-txt" onClick={()=>HandleCreateChat()}>
               <i className="bx bx-mail-send"></i>
             </button>
             <button
               ref={buttonRef}
-              className={`absolute p-2  border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-white hover:border-dark-txt ${
+              className={`absolute p-2 h-12 w-20  border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-white hover:border-dark-txt ${
                 checkIsFollowing()
                   ? "bg-blue-500 font-bold border-blue-500 "
                   : ""
