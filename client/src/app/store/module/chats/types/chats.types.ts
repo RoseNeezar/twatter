@@ -5,11 +5,11 @@ export interface IChat {
   users: string[] | IUser[];
   createdAt: Date;
   updatedAt: Date;
-  latestMessage: IMessage;
+  latestMessage: IMessageContent;
   id: string;
 }
 
-export interface IMessage {
+export interface IMessageContent {
   chat: IChat;
   content: string;
   createdAt: string;
@@ -17,4 +17,18 @@ export interface IMessage {
   readBy: string[] | IUser[];
   sender: IUser;
   updatedAt: string;
+}
+interface Paginate {
+  page: number;
+  totalPages: number;
+}
+export interface IMessage {
+  messages: IMessageContent[];
+  pagination: Paginate;
+}
+
+export interface IGetMessages {
+  chatId: string;
+  page: number;
+  limit: number;
 }

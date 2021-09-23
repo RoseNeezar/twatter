@@ -104,7 +104,7 @@ export const getChatDetailsByChatId = async (
   res: Response
 ) => {
   Chat.findOne({
-    _id: req.params.chatId,
+    _id: mongoose.Types.ObjectId(req.params.chatId),
     users: {
       $elemMatch: { $eq: mongoose.Types.ObjectId(req.currentUser?.id) },
     },
@@ -112,7 +112,6 @@ export const getChatDetailsByChatId = async (
     .populate("users")
     .then((results) => res.status(200).send(results))
     .catch((error) => {
-      console.log(error);
       throw new BadRequestError("No channel");
     });
 };
@@ -130,16 +129,40 @@ export const updateChatNameByChatId = async (
 };
 
 export const getChatMessagesByChatId = async (
-  req: RequestTyped<{}, {}, { chatId: string }>,
+  req: RequestTyped<{}, { chatId: string; page: string; limit: string }, {}>,
   res: Response
 ) => {
-  Message.find({ chat: req.params.chatId })
-    .populate("sender")
-    .then((results) => res.status(200).send(results))
-    .catch((error) => {
-      console.log(error);
-      throw new BadRequestError("No messages");
-    });
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 5;
+  const skip = (page - 1) * limit;
+  try {
+    const msgCount = await Message.find({
+      chat: req.query.chatId,
+    }).countDocuments();
+
+    const totalPages = Math.ceil(msgCount / limit);
+
+    const messages = await Message.find({ chat: req.query.chatId })
+      .populate("sender")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const orderMessage = messages.reverse();
+    const emptyMsg = { messages: [] };
+    if (page > totalPages) return res.status(200).send(emptyMsg);
+
+    const result = {
+      messages: orderMessage,
+      pagination: {
+        page,
+        totalPages,
+      },
+    };
+    res.status(200).send(result);
+  } catch (error) {
+    throw new BadRequestError("No messages");
+  }
 };
 
 export const markReadMessageInChatByChatId = async (

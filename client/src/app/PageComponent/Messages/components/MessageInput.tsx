@@ -1,7 +1,6 @@
 import React, { ChangeEvent, FC, KeyboardEvent, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
-import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import { sendMessage } from "../../../store/module/chats/chats.slice";
 import { RootState } from "../../../store/store";
 interface IMessageInput {

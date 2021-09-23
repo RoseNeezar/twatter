@@ -2,6 +2,7 @@ import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
 import {
   catchError,
+  debounceTime,
   filter,
   forkJoin,
   map,
@@ -19,8 +20,9 @@ import {
   createChat,
   getChatDetails,
   getChatDetailsSuccess,
-  getChatMessages,
   getChatMessagesSuccess,
+  getPaginatedMessages,
+  getPaginatedMessagesSuccess,
   getUserChat,
   getUserChatSuccess,
   markMessageRead,
@@ -80,9 +82,11 @@ const getChatDetailsEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       forkJoin({
         chatDetails: agent.ChatService.getChatDetailsByChatId(action.payload),
-        chatMessages: agent.MessageService.getChatMessagesChatId(
-          action.payload
-        ),
+        chatMessages: agent.MessageService.getChatMessagesChatId({
+          chatId: action.payload,
+          limit: 20,
+          page: 1,
+        }),
       }).pipe(
         mergeMap(({ chatDetails, chatMessages }) => [
           getChatDetailsSuccess(chatDetails.response),
@@ -120,10 +124,15 @@ const sendMessageEpic: MyEpic = (action$, state$) =>
 
 const getChatMessageEpic: MyEpic = (action$, state$) =>
   action$.pipe(
-    filter(getChatMessages.match),
+    filter(getPaginatedMessages.match),
+    debounceTime(1000),
     switchMap((action) =>
-      agent.MessageService.getChatMessagesChatId(action.payload).pipe(
-        map(({ response }) => getChatMessagesSuccess(response)),
+      agent.MessageService.getChatMessagesChatId({
+        chatId: action.payload.chatId,
+        limit: action.payload.limit,
+        page: action.payload.page,
+      }).pipe(
+        map(({ response }) => getPaginatedMessagesSuccess(response)),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })

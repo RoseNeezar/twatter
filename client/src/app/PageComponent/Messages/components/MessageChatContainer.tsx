@@ -1,8 +1,9 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import {
   getChatDetails,
+  getPaginatedMessages,
   markMessageRead,
 } from "../../../store/module/chats/chats.slice";
 import { RootState } from "../../../store/store";
@@ -21,12 +22,35 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
   const chatMessages = useAppSelector(
     (state: RootState) => state.chats.chatChannelMessages
   );
+  const chatDetails = useAppSelector(
+    (state: RootState) => state.chats.chatChannelDetail
+  );
+
   const isTyping = useAppSelector((state: RootState) => state.chats.isTyping);
+
+  const [isTop, setIsTop] = useState(false);
+
+  const FetchMoreMessage = () => {
+    const pagination = chatMessages?.pagination;
+    const page = typeof pagination === "undefined" ? 1 : pagination.page;
+
+    dispatch(
+      getPaginatedMessages({
+        chatId: chatDetails?.id as string,
+        page: page + 1,
+        limit: 20,
+      })
+    );
+  };
 
   const HandleInfiniteScroll = (e: React.UIEvent<HTMLDivElement | UIEvent>) => {
     const event = e.target as HTMLDivElement;
     if (event.scrollTop === 0 && event.scrollHeight > window.innerHeight) {
       console.log("at top");
+      setIsTop(true);
+      FetchMoreMessage();
+    } else {
+      setIsTop(false);
     }
   };
 
@@ -34,7 +58,7 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
     if (!chatRef.current) {
       return;
     }
-
+    console.log("go down");
     chatRef.current.scrollIntoView({ behavior: "auto" });
   };
 
@@ -43,12 +67,11 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
       scrollToMessage();
     } else {
       dispatch(markMessageRead(chatId));
-      scrollToMessage();
+      console.log("top=", isTop);
+      if (!isTop) {
+        scrollToMessage();
+      }
     }
-
-    return () => {
-      scrollToMessage();
-    };
   }, [chatMessages]);
 
   useEffect(() => {

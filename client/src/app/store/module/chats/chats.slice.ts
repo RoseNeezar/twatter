@@ -1,11 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../auth/types/auth.model";
-import { IChat, IMessage } from "./types/chats.types";
+import {
+  IChat,
+  IGetMessages,
+  IMessage,
+  IMessageContent,
+} from "./types/chats.types";
 
 export interface chatsState {
   chatChannels: IChat[] | null;
   chatChannelDetail: IChat | null;
-  chatChannelMessages: IMessage[] | null;
+  chatChannelMessages: IMessage | null;
   socket: SocketIOClient.Socket | null;
   socketConnected: boolean;
   isTyping: boolean;
@@ -36,16 +41,25 @@ export const chatsSlice = createSlice({
     getChatDetailsSuccess: (state, action: PayloadAction<IChat>) => {
       state.chatChannelDetail = action.payload;
     },
-    getChatMessages: (state, action: PayloadAction<string>) => state,
-    getChatMessagesSuccess: (state, action: PayloadAction<IMessage[]>) => {
+    getPaginatedMessages: (state, action: PayloadAction<IGetMessages>) => state,
+    getPaginatedMessagesSuccess: (state, action: PayloadAction<IMessage>) => {
+      if (action.payload.messages.length > 0) {
+        state.chatChannelMessages?.messages.unshift(...action.payload.messages);
+      }
+
+      if (action.payload.pagination && state.chatChannelMessages?.pagination) {
+        state.chatChannelMessages.pagination = action.payload.pagination;
+      }
+    },
+    getChatMessagesSuccess: (state, action: PayloadAction<IMessage>) => {
       state.chatChannelMessages = action.payload;
     },
     sendMessage: (
       state,
       action: PayloadAction<{ content: string; chatId: string }>
     ) => state,
-    sendMessageSuccess: (state, action: PayloadAction<IMessage>) => {
-      state.chatChannelMessages?.push(action.payload);
+    sendMessageSuccess: (state, action: PayloadAction<IMessageContent>) => {
+      state.chatChannelMessages?.messages.push(action.payload);
 
       if (
         state.chatChannels?.findIndex(
@@ -89,7 +103,7 @@ export const {
   getChatDetailsSuccess,
   sendMessage,
   sendMessageSuccess,
-  getChatMessages,
+  getPaginatedMessages,
   getChatMessagesSuccess,
   setSocket,
   setSocketLoaded,
@@ -98,6 +112,7 @@ export const {
   refreshMessageBadgeChatSuccess,
   markMessageRead,
   resetChannel,
+  getPaginatedMessagesSuccess,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;
