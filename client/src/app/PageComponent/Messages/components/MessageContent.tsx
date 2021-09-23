@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
-import { IMessage } from "../../../store/module/chats/types/chats.types";
+import { IMessageContent } from "../../../store/module/chats/types/chats.types";
 import { RootState } from "../../../store/store";
 
 const MessageContent = React.forwardRef<HTMLDivElement>((prop, ref) => {
@@ -11,8 +11,8 @@ const MessageContent = React.forwardRef<HTMLDivElement>((prop, ref) => {
   const currentUser = useAppSelector(selectCurrentUser);
 
   const createMessageBubble = (
-    message: IMessage,
-    nextMessage: IMessage,
+    message: IMessageContent,
+    nextMessage: IMessageContent,
     lastSenderId: string
   ) => {
     const sender = message.sender;
@@ -102,10 +102,10 @@ const MessageContent = React.forwardRef<HTMLDivElement>((prop, ref) => {
   const HandleMessageStyle = () => {
     let messages: ReactNode[] = [];
     let lastSenderId = "";
-    chatMessages?.forEach((message, index) => {
+    chatMessages?.messages.forEach((message, index) => {
       let content = createMessageBubble(
         message,
-        chatMessages[index + 1],
+        chatMessages.messages[index + 1],
         lastSenderId
       );
       messages.push(content);
