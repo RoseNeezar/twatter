@@ -41,10 +41,9 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
     Navigate?.push(`${url}/settings/profile`);
   };
 
-  const HandleCreateChat = ()=>{
+  const HandleCreateChat = () => {
     dispatch(createChat([currentUserProfile as IUser]));
-      Navigate?.push('/messages');
-  }
+  };
 
   return (
     <div className="border-b mt-14 border-dark-third">
@@ -83,7 +82,10 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
           </button>
         ) : (
           <>
-            <button className="absolute p-1 px-2 text-xl text-white border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-9 hover:border-dark-txt" onClick={()=>HandleCreateChat()}>
+            <button
+              className="absolute p-1 px-2 text-xl text-white border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-32 -top-9 hover:border-dark-txt"
+              onClick={() => HandleCreateChat()}
+            >
               <i className="bx bx-mail-send"></i>
             </button>
             <button
