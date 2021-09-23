@@ -4,7 +4,6 @@ import {
   catchError,
   filter,
   forkJoin,
-  ignoreElements,
   map,
   mergeMap,
   of,
@@ -13,6 +12,7 @@ import {
   tap,
 } from "rxjs";
 import agent from "../../../api/agent";
+import Navigate from "../../../utils/Navigate";
 import { RootState } from "../../store";
 import { errorCatcher } from "../auth/auth.slice";
 import {
@@ -45,6 +45,7 @@ const createChatEpic: MyEpic = (action$, state$) =>
               currentUserId: state$.value.auth.user?.id,
             })
         ),
+        tap((data) => Navigate?.push(`/messages/chat/${data.response.id}`)),
         catchError((err) => {
           return of(errorCatcher(err.response));
         })
