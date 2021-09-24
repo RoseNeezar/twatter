@@ -24,9 +24,7 @@ const Home = () => {
   const messagesRoute = "/messages";
   const currentUser = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
-  const currentChat = useAppSelector(
-    (state: RootState) => state.chats.chatChannelDetail
-  );
+
   const [scrollPosition, setScrollPosition] = useState(0);
   const handleScroll = () => {
     const position = window.pageYOffset;

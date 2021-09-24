@@ -1,18 +1,18 @@
-import { Transition, Dialog } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect } from "react";
-import { useRouteMatch, Route, Switch, useParams } from "react-router";
+import { Route, Switch, useRouteMatch } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import {
   getUserChat,
   resetChannel,
   sendMessage,
 } from "../../store/module/chats/chats.slice";
+import { RootState } from "../../store/store";
 import Navigate from "../../utils/Navigate";
 import MessageChannels from "./components/MessageChannels";
-import MessageEmptyChat from "./components/MessageEmptyChat";
 import MessageChatContainer from "./components/MessageChatContainer";
+import MessageEmptyChat from "./components/MessageEmptyChat";
 import MessagesAddUser from "./components/MessagesAddUser";
-import { RootState } from "../../store/store";
 
 const MessagesPage = () => {
   let { path, url } = useRouteMatch();
@@ -42,10 +42,10 @@ const MessagesPage = () => {
 
   return (
     <>
-      <div className="flex flex-col w-full min-h-screen border-l border-dark-third">
+      <div className="relative flex flex-col w-full min-h-screen border-l border-dark-third">
         <div
-          style={{ width: 387 }}
-          className={` fixed top-0 z-50 flex flex-row justify-between p-3 font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third  ${
+          style={{ width: 388 }}
+          className={` absolute left-0 top-0 z-50 flex flex-row justify-between p-2.5  font-bold border-b border-r bg-dark-main text-dark-txt border-dark-third  ${
             currentChat ? "hidden lg:flex" : "flex"
           }`}
         >
@@ -59,10 +59,8 @@ const MessagesPage = () => {
         </div>
         <div className="flex flex-row border-r border-dark-third">
           <div
-            className={` relative mt-12 border-r text-dark-txt w-channels border-dark-third  ${
-              currentChat
-                ? "hidden lg:inline-block"
-                : "inline-block h-screen border-r border-dark-third"
+            className={` relative pt-12 border-r h-screen  text-dark-txt w-channels border-dark-third ${
+              currentChat && "hidden lg:inline-block "
             } `}
           >
             <MessageChannels backUrl={url} />

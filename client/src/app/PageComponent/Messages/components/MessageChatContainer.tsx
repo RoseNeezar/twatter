@@ -33,7 +33,10 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
   const FetchMoreMessage = () => {
     const pagination = chatMessages?.pagination;
     const page = typeof pagination === "undefined" ? 1 : pagination.page;
-
+    const currentPage = page + 1;
+    if (currentPage > pagination!.totalPages) {
+      return;
+    }
     dispatch(
       getPaginatedMessages({
         chatId: chatDetails?.id as string,
