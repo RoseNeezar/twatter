@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import {
   getChatDetails,
   getPaginatedMessages,
+  getPaginatedMessagesSuccess,
   markMessageRead,
 } from "../../../store/module/chats/chats.slice";
 import { RootState } from "../../../store/store";
@@ -19,21 +20,28 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
   const isMounted = useIsMount();
   const dispatch = useAppDispatch();
   const chatRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const chatMessages = useAppSelector(
     (state: RootState) => state.chats.chatChannelMessages
   );
   const chatDetails = useAppSelector(
     (state: RootState) => state.chats.chatChannelDetail
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const isTyping = useAppSelector((state: RootState) => state.chats.isTyping);
 
   const [isTop, setIsTop] = useState(false);
+  const [scrollUp, setScrollUp] = useState(0);
 
   const FetchMoreMessage = () => {
     const pagination = chatMessages?.pagination;
     const page = typeof pagination === "undefined" ? 1 : pagination.page;
-
+    const currentPage = page + 1;
+    if (currentPage > pagination!.totalPages) {
+      return;
+    }
+    setIsLoading(true);
     dispatch(
       getPaginatedMessages({
         chatId: chatDetails?.id as string,
@@ -55,11 +63,11 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
   };
 
   const scrollToMessage = () => {
-    if (!chatRef.current) {
+    if (!scrollRef.current) {
       return;
     }
     console.log("go down");
-    chatRef.current.scrollIntoView({ behavior: "auto" });
+    scrollRef.current.scrollIntoView({ behavior: "auto" });
   };
 
   useEffect(() => {
@@ -67,12 +75,21 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
       scrollToMessage();
     } else {
       dispatch(markMessageRead(chatId));
-      console.log("top=", isTop);
+
       if (!isTop) {
         scrollToMessage();
+      } else {
+        setScrollUp(scrollUp + 1);
       }
+
+      setIsLoading(false);
     }
   }, [chatMessages]);
+
+  useEffect(() => {
+    if (!chatRef.current) return;
+    chatRef.current.scrollTop = Math.ceil(chatRef.current.scrollHeight * 0.1);
+  }, [scrollUp]);
 
   useEffect(() => {
     dispatch(getChatDetails(chatId));
@@ -82,11 +99,17 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
     <div className="flex flex-col h-screen rounded-lg shadow text-dark-txt">
       <>
         <MessageHeader backUrl={backUrl} />
+        {isLoading && (
+          <div className="absolute z-50 left-72 top-12">
+            <div className="loading-spinner" />
+          </div>
+        )}
         <div
           className="px-2 pt-2 overflow-scroll"
           onScroll={HandleInfiniteScroll}
+          ref={chatRef}
         >
-          <MessageContent ref={chatRef} />
+          <MessageContent ref={scrollRef} />
         </div>
         {isTyping && (
           <div

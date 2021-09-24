@@ -21,7 +21,7 @@ const MessageHeader: FC<IMessageHeader> = ({ backUrl }) => {
   };
 
   return (
-    <div className="relative flex flex-row pt-1 border-b border-dark-third">
+    <div className="relative flex flex-row border-b border-dark-third">
       <div className="flex flex-row items-center max-w-md ml-3 truncate">
         {channelDetails?.users.map((r, index, total) => {
           const c = r as IUser;
