@@ -5,7 +5,6 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { selectCurrentUser } from "../../store/module/auth/auth.slice";
 import { IUser } from "../../store/module/auth/types/auth.model";
-import { RootState } from "../../store/store";
 import useSocket from "../../store/websockets/websockets";
 import MessagesPage from "../Messages/MessagesPage";
 import NotFound from "../NotFound/NotFound";

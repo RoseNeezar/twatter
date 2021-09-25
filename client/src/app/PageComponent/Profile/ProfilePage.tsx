@@ -87,7 +87,7 @@ const ProfilePage = () => {
         ) : (
           <ProfileFollowBanner backUrl={url} />
         )}
-        <div className="relative w-tweet">
+        <div className="relative ">
           <Switch>
             <Route path={`${path}profile/likes`}>
               <ProfileLikes backUrl={url} />

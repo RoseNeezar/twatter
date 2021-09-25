@@ -36,11 +36,22 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
   };
 
   return (
-    <div className="flex justify-start xl:justify-end">
-      <div className="fixed top-0 h-full ">
-        <ul className="flex flex-col items-end h-full pt-10 pl-10">
+    <div className="flex justify-end">
+      <div className="fixed h-full mr-auto top-3">
+        <ul className="flex flex-col items-end h-full ">
           <li
-            className={`mb-10 xl:mr-auto rounded-full p-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+            className={`mb-5 xl:mr-auto rounded-full py-3  px-4   hover:bg-dark-third `}
+          >
+            <Link
+              to={`${url}home`}
+              className={` text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
+            >
+              <i className={`text-2xl  bx bxs-meteor`}></i>
+            </Link>
+          </li>
+
+          <li
+            className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname === homeRoute && "bg-dark-third "
             }`}
           >
@@ -48,12 +59,17 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               to={`${url}home`}
               className={` text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
-              <i className="text-2xl xl:pr-5 bx bx-notepad"></i>
+              <i
+                className={`text-2xl xl:pr-5 bx ${
+                  pathname === homeRoute ? "bxs-home-circle" : "bx-home-circle"
+                } `}
+              ></i>
+
               <span className="hidden xl:inline-block"> Home</span>
             </Link>
           </li>
           <li
-            className={`mb-10 xl:mr-auto rounded-full p-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+            className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname.includes(searchRoute) && "bg-dark-third "
             }`}
           >
@@ -61,12 +77,18 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               to={`${url}search/posts`}
               className={` text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
-              <i className="text-2xl xl:pr-5 bx bx-search-alt"></i>
+              <i
+                className={`text-2xl xl:pr-5 bx ${
+                  pathname.includes(searchRoute)
+                    ? "bxs-search"
+                    : "bx-search-alt"
+                }`}
+              ></i>
               <span className="hidden xl:inline-block"> Search</span>
             </Link>
           </li>
           <li
-            className={`relative mb-10 xl:mr-auto rounded-full p-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+            className={`relative mb-10 xl:mr-auto py-3  px-4 rounded-full mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname.includes(messagesRoute) && "bg-dark-third "
             }`}
           >
@@ -79,12 +101,18 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
                 pathname.includes(messagesRoute) && "pointer-events-none "
               }text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
-              <i className="text-2xl xl:pr-5 bx bx-mail-send"></i>
+              <i
+                className={`text-2xl xl:pr-5 bx ${
+                  pathname.includes(messagesRoute)
+                    ? " bx-envelope-open"
+                    : "bx-envelope "
+                }`}
+              ></i>
               <span className="hidden xl:inline-block"> Messages</span>
             </Link>
           </li>
           <li
-            className={`mb-10 xl:mr-auto rounded-full p-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+            className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname === notificationRoute && "bg-dark-third "
             }`}
           >
@@ -92,12 +120,16 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               to={`${url}notification`}
               className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
-              <i className="text-2xl xl:pr-5 bx bx-calendar"></i>
+              <i
+                className={`text-2xl xl:pr-5 bx ${
+                  pathname === notificationRoute ? "bxs-bell" : "bx-bell"
+                } `}
+              ></i>
               <span className="hidden xl:inline-block"> Notification</span>
             </Link>
           </li>
           <li
-            className={`mb-10 xl:mr-auto rounded-full p-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+            className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname.includes(profileRoute) && "bg-dark-third "
             }`}
           >
@@ -105,17 +137,28 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               to={`${url}profile/${currentUser?.username}`}
               className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
-              <i className="text-2xl xl:pr-5 bx bx-user"></i>
+              <i
+                className={`text-2xl xl:pr-5 bx ${
+                  pathname.includes(profileRoute) ? "bxs-user" : "bx-user"
+                } `}
+              ></i>
               <span className="hidden xl:inline-block"> Profile</span>
             </Link>
           </li>
           <li className="mt-6 border-b border-gray-200 "></li>
           <li
-            className="flex flex-row justify-between p-4 mx-auto mt-auto mb-10 mr-4 font-bold text-center cursor-pointer xl:w-52 xl:-ml-10 hover:bg-dark-third text-dark-txt rounded-3xl"
+            className="flex flex-row justify-between px-4 py-3 mx-auto mt-auto mb-10 mr-4 font-bold text-center rounded-full cursor-pointer xl:w-52 xl:-ml-10 hover:bg-dark-third text-dark-txt xl:rounded-3xl"
             onClick={() => handleLogout()}
           >
-            <div className="hidden xl:inline-block">{getUser}</div>
-            <div className="">Logout</div>
+            <div className="hidden w-full xl:inline-block">
+              <div className="flex justify-between w-full">
+                <span>{getUser}</span>
+                <span>Logout</span>
+              </div>
+            </div>
+            <div className="inline-block text-2xl xl:hidden">
+              <i className="bx bx-log-out"></i>
+            </div>
           </li>
         </ul>
       </div>

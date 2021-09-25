@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
+import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import {
   getChatDetails,
   getPaginatedMessages,
@@ -27,6 +28,7 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
   const chatDetails = useAppSelector(
     (state: RootState) => state.chats.chatChannelDetail
   );
+  const currentUser = useAppSelector(selectCurrentUser);
   const [isLoading, setIsLoading] = useState(false);
 
   const isTyping = useAppSelector((state: RootState) => state.chats.isTyping);
@@ -54,7 +56,6 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
   const HandleInfiniteScroll = (e: React.UIEvent<HTMLDivElement | UIEvent>) => {
     const event = e.target as HTMLDivElement;
     if (event.scrollTop === 0 && event.scrollHeight > window.innerHeight) {
-      console.log("at top");
       setIsTop(true);
       FetchMoreMessage();
     } else {
@@ -66,7 +67,7 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
     if (!scrollRef.current) {
       return;
     }
-    console.log("go down");
+
     scrollRef.current.scrollIntoView({ behavior: "auto" });
   };
 
@@ -79,7 +80,12 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
       if (!isTop) {
         scrollToMessage();
       } else {
-        setScrollUp(scrollUp + 1);
+        if (
+          chatMessages?.messages[chatMessages.messages.length - 1].sender.id ===
+          currentUser?.id
+        ) {
+          setScrollUp(scrollUp + 1);
+        }
       }
 
       setIsLoading(false);
@@ -88,7 +94,7 @@ const MessageChatContainer: FC<IMessageGroupChat> = ({ backUrl }) => {
 
   useEffect(() => {
     if (!chatRef.current) return;
-    chatRef.current.scrollTop = Math.ceil(chatRef.current.scrollHeight * 0.1);
+    chatRef.current.scrollTop = Math.ceil(chatRef.current.scrollHeight * 0.05);
   }, [scrollUp]);
 
   useEffect(() => {
