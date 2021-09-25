@@ -36,7 +36,7 @@ const TweetAction = () => {
   }, [currentUser]);
   return (
     <div className="flex justify-start ">
-      <div className="fixed top-0 h-full w-72">
+      <div className="fixed h-full -top-5 w-72">
         <div className="flex flex-col items-start h-full pt-10 pl-10 text-dark-txt">
           <div className="p-3 bg-dark-third rounded-3xl">
             <h1 className="text-lg font-bold">Who to follow</h1>
