@@ -9,7 +9,6 @@ export const getAllNotification = async (
 ) => {
   const searchObj = {
     userTo: req.currentUser?.id,
-    notificationType: { $ne: "newMessage" },
   } as NotificationAttrs;
 
   if (req.query.unreadOnly) {

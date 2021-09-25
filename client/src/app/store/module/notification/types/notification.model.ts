@@ -6,7 +6,7 @@ export interface INotification {
   createdAt: Date;
   entityId: string;
   id: string;
-  notificationType: string;
+  notificationType: "replyPost" | "likePost" | "retweetPost" | "follow";
   opened: boolean;
   updatedAt: string;
 }

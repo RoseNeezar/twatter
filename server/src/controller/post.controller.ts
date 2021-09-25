@@ -34,9 +34,9 @@ export const createPost = async (
       if (!!newPost.replyTo) {
         const postedBy = newPost.replyTo as PostDoc;
         await Notification.insertNotification(
-          postedBy.id,
+          postedBy.postedBy as string,
           req.currentUser?.id,
-          "reply",
+          "replyPost",
           newPost.id
         );
       }
@@ -195,7 +195,7 @@ export const likePost = async (
     await Notification.insertNotification(
       postedBy.id,
       userId,
-      "postLike",
+      "likePost",
       post.id
     );
   }
@@ -262,7 +262,7 @@ export const retweetPost = async (
     await Notification.insertNotification(
       postedBy.id,
       userId,
-      "retweet",
+      "retweetPost",
       post.id
     );
   }
