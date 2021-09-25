@@ -14,8 +14,11 @@ interface ISidebar {
 const Sidebar: FC<ISidebar> = ({ url }) => {
   const router = useRouter();
   const currentUser = useAppSelector(selectCurrentUser);
-  const badgeCount = useAppSelector(
+  const chatBadgeCount = useAppSelector(
     (state: RootState) => state.chats.unreadChat
+  );
+  const notificationBadgeCount = useAppSelector(
+    (state: RootState) => state.notification.unreadNotification
   );
   const homeRoute = "/home";
   const notificationRoute = "/notification";
@@ -88,10 +91,13 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             </Link>
           </li>
           <li
-            className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+            className={`mb-10 relative xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname === notificationRoute && "bg-dark-third "
             }`}
           >
+            {notificationBadgeCount && notificationBadgeCount?.length > 0 && (
+              <NotificationBadge badgeCount={notificationBadgeCount.length} />
+            )}
             <Link
               to={`${url}notification`}
               className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
@@ -109,8 +115,8 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               pathname.includes(messagesRoute) && "bg-dark-third "
             }`}
           >
-            {badgeCount && badgeCount?.length > 0 && (
-              <NotificationBadge badgeCount={badgeCount.length} />
+            {chatBadgeCount && chatBadgeCount?.length > 0 && (
+              <NotificationBadge badgeCount={chatBadgeCount.length} />
             )}
             <Link
               to={`${url}messages`}

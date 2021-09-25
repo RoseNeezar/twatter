@@ -8,5 +8,5 @@ export interface INotification {
   id: string;
   notificationType: "replyPost" | "likePost" | "retweetPost" | "follow";
   opened: boolean;
-  updatedAt: string;
+  updatedAt: Date;
 }
