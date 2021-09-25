@@ -5,6 +5,8 @@ import authEpic, { MyEpic } from "./module/auth/auth.epic";
 import authSlice from "./module/auth/auth.slice";
 import chatsEpic from "./module/chats/chats.epic";
 import chatsSlice from "./module/chats/chats.slice";
+import notificationEpic from "./module/notification/notification.epic";
+import notificationSlice from "./module/notification/notification.slice";
 import postEpic from "./module/post/post.epic";
 import postSlice from "./module/post/post.slice";
 import userEpic from "./module/user/user.epic";
@@ -15,6 +17,7 @@ export const reducer = combineReducers({
   posts: postSlice,
   user: userSlice,
   chats: chatsSlice,
+  notification: notificationSlice,
 });
 
 export type ReducerState = ReturnType<typeof reducer>;
@@ -34,7 +37,13 @@ export const store = configureStore({
     }).concat(epicMiddleware),
 });
 
-const epics = combineEpics(authEpic, postEpic, userEpic, chatsEpic);
+const epics = combineEpics(
+  authEpic,
+  postEpic,
+  userEpic,
+  chatsEpic,
+  notificationEpic
+);
 
 const rootEpic: MyEpic = (action$, store$, dependencies) =>
   combineEpics(epics)(action$, store$, dependencies).pipe(

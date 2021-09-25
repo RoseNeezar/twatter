@@ -10,6 +10,7 @@ import {
   IMessage,
   IMessageContent,
 } from "../store/module/chats/types/chats.types";
+import { INotification } from "../store/module/notification/types/notification.model";
 import {
   ICreatePost,
   IFetchPost,
@@ -169,12 +170,20 @@ const MessageService = {
     ),
 };
 
+const NotificationService = {
+  fetchAllNotification: (data: { unreadOnly: boolean }) =>
+    requestRxjs.get<INotification[]>(
+      queryString.stringifyUrl({ url: "notification", query: data })
+    ),
+};
+
 const agent = {
   AuthService,
   PostService,
   UserService,
   ChatService,
   MessageService,
+  NotificationService,
 };
 
 export default agent;

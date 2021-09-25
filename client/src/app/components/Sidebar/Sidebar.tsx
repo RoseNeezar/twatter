@@ -88,6 +88,23 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
             </Link>
           </li>
           <li
+            className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
+              pathname === notificationRoute && "bg-dark-third "
+            }`}
+          >
+            <Link
+              to={`${url}notification`}
+              className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
+            >
+              <i
+                className={`text-2xl xl:pr-5 bx ${
+                  pathname === notificationRoute ? "bxs-bell" : "bx-bell"
+                } `}
+              ></i>
+              <span className="hidden xl:inline-block"> Notification</span>
+            </Link>
+          </li>
+          <li
             className={`relative mb-10 xl:mr-auto py-3  px-4 rounded-full mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname.includes(messagesRoute) && "bg-dark-third "
             }`}
@@ -111,23 +128,7 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
               <span className="hidden xl:inline-block"> Messages</span>
             </Link>
           </li>
-          <li
-            className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
-              pathname === notificationRoute && "bg-dark-third "
-            }`}
-          >
-            <Link
-              to={`${url}notification`}
-              className={`text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
-            >
-              <i
-                className={`text-2xl xl:pr-5 bx ${
-                  pathname === notificationRoute ? "bxs-bell" : "bx-bell"
-                } `}
-              ></i>
-              <span className="hidden xl:inline-block"> Notification</span>
-            </Link>
-          </li>
+
           <li
             className={`mb-10 xl:mr-auto rounded-full py-3  px-4 mr-3  xl:rounded-3xl xl:py-2 xl:pr-5 xl:pl-2 hover:bg-dark-third ${
               pathname.includes(profileRoute) && "bg-dark-third "

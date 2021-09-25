@@ -90,7 +90,7 @@ const ProfileBanner: FC<IProfileBanner> = ({ url }) => {
             </button>
             <button
               ref={buttonRef}
-              className={`absolute p-2 h-12 w-20  border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-white hover:border-dark-txt ${
+              className={`absolute p-2 h-12 w-max  border-2 hover:bg-gray-200 hover:bg-opacity-40 text-md rounded-3xl right-5 -top-10 text-white hover:border-dark-txt ${
                 checkIsFollowing()
                   ? "bg-blue-500 font-bold border-blue-500 "
                   : ""
