@@ -4,7 +4,7 @@ import { UserDoc } from "./user.models";
 export interface NotificationAttrs {
   userTo?: string | UserDoc;
   userFrom?: string | UserDoc;
-  notificationType?: string;
+  notificationType?: any;
   opened?: boolean;
   entityId?: string;
 }
@@ -12,13 +12,19 @@ export interface NotificationAttrs {
 export interface NotificationDoc extends mongoose.Document {
   userTo?: string | UserDoc;
   userFrom?: string | UserDoc;
-  notificationType?: string;
+  notificationType?: any;
   opened?: boolean;
   entityId?: string;
 }
 
 interface NotificationModel extends mongoose.Model<NotificationDoc> {
   build(attr: NotificationAttrs): NotificationDoc;
+  insertNotification(
+    userTo: string | UserDoc,
+    userFrom: string | UserDoc,
+    notificationType: string,
+    entityId: string
+  ): Promise<NotificationDoc | null>;
 }
 
 const notificationSchema = new mongoose.Schema(
@@ -62,8 +68,8 @@ notificationSchema.statics.build = (attr: NotificationAttrs) => {
 };
 
 notificationSchema.statics.insertNotification = async (
-  userTo: string,
-  userFrom: string,
+  userTo: string | UserDoc,
+  userFrom: string | UserDoc,
   notificationType: string,
   entityId: string
 ) => {

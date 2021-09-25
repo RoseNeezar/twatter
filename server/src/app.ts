@@ -9,6 +9,7 @@ import { errorHandler } from "./middlewares/error-handler.middleware";
 import AuthRoute from "./routes/auth.routes";
 import ChatsRoute from "./routes/chats.routes";
 import MessageRoute from "./routes/message.routes";
+import NotificationRoute from "./routes/notification.routes";
 import PostRoute from "./routes/post.routes";
 import UserRoute from "./routes/user.routes";
 
@@ -35,6 +36,7 @@ app.use("/api/users", UserRoute);
 app.use("/api/posts", PostRoute);
 app.use("/api/chats", ChatsRoute);
 app.use("/api/message", MessageRoute);
+app.use("/api/notification", NotificationRoute);
 
 app.all("*", async () => {
   throw new NotFoundError();

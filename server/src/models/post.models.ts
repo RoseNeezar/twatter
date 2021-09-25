@@ -1,23 +1,24 @@
 import mongoose, { Schema } from "mongoose";
+import { UserDoc } from "./user.models";
 
 export interface PostAttrs {
   content?: string;
-  postedBy?: string;
+  postedBy?: string | UserDoc;
   pinned?: boolean;
   likes?: string[];
   retweetUsers?: string[];
   retweetData?: string;
-  replyTo?: string;
+  replyTo?: string | PostDoc;
 }
 
-interface PostDoc extends mongoose.Document {
+export interface PostDoc extends mongoose.Document {
   content?: string;
-  postedBy?: string;
+  postedBy?: string | UserDoc;
   pinned?: boolean;
   likes?: string[];
   retweetUsers?: string[];
   retweetData?: string;
-  replyTo?: string;
+  replyTo?: string | PostDoc;
 }
 
 interface PostModel extends mongoose.Model<PostDoc> {
