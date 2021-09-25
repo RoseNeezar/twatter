@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import { Types } from "mongoose";
 import { ICreatePost, IGetPostQuery, IPinnedPost } from "../dto/post.dto";
 import { BadRequestError } from "../errors/bad-request-error";
-import { Post, PostAttrs } from "../models/post.models";
-import { User } from "../models/user.models";
+import { Notification } from "../models/notification.models";
+import { Post, PostAttrs, PostDoc } from "../models/post.models";
+import { User, UserDoc } from "../models/user.models";
 import { GetPosts } from "../services/getPosts";
 import { RequestTyped } from "../types/types";
 
@@ -29,6 +30,16 @@ export const createPost = async (
     .then(async (newPost) => {
       newPost = await User.populate(newPost, { path: "postedBy" });
       newPost = await Post.populate(newPost, { path: "replyTo" });
+
+      if (!!newPost.replyTo) {
+        const postedBy = newPost.replyTo as PostDoc;
+        await Notification.insertNotification(
+          postedBy.id,
+          req.currentUser?.id,
+          "reply",
+          newPost.id
+        );
+      }
 
       res.status(201).send(newPost);
     })
@@ -179,6 +190,15 @@ export const likePost = async (
       throw new BadRequestError("no post with id");
     });
 
+  if (!isLiked && post !== null) {
+    const postedBy = post.postedBy as UserDoc;
+    await Notification.insertNotification(
+      postedBy.id,
+      userId,
+      "postLike",
+      post.id
+    );
+  }
   post = await User.populate(post, { path: "replyTo.postedBy" });
   res.status(200).send(post);
 };
@@ -199,7 +219,7 @@ export const retweetPost = async (
     throw new BadRequestError("no post with id");
   });
   //add remove retweet
-  const option = deletedPost != null ? "$pull" : "$addToSet";
+  const option = deletedPost !== null ? "$pull" : "$addToSet";
 
   let repost = deletedPost;
 
@@ -236,6 +256,16 @@ export const retweetPost = async (
     });
 
   post = await User.populate(post, { path: "replyTo.postedBy" });
+
+  if (!deletedPost && post !== null) {
+    const postedBy = post.postedBy as UserDoc;
+    await Notification.insertNotification(
+      postedBy.id,
+      userId,
+      "retweet",
+      post.id
+    );
+  }
 
   res.status(200).send(post);
 };

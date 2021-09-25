@@ -4,6 +4,8 @@ import { User, UserDoc } from "../models/user.models";
 import { RequestTyped } from "../types/types";
 import fs from "fs";
 import mongoose from "mongoose";
+import { Notification } from "../models/notification.models";
+
 export const getUserByUsername = async (
   req: RequestTyped<{}, {}, { username: string }>,
   res: Response
@@ -73,6 +75,15 @@ export const followUser = async (
     console.log(error);
     throw new BadRequestError("no user found");
   });
+
+  if (!isFollowing) {
+    await Notification.insertNotification(
+      userId,
+      req.currentUser?.id,
+      "follow",
+      req.currentUser?.id
+    );
+  }
 
   res.status(200).send(req.currentUser);
 };
