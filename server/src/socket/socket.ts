@@ -1,9 +1,8 @@
-import socketIo from "socket.io";
 import http from "http";
-import { User, UserDoc } from "../models/user.models";
-import { Request, Response } from "express";
-import { MessageDoc } from "../models/message.models";
+import socketIo from "socket.io";
 import { ChatDoc } from "../models/chat.models";
+import { MessageDoc } from "../models/message.models";
+import { User, UserDoc } from "../models/user.models";
 
 export const socketServer = (server: http.Server) => {
   const io = socketIo(server, {
