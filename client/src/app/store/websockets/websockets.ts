@@ -14,9 +14,12 @@ import { refreshNotificationBadge } from "../module/notification/notification.sl
 
 const useSocket = (user: IUser, dispatch: Dispatch<any>) => {
   useEffect(() => {
-    const socket = socketClient.connect("http://localhost:3030", {
-      path: "/api/socket.io",
-    });
+    const socket = socketClient.connect(
+      process.env.NEXT_PUBLIC_CLIENT_BASE_URL as string,
+      {
+        path: "/api/socket.io",
+      }
+    );
 
     dispatch(setSocket(socket));
 
