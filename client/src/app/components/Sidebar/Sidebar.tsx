@@ -1,6 +1,5 @@
 import { useRouter } from "next/dist/client/router";
-import React from "react";
-import { FC } from "react";
+import React, { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks/hooks";
 import { logout, selectCurrentUser } from "../../store/module/auth/auth.slice";

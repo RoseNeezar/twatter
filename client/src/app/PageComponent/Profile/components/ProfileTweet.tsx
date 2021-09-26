@@ -1,8 +1,7 @@
-import React, { FC, MouseEvent, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect } from "react";
 import { useRouteMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
-import { IUser } from "../../../store/module/auth/types/auth.model";
 import { fetchPost } from "../../../store/module/post/post.slice";
 import { IPost } from "../../../store/module/post/types/post.types";
 import { fetchProfilePost } from "../../../store/module/user/user.slice";

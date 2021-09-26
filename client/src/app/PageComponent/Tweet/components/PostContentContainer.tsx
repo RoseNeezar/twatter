@@ -1,12 +1,5 @@
 import { Popover, Transition } from "@headlessui/react";
-import React, {
-  FC,
-  Fragment,
-  MouseEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, MouseEvent, useEffect, useRef, useState } from "react";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks/hooks";
 import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
@@ -34,17 +27,7 @@ interface IPostContentContainer {
 
 const PostContentContainer: FC<IPostContentContainer> = ({
   post,
-  post: {
-    content,
-    createdAt,
-    postedBy,
-    likes,
-    retweetUsers,
-    id,
-    retweetData,
-    replyTo,
-    pinned,
-  },
+  post: { content, postedBy, retweetUsers, id, retweetData, replyTo, pinned },
   backUrl,
   isSinglePost,
   isProfilePost,

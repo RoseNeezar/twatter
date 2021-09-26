@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { xorBy } from "lodash";
 import { IGetNotification, INotification } from "./types/notification.model";
-import { has, xorBy } from "lodash";
 export interface notificationState {
   allNotifications: INotification[] | null;
   unreadNotification: INotification[] | null;

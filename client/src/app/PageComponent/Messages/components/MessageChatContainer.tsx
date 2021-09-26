@@ -5,7 +5,6 @@ import { selectCurrentUser } from "../../../store/module/auth/auth.slice";
 import {
   getChatDetails,
   getPaginatedMessages,
-  getPaginatedMessagesSuccess,
   markMessageRead,
 } from "../../../store/module/chats/chats.slice";
 import { RootState } from "../../../store/store";
