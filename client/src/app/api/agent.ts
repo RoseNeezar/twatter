@@ -19,7 +19,7 @@ import {
 } from "../store/module/post/types/post.types";
 import { IUserProfile } from "../store/module/user/types/user.model";
 
-const baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
+const baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL + "/api";
 
 const requestRxjs = {
   get: <T>(url: string) =>
