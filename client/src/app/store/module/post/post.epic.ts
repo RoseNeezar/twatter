@@ -9,11 +9,11 @@ import {
   map,
   of,
   switchMap,
-  takeUntil,
+  tap,
 } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
-import { errorCatcher, routeChange, setUser } from "../auth/auth.slice";
+import { errorCatcher, setUser } from "../auth/auth.slice";
 import { setProfilePost } from "../user/user.slice";
 import {
   createPost,
@@ -69,7 +69,14 @@ const likePostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.likePost(action.payload).pipe(
         map((res) => likePostFulfilled(res.response)),
-
+        tap(
+          (data) =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit(
+              "notification-received",
+              data.payload.postedBy.id
+            )
+        ),
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
@@ -92,7 +99,14 @@ const retweetPostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.retweetPost(action.payload).pipe(
         map((res) => retweetPostFulfilled(res.response)),
-
+        tap(
+          (data) =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit(
+              "notification-received",
+              data.payload.postedBy.id
+            )
+        ),
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
@@ -122,7 +136,6 @@ const GetReplyPostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.getPostById(action.payload).pipe(
         map((res) => getReplyPostFulfilled(res.response)),
-
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
@@ -137,7 +150,14 @@ const replyToPostEpic: MyEpic = (action$, state$) =>
         replyTo: action.payload.replyTo,
       }).pipe(
         map((res) => replyToPostFullfilled(res.response)),
-
+        tap(
+          (data) =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit(
+              "notification-received",
+              data.payload.replyTo.postedBy
+            )
+        ),
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
@@ -164,7 +184,14 @@ const replyToSinglePostEpic: MyEpic = (action$, state$) =>
         replyTo: action.payload.replyTo,
       }).pipe(
         map((res) => replyToSinglePostFullfilled(res.response)),
-
+        tap(
+          (data) =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit(
+              "notification-received",
+              data.payload.replyTo.postedBy
+            )
+        ),
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
@@ -205,7 +232,7 @@ const deletePostEpic: MyEpic = (action$, state$) =>
 const pinnedPostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(pinnedPost.match),
-    switchMap((action) =>
+    concatMap((action) =>
       forkJoin({
         pinnedPost: agent.PostService.pinnedPostById(action.payload.id, {
           pinned: action.payload.pinned,

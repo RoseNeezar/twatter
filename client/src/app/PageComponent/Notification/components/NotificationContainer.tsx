@@ -1,16 +1,26 @@
 import React, { FC } from "react";
+import { useAppDispatch } from "../../../store/hooks/hooks";
+import {
+  openSingleNotification,
+  resetNotification,
+} from "../../../store/module/notification/notification.slice";
 import { INotification } from "../../../store/module/notification/types/notification.model";
 import Navigate from "../../../utils/Navigate";
 interface INotificationContainer extends INotification {}
 
 const NotificationContainer: FC<INotificationContainer> = ({
+  id: notificationId,
   entityId,
   userFrom,
   userTo,
   opened,
   notificationType,
 }) => {
+  const dispatch = useAppDispatch();
+
   const HandleNavigation = () => {
+    dispatch(openSingleNotification(notificationId));
+    dispatch(resetNotification());
     switch (notificationType) {
       case "follow":
         Navigate?.push(`/profile/${userFrom?.username}`);
@@ -30,7 +40,9 @@ const NotificationContainer: FC<INotificationContainer> = ({
   };
   return (
     <div
-      className="flex flex-row items-center h-20 border-b cursor-pointer border-dark-third hover:bg-dark-second"
+      className={`flex flex-row items-center h-20 border-b cursor-pointer border-dark-third hover:bg-dark-second ${
+        !opened && "bg-blue-500 bg-opacity-30"
+      }`}
       onClick={() => HandleNavigation()}
     >
       <div className="p-2 mr-3">

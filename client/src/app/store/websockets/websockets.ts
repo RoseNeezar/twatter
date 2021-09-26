@@ -9,7 +9,8 @@ import {
   setSocket,
   setSocketLoaded,
 } from "../module/chats/chats.slice";
-import { IMessage } from "../module/chats/types/chats.types";
+import { IMessageContent } from "../module/chats/types/chats.types";
+import { refreshNotificationBadge } from "../module/notification/notification.slice";
 
 const useSocket = (user: IUser, dispatch: Dispatch<any>) => {
   useEffect(() => {
@@ -23,6 +24,12 @@ const useSocket = (user: IUser, dispatch: Dispatch<any>) => {
 
     dispatch(
       refreshMessageBadgeChat({
+        unreadOnly: true,
+      })
+    );
+
+    dispatch(
+      refreshNotificationBadge({
         unreadOnly: true,
       })
     );
@@ -47,10 +54,18 @@ const useSocket = (user: IUser, dispatch: Dispatch<any>) => {
       );
     });
 
-    socket.on("message-received", (message: IMessage) => {
+    socket.on("message-received", (message: IMessageContent) => {
       dispatch(sendMessageSuccess(message));
       dispatch(
         refreshMessageBadgeChat({
+          unreadOnly: true,
+        })
+      );
+    });
+
+    socket.on("notification-received", () => {
+      dispatch(
+        refreshNotificationBadge({
           unreadOnly: true,
         })
       );

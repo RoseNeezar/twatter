@@ -171,9 +171,21 @@ const MessageService = {
 };
 
 const NotificationService = {
-  fetchAllNotification: (data: { unreadOnly: boolean }) =>
+  fetchAllNotification: (data?: { unreadOnly: boolean }) =>
     requestRxjs.get<INotification[]>(
       queryString.stringifyUrl({ url: "notification", query: data })
+    ),
+  getLatestNotification: () =>
+    requestRxjs.get<INotification[]>(
+      queryString.stringifyUrl({ url: "notification/latest" })
+    ),
+  openSingleNotification: (data: string) =>
+    requestRxjs.put<void>(
+      queryString.stringifyUrl({ url: `notification/${data}/markAsOpened` })
+    ),
+  openAllNotification: () =>
+    requestRxjs.put<void>(
+      queryString.stringifyUrl({ url: `notification/markAsOpened` })
     ),
 };
 

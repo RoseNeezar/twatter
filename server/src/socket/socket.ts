@@ -36,6 +36,11 @@ export const socketServer = (server: http.Server) => {
         socket.in(chatters.id).emit("message-received", newMessage);
       });
     });
+
+    socket.on("notification-received", (userId: string) => {
+      socket.in(userId).emit("notification-received");
+    });
+
     socket.on(
       "new-channel",
       (data: { userIds: string[]; currentUserId: string }) => {
