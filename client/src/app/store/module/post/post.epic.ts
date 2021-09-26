@@ -232,7 +232,7 @@ const deletePostEpic: MyEpic = (action$, state$) =>
 const pinnedPostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(pinnedPost.match),
-    switchMap((action) =>
+    concatMap((action) =>
       forkJoin({
         pinnedPost: agent.PostService.pinnedPostById(action.payload.id, {
           pinned: action.payload.pinned,

@@ -9,6 +9,7 @@ import {
   map,
   of,
   switchMap,
+  tap,
 } from "rxjs";
 import agent from "../../../api/agent";
 import { RootState } from "../../store";
@@ -150,6 +151,14 @@ const followUserEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.UserService.followUser(action.payload).pipe(
         map(({ response }) => followUserFullfilled(response)),
+        tap(
+          (data) =>
+            state$.value.chats.socketConnected &&
+            state$.value.chats.socket?.emit(
+              "notification-received",
+              action.payload
+            )
+        ),
         catchError((err) => of(errorCatcher(err.response)))
       )
     )

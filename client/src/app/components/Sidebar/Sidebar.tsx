@@ -43,13 +43,13 @@ const Sidebar: FC<ISidebar> = ({ url }) => {
       <div className="fixed h-full mr-auto top-3">
         <ul className="flex flex-col items-end h-full ">
           <li
-            className={`mb-5 xl:mr-auto rounded-full py-3  px-4   hover:bg-dark-third `}
+            className={`mb-5 xl:mr-auto rounded-full py-3 mr-2.5 xl:ml-0  px-4  hover:bg-dark-third `}
           >
             <Link
               to={`${url}home`}
               className={` text-center text-xl  text-dark-txt flex justify-center xl:justify-start items-center`}
             >
-              <i className={`text-2xl  bx bxs-meteor`}></i>
+              <i className={` text-red-500  text-2xl  bx bxs-meteor`}></i>
             </Link>
           </li>
 

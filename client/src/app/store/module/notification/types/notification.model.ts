@@ -10,3 +10,7 @@ export interface INotification {
   opened: boolean;
   updatedAt: Date;
 }
+
+export interface IGetNotification {
+  unreadOnly: boolean;
+}

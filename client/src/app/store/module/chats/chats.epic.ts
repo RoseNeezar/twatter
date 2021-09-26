@@ -2,6 +2,7 @@ import { AnyAction } from "@reduxjs/toolkit";
 import { combineEpics, Epic } from "redux-observable";
 import {
   catchError,
+  concatMap,
   debounceTime,
   filter,
   forkJoin,
@@ -79,7 +80,7 @@ const getChatChannelsEpic: MyEpic = (action$, state$) =>
 const getChatDetailsEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(getChatDetails.match),
-    switchMap((action) =>
+    concatMap((action) =>
       forkJoin({
         chatDetails: agent.ChatService.getChatDetailsByChatId(action.payload),
         chatMessages: agent.MessageService.getChatMessagesChatId({

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { INotification } from "./types/notification.model";
-import { xorBy } from "lodash";
+import { IGetNotification, INotification } from "./types/notification.model";
+import { has, xorBy } from "lodash";
 export interface notificationState {
   allNotifications: INotification[] | null;
   unreadNotification: INotification[] | null;
@@ -15,19 +15,24 @@ export const notificationSlice = createSlice({
   name: "notification",
   initialState,
   reducers: {
-    fetchNotification: (
+    fetchNotification: (state, action: PayloadAction<IGetNotification>) =>
       state,
-      action: PayloadAction<{ unreadOnly: boolean }>
-    ) => state,
     fetchNotificationSuccess: (
       state,
       action: PayloadAction<INotification[]>
     ) => {
-      if (state.allNotifications) {
-        state.allNotifications = null;
-      }
       state.allNotifications = action.payload;
     },
+    resetNotification: (state) => {
+      state.allNotifications = null;
+    },
+    openSingleNotification: (state, action: PayloadAction<string>) => state,
+    openAllNotification: (state) => state,
+    openAllNotificationSuccess: (state) => state,
+    fetchLatestNotification: (state) => {
+      state;
+    },
+    fetchLatestNotificationSuccess: (state) => {},
     refreshNotificationBadge: (
       state,
       action: PayloadAction<{ unreadOnly: boolean }>
@@ -41,7 +46,8 @@ export const notificationSlice = createSlice({
         action.payload,
         "id"
       );
-      if (newNotification && state.allNotifications) {
+
+      if (newNotification.length > 0 && state.allNotifications) {
         state.allNotifications.unshift(...newNotification);
       }
       state.unreadNotification = action.payload;
@@ -54,6 +60,10 @@ export const {
   fetchNotificationSuccess,
   refreshNotificationBadge,
   refreshNotificationBadgeSuccess,
+  openSingleNotification,
+  openAllNotification,
+  fetchLatestNotification,
+  resetNotification,
 } = notificationSlice.actions;
 
 export default notificationSlice.reducer;

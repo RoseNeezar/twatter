@@ -58,7 +58,7 @@ const TweetAction = () => {
                       <div className="flex flex-col flex-1 text-dark-txt ">
                         <div className="flex flex-col mt-2">
                           <div className="mr-3 font-bold">{re.username}</div>
-                          <div className="mr-3 text-gray-500">@{re.email}</div>
+                          <div className="mr-3 text-gray-500">{re.email}</div>
                         </div>
                       </div>
 
