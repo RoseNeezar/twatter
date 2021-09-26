@@ -5,6 +5,7 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import InputGroup from "../app/components/Input/InputGroup";
 import { useAppDispatch, useAppSelector } from "../app/store/hooks/hooks";
 import { isLoggedIn, register } from "../app/store/module/auth/auth.slice";
+import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const RegisterPage = () => {
         dispatch(register({ ...formState }));
       } catch (error) {}
     } else {
+      toast.warning("Please complete the fields before submitting");
     }
   };
 

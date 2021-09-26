@@ -5,6 +5,7 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import InputGroup from "../app/components/Input/InputGroup";
 import { useAppDispatch, useAppSelector } from "../app/store/hooks/hooks";
 import { isLoggedIn, login } from "../app/store/module/auth/auth.slice";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -35,6 +36,7 @@ const LoginPage = () => {
         );
       } catch (error) {}
     } else {
+      toast.warning("Please complete the fields before submitting");
     }
   };
   useEffect(() => {
