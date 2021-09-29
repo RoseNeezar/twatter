@@ -170,18 +170,12 @@ const followUserEpic: MyEpic = (action$, state$) =>
 const getFollowerProfilePostEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(getUserProfileFollowers.match),
-    concatMap((action) => {
-      return (
-        agent.UserService.getUsersFollower(action.payload).pipe(
-          map(({ response }) => getfollowUserFullfilled(response)),
-          catchError((err) => of(errorCatcher(err.response)))
-        ),
-        agent.UserService.getRecommendedUser().pipe(
-          map((res) => fetchRecommendUserSuccess(res.response)),
-          catchError((err) => of(errorCatcher(err.response)))
-        )
-      );
-    })
+    switchMap((action) =>
+      agent.UserService.getUsersFollower(action.payload).pipe(
+        map(({ response }) => getfollowUserFullfilled(response)),
+        catchError((err) => of(errorCatcher(err.response)))
+      )
+    )
   );
 
 const getFollowingProfilePostEpic: MyEpic = (action$, state$) =>
