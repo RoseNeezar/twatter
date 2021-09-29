@@ -12,6 +12,7 @@ import {
   tap,
 } from "rxjs";
 import agent from "../../../api/agent";
+import Navigate from "../../../utils/Navigate";
 import { RootState } from "../../store";
 import { errorCatcher, setUser } from "../auth/auth.slice";
 import { setProfilePost } from "../user/user.slice";
@@ -124,7 +125,6 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
     concatMap((action) =>
       agent.PostService.fetchPost().pipe(
         map(({ response }) => setFetchPost(response)),
-
         catchError((err) => of(errorCatcher(err.response)))
       )
     )
@@ -136,7 +136,11 @@ const GetReplyPostEpic: MyEpic = (action$, state$) =>
     switchMap((action) =>
       agent.PostService.getPostById(action.payload).pipe(
         map((res) => getReplyPostFulfilled(res.response)),
-        catchError((err) => of(errorCatcher(err.response)))
+        catchError((err) =>
+          of(errorCatcher(err.response)).pipe(
+            tap(() => Navigate?.push("/home"))
+          )
+        )
       )
     )
   );

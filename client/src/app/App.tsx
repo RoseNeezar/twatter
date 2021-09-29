@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route } from "react-router-dom";
 import LoadingPage from "./components/Loading/LoadingPage";
 import Home from "./PageComponent/Home/Home";
 import { useAppDispatch, useAppSelector } from "./store/hooks/hooks";
 import { getUser } from "./store/module/auth/auth.slice";
 import { RootState } from "./store/store";
-import { ReRoute } from "./utils/ReRoute";
 import ScrollToTop from "./utils/ScrollToTop";
 
 const App = () => {
@@ -20,17 +19,9 @@ const App = () => {
   return (
     <>
       <ScrollToTop />
-      <Route
-        render={() => (
-          <>
-            <Switch>
-              <ReRoute path="/">
-                <Home />
-              </ReRoute>
-            </Switch>
-          </>
-        )}
-      />
+      <Route path="/">
+        <Home />
+      </Route>
     </>
   );
 };

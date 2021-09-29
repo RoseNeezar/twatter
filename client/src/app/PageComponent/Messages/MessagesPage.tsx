@@ -84,7 +84,7 @@ const MessagesPage = () => {
         </div>
       </div>
       <Route
-        path={[`${url}/compose`]}
+        path={[`${url}/compose`, `${url}/chat/:chatId`]}
         children={({ match }) => {
           return (
             <Transition appear show={Boolean(match)} as={Fragment}>
