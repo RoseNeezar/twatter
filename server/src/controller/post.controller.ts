@@ -33,12 +33,15 @@ export const createPost = async (
 
       if (!!newPost.replyTo) {
         const postedBy = newPost.replyTo as PostDoc;
-        await Notification.insertNotification(
-          postedBy.postedBy as string,
-          req.currentUser?.id,
-          "replyPost",
-          newPost.id
-        );
+
+        if (String(postedBy.postedBy) !== req.currentUser?.id) {
+          await Notification.insertNotification(
+            postedBy.postedBy as string,
+            req.currentUser?.id,
+            "replyPost",
+            newPost.id
+          );
+        }
       }
 
       res.status(201).send(newPost);
@@ -192,12 +195,14 @@ export const likePost = async (
 
   if (!isLiked && post !== null) {
     const postedBy = post.postedBy as UserDoc;
-    await Notification.insertNotification(
-      postedBy.id,
-      userId,
-      "likePost",
-      post.id
-    );
+    if (postedBy.id !== userId) {
+      await Notification.insertNotification(
+        postedBy.id,
+        userId,
+        "likePost",
+        post.id
+      );
+    }
   }
   post = await User.populate(post, { path: "replyTo.postedBy" });
   res.status(200).send(post);
@@ -259,12 +264,14 @@ export const retweetPost = async (
 
   if (!deletedPost && post !== null) {
     const postedBy = post.postedBy as UserDoc;
-    await Notification.insertNotification(
-      postedBy.id,
-      userId,
-      "retweetPost",
-      post.id
-    );
+    if (postedBy.id !== userId) {
+      await Notification.insertNotification(
+        postedBy.id,
+        userId,
+        "retweetPost",
+        post.id
+      );
+    }
   }
 
   res.status(200).send(post);

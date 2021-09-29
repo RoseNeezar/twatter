@@ -77,12 +77,14 @@ export const followUser = async (
   });
 
   if (!isFollowing) {
-    await Notification.insertNotification(
-      userId,
-      req.currentUser?.id,
-      "follow",
-      req.currentUser?.id
-    );
+    if (userId !== req.currentUser.id) {
+      await Notification.insertNotification(
+        userId,
+        req.currentUser?.id,
+        "follow",
+        req.currentUser?.id
+      );
+    }
   }
 
   res.status(200).send(req.currentUser);

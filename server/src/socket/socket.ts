@@ -36,9 +36,13 @@ export const socketServer = (server: http.Server) => {
       });
     });
 
-    socket.on("notification-received", (userId: string) => {
-      socket.in(userId).emit("notification-received");
-    });
+    socket.on(
+      "notification-received",
+      (userId: string, currentUserId: string) => {
+        if (userId === currentUserId) return;
+        socket.in(userId).emit("notification-received");
+      }
+    );
 
     socket.on(
       "new-channel",

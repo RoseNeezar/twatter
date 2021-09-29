@@ -75,7 +75,8 @@ const likePostEpic: MyEpic = (action$, state$) =>
             state$.value.chats.socketConnected &&
             state$.value.chats.socket?.emit(
               "notification-received",
-              data.payload.postedBy.id
+              data.payload.postedBy.id,
+              state$.value.auth.user?.id
             )
         ),
         catchError((err) => of(errorCatcher(err.response)))
@@ -105,7 +106,8 @@ const retweetPostEpic: MyEpic = (action$, state$) =>
             state$.value.chats.socketConnected &&
             state$.value.chats.socket?.emit(
               "notification-received",
-              data.payload.postedBy.id
+              data.payload.postedBy.id,
+              state$.value.auth.user?.id
             )
         ),
         catchError((err) => of(errorCatcher(err.response)))
@@ -159,7 +161,8 @@ const replyToPostEpic: MyEpic = (action$, state$) =>
             state$.value.chats.socketConnected &&
             state$.value.chats.socket?.emit(
               "notification-received",
-              data.payload.replyTo.postedBy
+              data.payload.replyTo.postedBy,
+              state$.value.auth.user?.id
             )
         ),
         catchError((err) => of(errorCatcher(err.response)))
@@ -193,7 +196,8 @@ const replyToSinglePostEpic: MyEpic = (action$, state$) =>
             state$.value.chats.socketConnected &&
             state$.value.chats.socket?.emit(
               "notification-received",
-              data.payload.replyTo.postedBy
+              data.payload.replyTo.postedBy,
+              state$.value.auth.user?.id
             )
         ),
         catchError((err) => of(errorCatcher(err.response)))
