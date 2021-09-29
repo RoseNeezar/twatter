@@ -19,10 +19,10 @@ const MessageContent = React.forwardRef<HTMLDivElement>((prop, ref) => {
     const senderName = sender.username;
 
     const currentSenderId = sender.id;
-    const nextSenderId = nextMessage != null ? nextMessage.sender.id : "";
+    const nextSenderId = nextMessage !== null ? nextMessage.sender.id : "";
 
-    const isFirst = lastSenderId != currentSenderId;
-    const isLast = nextSenderId != currentSenderId;
+    const isFirst = lastSenderId !== currentSenderId;
+    const isLast = nextSenderId !== currentSenderId;
 
     const isMine = message.sender.id === currentUser?.id;
 

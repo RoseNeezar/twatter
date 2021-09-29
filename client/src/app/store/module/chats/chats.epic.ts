@@ -99,7 +99,9 @@ const getChatDetailsEpic: MyEpic = (action$, state$) =>
             state$.value.chats.socket?.emit("join-room", action.payload)
         ),
         catchError((err) => {
-          return of(errorCatcher(err.response));
+          return of(errorCatcher(err.response)).pipe(
+            tap(() => Navigate?.push("/home"))
+          );
         })
       )
     )

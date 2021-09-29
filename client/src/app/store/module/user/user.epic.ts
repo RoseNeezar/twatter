@@ -12,6 +12,7 @@ import {
   tap,
 } from "rxjs";
 import agent from "../../../api/agent";
+import Navigate from "../../../utils/Navigate";
 import { RootState } from "../../store";
 import { errorCatcher, setUser } from "../auth/auth.slice";
 import {
@@ -43,7 +44,9 @@ const getUserEpic: MyEpic = (action$, state$) =>
       agent.UserService.getUserByUsername(action.payload).pipe(
         map(({ response }) => setUserProfile(response)),
         catchError((err) => {
-          return of(errorCatcher(err.response));
+          return of(errorCatcher(err.response)).pipe(
+            tap(() => Navigate?.push("/home"))
+          );
         })
       )
     )
