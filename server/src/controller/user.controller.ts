@@ -128,16 +128,18 @@ export const updateProfileImage = async (
     console.log("No file uploaded with ajax request.");
     throw new BadRequestError("No file uploaded with ajax request.");
   }
-  try {
-    const oldImageTemp = req.currentUser!.profilePic!.split("/");
-    const imgRex = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
-    if (oldImageTemp) {
-      const oldImage = oldImageTemp[oldImageTemp!.length - 1];
-      if (imgRex.test(oldImage)) {
-        fs.unlinkSync(`public/images/${oldImage}`);
-      }
-    }
 
+  const oldImageTemp = req.currentUser!.profilePic!.split("/");
+  const imgRex = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
+  if (oldImageTemp) {
+    const oldImage = oldImageTemp[oldImageTemp!.length - 1];
+    if (imgRex.test(oldImage)) {
+      try {
+        fs.unlinkSync(`public/images/${oldImage}`);
+      } catch (error) {}
+    }
+  }
+  try {
     req.currentUser = await User.findByIdAndUpdate(
       req.currentUser?.id,
       { profilePic: `${process.env.APP_URL}/images/${req.file.filename}` },
@@ -158,16 +160,18 @@ export const updateProfileBanner = async (
     console.log("No file uploaded with ajax request.");
     throw new BadRequestError("No file uploaded with ajax request.");
   }
-  try {
-    const oldBannerTemp = req.currentUser!.coverPhoto!.split("/");
-    const imgRex = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
-    if (oldBannerTemp) {
-      const oldBanner = oldBannerTemp[oldBannerTemp!.length - 1];
-      if (imgRex.test(oldBanner)) {
-        fs.unlinkSync(`public/images/${oldBanner}`);
-      }
-    }
 
+  const oldBannerTemp = req.currentUser!.coverPhoto!.split("/");
+  const imgRex = /[\/.](gif|jpg|jpeg|tiff|png)$/i;
+  if (oldBannerTemp) {
+    const oldBanner = oldBannerTemp[oldBannerTemp!.length - 1];
+    if (imgRex.test(oldBanner)) {
+      try {
+        fs.unlinkSync(`public/images/${oldBanner}`);
+      } catch (error) {}
+    }
+  }
+  try {
     req.currentUser = await User.findByIdAndUpdate(
       req.currentUser?.id,
       { coverPhoto: `${process.env.APP_URL}/images/${req.file.filename}` },
