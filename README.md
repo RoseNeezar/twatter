@@ -16,6 +16,7 @@ Twatter application that contains the mvp  features of a twitter.
 - Update user profile image
 - Update user banner image
 - Recommend to follow users
+- Follow/unfollow user
 
 ## Tech Stack
 ### Frontend
