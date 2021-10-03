@@ -27,7 +27,7 @@ export const authSlice = createSlice({
     },
     getUser: (state) => state,
     errorCatcher: (state, action: PayloadAction<IError>) => {
-      if (!!action.payload.errors && action.payload.errors.length > 0) {
+      if (!!action.payload?.errors && action.payload?.errors.length > 0) {
         if (
           action.payload.errors[0].message === "not authenticated" &&
           window.location.pathname !== "/"
