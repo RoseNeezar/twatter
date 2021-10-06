@@ -19,7 +19,7 @@ import {
 } from "../store/module/post/types/post.types";
 import { IUserProfile } from "../store/module/user/types/user.model";
 
-const baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL + "/api/";
+const baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL + "api/";
 
 const requestRxjs = {
   get: <T>(url: string) =>
@@ -56,13 +56,17 @@ const AuthService = {
       queryString.stringifyUrl({ url: "auth/login" }),
       data
     ),
-  register: (data: IRegister) =>
-   {
-    console.log('hmmmm-',data,process.env.NEXT_PUBLIC_SERVER_BASE_URL + "api/") 
+  register: (data: IRegister) => {
+    console.log(
+      "hmmmm-",
+      data,
+      process.env.NEXT_PUBLIC_SERVER_BASE_URL + "api/"
+    );
     return requestRxjs.post<IUser>(
       queryString.stringifyUrl({ url: "auth/signup" }),
       data
-    )},
+    );
+  },
   logout: () =>
     requestRxjs.post(queryString.stringifyUrl({ url: "auth/logout" })),
   currentUser: () =>
