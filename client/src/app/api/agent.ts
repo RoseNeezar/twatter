@@ -57,11 +57,6 @@ const AuthService = {
       data
     ),
   register: (data: IRegister) => {
-    console.log(
-      "hmmmm-",
-      data,
-      process.env.NEXT_PUBLIC_SERVER_BASE_URL + "api/"
-    );
     return requestRxjs.post<IUser>(
       queryString.stringifyUrl({ url: "auth/signup" }),
       data
