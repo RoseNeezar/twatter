@@ -125,7 +125,9 @@ const getRetweetedPostEpic: MyEpic = (action$, state$) =>
       )
     ),
     concatMap((action) =>
-      agent.PostService.fetchPost().pipe(
+      agent.PostService.fetchPost({
+        followingOnly: true,
+      }).pipe(
         map(({ response }) => setFetchPost(response)),
         catchError((err) => of(errorCatcher(err.response)))
       )
@@ -174,7 +176,9 @@ const replyToPostFullfilledEpic: MyEpic = (action$, state$) =>
   action$.pipe(
     filter(replyToPostFullfilled.match),
     switchMap((action) =>
-      agent.PostService.fetchPost().pipe(
+      agent.PostService.fetchPost({
+        followingOnly: true,
+      }).pipe(
         map(({ response }) => setFetchPost(response)),
 
         catchError((err) => of(errorCatcher(err.response)))
